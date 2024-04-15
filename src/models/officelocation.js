@@ -7,7 +7,6 @@ const officelocationSchema = new Schema(
 		name: {
 			type: String,
 			trim: true,
-			required: true,
 		},
 		address: {
 			type: String,

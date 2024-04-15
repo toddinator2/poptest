@@ -59,7 +59,7 @@ export const POST = async (req) => {
 
 			//Create a new location
 			const newLoc = new Officelocation({
-				name: 'Headquarters',
+				name: 'Change My Name',
 				officeObjId: newOfcId,
 			});
 			const loc = await newLoc.save();
