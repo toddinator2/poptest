@@ -80,7 +80,7 @@ export default function DataSetup() {
 			locsArr = data?.arrLocs;
 			locOptsArr = data?.arrLocOpts;
 
-			if (!defLoc) {
+			if (!defLoc && locsArr.length !== 0) {
 				defLoc = locsArr[0]._id;
 			}
 		}
