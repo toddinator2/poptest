@@ -28,8 +28,6 @@ export const POST = async (req) => {
 		officeObjId,
 	} = body;
 
-	console.log('body:', body);
-
 	try {
 		await new Appointment({
 			date,

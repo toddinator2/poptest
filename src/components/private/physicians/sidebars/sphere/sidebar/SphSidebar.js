@@ -60,7 +60,6 @@ export default function SphSidebar() {
 					method: 'GET',
 				});
 				const data = await response.json();
-				console.log('data:', data.setup);
 
 				if (data.status === 200) {
 					if (data.setup.complete) {

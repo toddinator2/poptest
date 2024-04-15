@@ -1,5 +1,5 @@
 'use client';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import Image from 'next/image';
@@ -31,7 +31,9 @@ export default function Locations() {
 			locOptions: office.locOptions,
 			defLoc: office.defLoc,
 			users: office.users,
+			selUser: {},
 			resources: office.resources,
+			selRscs: [],
 			rscOptions: office.rscOptions,
 		});
 	};

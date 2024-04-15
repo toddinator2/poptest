@@ -11,6 +11,7 @@ import Input from '@/components/global/forms/input/Input';
 import Button from '@/components/global/forms/buttons/Button';
 import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
+import CheckBox from '@/components/global/forms/checkbox/Checkbox';
 
 export default function EdtLocation() {
 	const gglKey = process.env.MAPS_KEY;
@@ -27,6 +28,12 @@ export default function EdtLocation() {
 	const [phone, setPhone] = useState('');
 	const [dayStart, setDayStart] = useState(1);
 	const [dayEnd, setDayEnd] = useState(5);
+	const [sameTimes, setSameTimes] = useState(false);
+	const [timeOpen, setTimeOpen] = useState('');
+	const [lunchStart, setLunchStart] = useState('');
+	const [lunchEnd, setLunchEnd] = useState('');
+	const [timeClose, setTimeClose] = useState('');
+	const [shwSame, setShwSame] = useState(false);
 	const [startTime0, setStartTime0] = useState('');
 	const [endTime0, setEndTime0] = useState('');
 	const [startLunch0, setStartLunch0] = useState('');
@@ -109,6 +116,21 @@ export default function EdtLocation() {
 				setDayEnd(location.endday);
 			} else {
 				setDayEnd(5);
+			}
+			if (location.sametimes && location.sametimes !== undefined) {
+				setSameTimes(true);
+				setTimeOpen(location.starttime0);
+				setLunchStart(location.startlunch0);
+				setLunchEnd(location.endlunch0);
+				setTimeClose(location.endtime0);
+				setShwSame(true);
+			} else {
+				setSameTimes(false);
+				setTimeOpen('');
+				setLunchStart('');
+				setLunchEnd('');
+				setTimeClose('');
+				setShwSame(false);
 			}
 			if (location.starttime0 !== '' && location.starttime0 !== undefined) {
 				setStartTime0(location.starttime0);
@@ -287,6 +309,7 @@ export default function EdtLocation() {
 			phone,
 			startday: dayStart,
 			endday: dayEnd,
+			sametimes: sameTimes,
 			starttime0: startTime0,
 			endtime0: endTime0,
 			startlunch0: startLunch0,
@@ -359,6 +382,7 @@ export default function EdtLocation() {
 					phone,
 					startday: dayStart,
 					endday: dayEnd,
+					sametimes: sameTimes,
 					starttime0: startTime0,
 					endtime0: endTime0,
 					startlunch0: startLunch0,
@@ -396,6 +420,17 @@ export default function EdtLocation() {
 			const data = await response.json();
 
 			if (data.status === 200) {
+				setOffice({
+					locations: office.locations,
+					selLoc: {},
+					locOptions: office.locOptions,
+					defLoc: office.defLoc,
+					users: office.users,
+					selUser: {},
+					resources: office.resources,
+					selRscs: [],
+					rscOptions: office.rscOptions,
+				});
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
@@ -408,16 +443,70 @@ export default function EdtLocation() {
 		}
 	};
 
+	function handleClose() {
+		setMenu({ type: menu.type, func: '' });
+	}
+
+	const handleShwDiv = async (e) => {
+		e.preventDefault();
+		const value = e.target.checked;
+		setSameTimes(value);
+		setShwSame(!shwSame);
+	};
+
 	function handlePhone(e) {
 		const value = e.target.value;
 		const formattedPhoneNumber = FormatPhoneNumber(value);
 		setPhone(formattedPhoneNumber);
 	}
 
-	function handleClose() {
-		setMenu({ type: menu.type, func: '' });
-		setOffice({ locations: office.locations, selLoc: {}, defLoc: office.defLoc, users: office.users, resources: office.resources });
-	}
+	const handleTimeOpen = (e) => {
+		const value = e.target.value;
+		setTimeOpen(value);
+		setStartTime0(value);
+		setStartTime1(value);
+		setStartTime2(value);
+		setStartTime3(value);
+		setStartTime4(value);
+		setStartTime5(value);
+		setStartTime6(value);
+	};
+
+	const handleLunchStart = (e) => {
+		const value = e.target.value;
+		setLunchStart(value);
+		setStartLunch0(value);
+		setStartLunch1(value);
+		setStartLunch2(value);
+		setStartLunch3(value);
+		setStartLunch4(value);
+		setStartLunch5(value);
+		setStartLunch6(value);
+	};
+
+	const handleLunchEnd = (e) => {
+		const value = e.target.value;
+		setLunchEnd(value);
+		setEndLunch0(value);
+		setEndLunch1(value);
+		setEndLunch2(value);
+		setEndLunch3(value);
+		setEndLunch4(value);
+		setEndLunch5(value);
+		setEndLunch6(value);
+	};
+
+	const handleTimeClose = (e) => {
+		const value = e.target.value;
+		setTimeClose(value);
+		setEndTime0(value);
+		setEndTime1(value);
+		setEndTime2(value);
+		setEndTime3(value);
+		setEndTime4(value);
+		setEndTime5(value);
+		setEndTime6(value);
+	};
 
 	return (
 		<>
@@ -515,7 +604,7 @@ export default function EdtLocation() {
 								</select>
 							</div>
 						</div>
-						<div className='row mb-2'>
+						<div className='row mb-3'>
 							<div className='col-12'>
 								<label className='frmLabel'>End Day</label>
 							</div>
@@ -531,60 +620,79 @@ export default function EdtLocation() {
 								</select>
 							</div>
 						</div>
-						{(dayStart === '0' || dayEnd === '0' || (dayStart >= 4 && dayEnd <= 1)) && (
+						<div className='row mb-2 d-flex align-items-center'>
+							<div className='col-2 pe-1 d-flex justify-content-end'>
+								<CheckBox check={sameTimes} funcCall={handleShwDiv} />
+							</div>
+							<div className='col-10 ps-1'>
+								<div>Set all times the same</div>
+							</div>
+						</div>
+						{shwSame ? (
 							<>
-								<Input label='Sunday Open Time' type='time' value={startTime0} setValue={setStartTime0} />
-								<Input label='Sunday Lunch Start Time' type='time' value={startLunch0} setValue={setStartLunch0} />
-								<Input label='Sunday Lunch End Time' type='time' value={endLunch0} setValue={setEndLunch0} />
-								<Input label='Sunday Close Time' type='time' value={endTime0} setValue={setEndTime0} />
+								<Input label='Open Time' type='time' value={timeOpen} funcCall={handleTimeOpen} />
+								<Input label='Lunch Start Time' type='time' value={lunchStart} funcCall={handleLunchStart} />
+								<Input label='Lunch End Time' type='time' value={lunchEnd} funcCall={handleLunchEnd} />
+								<Input label='Close Time' type='time' value={timeClose} funcCall={handleTimeClose} />
 							</>
-						)}
-						{dayStart <= '1' && (
+						) : (
 							<>
-								<Input label='Monday Open Time' type='time' value={startTime1} setValue={setStartTime1} />
-								<Input label='Monday Lunch Start Time' type='time' value={startLunch1} setValue={setStartLunch1} />
-								<Input label='Monday Lunch End Time' type='time' value={endLunch1} setValue={setEndLunch1} />
-								<Input label='Monday Close Time' type='time' value={endTime1} setValue={setEndTime1} />
-							</>
-						)}
-						{dayStart <= '2' && dayEnd >= '2' && (
-							<>
-								<Input label='Tuesday Open Time' type='time' value={startTime2} setValue={setStartTime2} />
-								<Input label='Tuesday Lunch Start Time' type='time' value={startLunch2} setValue={setStartLunch2} />
-								<Input label='Tuesday Lunch End Time' type='time' value={endLunch2} setValue={setEndLunch2} />
-								<Input label='Tuesday Close Time' type='time' value={endTime2} setValue={setEndTime2} />
-							</>
-						)}
-						{dayStart <= '3' && (
-							<>
-								<Input label='Wednesday Open Time' type='time' value={startTime3} setValue={setStartTime3} />
-								<Input label='Wednesday Lunch Start Time' type='time' value={startLunch3} setValue={setStartLunch3} />
-								<Input label='Wednesday Lunch End Time' type='time' value={endLunch3} setValue={setEndLunch3} />
-								<Input label='Wednesday Close Time' type='time' value={endTime3} setValue={setEndTime3} />
-							</>
-						)}
-						{(dayStart <= '4' || dayEnd <= '4') && (
-							<>
-								<Input label='Thursday Open Time' type='time' value={startTime4} setValue={setStartTime4} />
-								<Input label='Thursday Lunch Start Time' type='time' value={startLunch4} setValue={setStartLunch4} />
-								<Input label='Thursday Lunch End Time' type='time' value={endLunch4} setValue={setEndLunch4} />
-								<Input label='Thursday Close Time' type='time' value={endTime4} setValue={setEndTime4} />
-							</>
-						)}
-						{(dayStart <= '5' || dayEnd <= '5') && (
-							<>
-								<Input label='Friday Open Time' type='time' value={startTime5} setValue={setStartTime5} />
-								<Input label='Friday Lunch Start Time' type='time' value={startLunch5} setValue={setStartLunch5} />
-								<Input label='Friday Lunch End Time' type='time' value={endLunch5} setValue={setEndLunch5} />
-								<Input label='Friday Close Time' type='time' value={endTime5} setValue={setEndTime5} />
-							</>
-						)}
-						{((dayStart <= '6' && dayEnd <= '3') || dayEnd === '6') && (
-							<>
-								<Input label='Saturday Open Time' type='time' value={startTime6} setValue={setStartTime6} />
-								<Input label='Saturday Lunch Start Time' type='time' value={startLunch6} setValue={setStartLunch6} />
-								<Input label='Saturday Lunch End Time' type='time' value={endLunch6} setValue={setEndLunch6} />
-								<Input label='Saturday Close Time' type='time' value={endTime6} setValue={setEndTime6} />
+								{(dayStart === '0' || dayEnd === '0' || (dayStart >= 4 && dayEnd <= 1)) && (
+									<>
+										<Input label='Sunday Open Time' type='time' value={startTime0} setValue={setStartTime0} />
+										<Input label='Sunday Lunch Start Time' type='time' value={startLunch0} setValue={setStartLunch0} />
+										<Input label='Sunday Lunch End Time' type='time' value={endLunch0} setValue={setEndLunch0} />
+										<Input label='Sunday Close Time' type='time' value={endTime0} setValue={setEndTime0} />
+									</>
+								)}
+								{dayStart <= '1' && (
+									<>
+										<Input label='Monday Open Time' type='time' value={startTime1} setValue={setStartTime1} />
+										<Input label='Monday Lunch Start Time' type='time' value={startLunch1} setValue={setStartLunch1} />
+										<Input label='Monday Lunch End Time' type='time' value={endLunch1} setValue={setEndLunch1} />
+										<Input label='Monday Close Time' type='time' value={endTime1} setValue={setEndTime1} />
+									</>
+								)}
+								{dayStart <= '2' && dayEnd >= '2' && (
+									<>
+										<Input label='Tuesday Open Time' type='time' value={startTime2} setValue={setStartTime2} />
+										<Input label='Tuesday Lunch Start Time' type='time' value={startLunch2} setValue={setStartLunch2} />
+										<Input label='Tuesday Lunch End Time' type='time' value={endLunch2} setValue={setEndLunch2} />
+										<Input label='Tuesday Close Time' type='time' value={endTime2} setValue={setEndTime2} />
+									</>
+								)}
+								{dayStart <= '3' && (
+									<>
+										<Input label='Wednesday Open Time' type='time' value={startTime3} setValue={setStartTime3} />
+										<Input label='Wednesday Lunch Start Time' type='time' value={startLunch3} setValue={setStartLunch3} />
+										<Input label='Wednesday Lunch End Time' type='time' value={endLunch3} setValue={setEndLunch3} />
+										<Input label='Wednesday Close Time' type='time' value={endTime3} setValue={setEndTime3} />
+									</>
+								)}
+								{(dayStart <= '4' || dayEnd <= '4') && (
+									<>
+										<Input label='Thursday Open Time' type='time' value={startTime4} setValue={setStartTime4} />
+										<Input label='Thursday Lunch Start Time' type='time' value={startLunch4} setValue={setStartLunch4} />
+										<Input label='Thursday Lunch End Time' type='time' value={endLunch4} setValue={setEndLunch4} />
+										<Input label='Thursday Close Time' type='time' value={endTime4} setValue={setEndTime4} />
+									</>
+								)}
+								{(dayStart <= '5' || dayEnd <= '5') && (
+									<>
+										<Input label='Friday Open Time' type='time' value={startTime5} setValue={setStartTime5} />
+										<Input label='Friday Lunch Start Time' type='time' value={startLunch5} setValue={setStartLunch5} />
+										<Input label='Friday Lunch End Time' type='time' value={endLunch5} setValue={setEndLunch5} />
+										<Input label='Friday Close Time' type='time' value={endTime5} setValue={setEndTime5} />
+									</>
+								)}
+								{((dayStart <= '6' && dayEnd <= '3') || dayEnd === '6') && (
+									<>
+										<Input label='Saturday Open Time' type='time' value={startTime6} setValue={setStartTime6} />
+										<Input label='Saturday Lunch Start Time' type='time' value={startLunch6} setValue={setStartLunch6} />
+										<Input label='Saturday Lunch End Time' type='time' value={endLunch6} setValue={setEndLunch6} />
+										<Input label='Saturday Close Time' type='time' value={endTime6} setValue={setEndTime6} />
+									</>
+								)}
 							</>
 						)}
 						<div className='my-3 d-flex justify-content-center'>

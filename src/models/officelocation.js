@@ -41,6 +41,10 @@ const officelocationSchema = new Schema(
 			type: Number,
 			default: 5,
 		},
+		sametimes: {
+			type: Boolean,
+			default: false,
+		},
 		starttime0: {
 			type: String,
 			trim: true,
