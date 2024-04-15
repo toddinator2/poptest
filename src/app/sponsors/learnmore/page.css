@@ -1,0 +1,16 @@
+.spnLMSubHdng {
+	font-size: 23px;
+	font-weight: 600;
+	text-align: center;
+}
+.spnLMSubHdng.ppl {
+	color: #8000ff;
+}
+.inlineLink {
+	color: #8000ff;
+	text-decoration: none;
+}
+.inlineLink:hover {
+	cursor: pointer;
+	color: #cacad9;
+}

@@ -1,0 +1,32 @@
+.pdBox {
+	border-radius: 20px;
+	border: 2px dotted #cacad9;
+}
+.pdSecHdng {
+	font-size: 17px;
+	font-weight: 500;
+}
+.pdSideMenuIcon {
+	width: auto;
+	max-height: 13px;
+}
+.pdSideMenuIcon:hover {
+	cursor: pointer;
+}
+.pdPhoto {
+	width: auto;
+	height: 40px;
+	border-radius: 50%;
+}
+.pdInits {
+	font-size: 30px;
+	font-weight: 700;
+	color: #ff0000;
+}
+.pdText {
+	font-size: 13px;
+	font-weight: 500;
+}
+.pdText.blu {
+	color: #73b9ff;
+}

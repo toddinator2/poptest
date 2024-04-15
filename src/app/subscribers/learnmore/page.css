@@ -1,0 +1,8 @@
+.inlineLink {
+	color: #0d6dfd;
+	text-decoration: none;
+}
+.inlineLink:hover {
+	cursor: pointer;
+	color: #0000ff;
+}

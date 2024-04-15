@@ -1,0 +1,16 @@
+.ptRegPtCol {
+	border: 2px dotted #0000ff;
+	border-radius: 40px;
+}
+.ptRegDocCol {
+	border: 2px dotted #ff0000;
+	border-radius: 40px;
+}
+.ptRegEmpCol {
+	border: 2px dotted #8000ff;
+	border-radius: 40px;
+}
+.ptRegColHdng {
+	font-size: 23px;
+	font-weight: 600;
+}

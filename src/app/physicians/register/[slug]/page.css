@@ -1,0 +1,55 @@
+.phyPreRegMidTextLg {
+	font-size: 45px;
+	line-height: 45px;
+	font-weight: 700;
+	text-align: center;
+}
+.phyPreRegMidTextSm {
+	font-size: 27px;
+	line-height: 31px;
+	font-weight: 700;
+	text-align: center;
+}
+.phyPreRegCenterDiv {
+	padding: 20px 10px;
+	border: 2px dotted #ff0000;
+	border-radius: 20px;
+}
+.phyPreRegHdngSphere {
+	margin-bottom: 7px;
+	font-size: 27px;
+	line-height: 37px;
+	font-weight: 700;
+}
+.phyPreRegHdngSphere.center {
+	text-align: center;
+}
+.phyPreRegInfoText {
+	font-size: 12px;
+	font-weight: 500;
+}
+.phyPreRegHdngStrikeThru {
+	font-size: 27px;
+	line-height: 31px;
+	font-weight: 700;
+	text-align: center;
+	text-decoration: line-through;
+}
+.phyPreRegTextStrikeThru {
+	font-size: 17px;
+	text-decoration: line-through;
+}
+.phyPreRegLogo {
+	width: auto;
+	height: auto;
+	max-width: 96%;
+	max-height: 170px;
+}
+.phyPreRegPriceTextLg {
+	font-size: 15px;
+	font-weight: 600;
+}
+.phyPreRegPriceTextSm {
+	font-size: 12px;
+	font-weight: 500;
+}

@@ -1,0 +1,20 @@
+.frmLabel {
+	font-size: 14px;
+	font-weight: 500;
+	color: #73b9ff;
+}
+input {
+	color: #cacad9 !important;
+}
+input::placeholder {
+	color: #73b9ff !important;
+	opacity: 1; /* Firefox */
+}
+
+input::-ms-input-placeholder {
+	/* Edge 12 -18 */
+	color: #73b9ff !important;
+}
+.chkInput {
+	display: none;
+}

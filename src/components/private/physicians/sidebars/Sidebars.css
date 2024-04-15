@@ -1,0 +1,48 @@
+.sphSecHdng {
+	font-size: 17px;
+	font-weight: 500;
+}
+.sphSideMenuIcon {
+	width: auto;
+	max-height: 13px;
+}
+.sphSideMenuIcon:hover {
+	cursor: pointer;
+}
+.sphSideLink {
+	font-size: 13px;
+	line-height: 19px;
+}
+.sphSideLink:hover {
+	color: #73b9ff;
+	cursor: pointer;
+}
+.sphSideText {
+	font-size: 13px;
+	line-height: 19px;
+}
+.sphSideLinkIcon {
+	width: auto;
+	height: auto;
+	max-height: 30px;
+}
+.icoChgLoc {
+	width: auto;
+	height: 20px;
+}
+.sphPtImg {
+	width: auto;
+	max-height: 50px;
+	border-radius: 50%;
+}
+.sphPtImg:hover {
+	cursor: pointer;
+}
+.sphPtInits {
+	font-size: 37px;
+	font-weight: 700;
+	color: #73b9ff;
+}
+.sphPtInits:hover {
+	cursor: pointer;
+}

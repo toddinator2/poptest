@@ -1,0 +1,45 @@
+.colData {
+	min-height: 80vh;
+	border: 2px dotted #ff0000;
+	border-radius: 40px;
+}
+.colFncs {
+	min-height: 80vh;
+	border: 2px dotted #0000ff;
+	border-radius: 40px;
+}
+.colMktg {
+	min-height: 80vh;
+	border: 2px dotted #8000ff;
+	border-radius: 40px;
+}
+.colHdng {
+	font-size: 25px;
+	font-weight: 700;
+}
+.colLblText {
+	font-size: 15px;
+	font-weight: 600;
+}
+.colDataText {
+	font-size: 15px;
+	font-weight: 600;
+	color: #73b9ff;
+}
+.icoCols {
+	width: auto;
+	max-height: 18px;
+}
+.icoCols:hover {
+	cursor: pointer;
+}
+.customAlert {
+	padding: 30px 50px;
+	text-align: center;
+	background-color: #000;
+	border-radius: 20px;
+}
+.alertSubHdng {
+	font-size: 16px;
+	font-weight: 600;
+}
