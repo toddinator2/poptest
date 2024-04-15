@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Officelocation from '@/models/officelocation';
+import Officesetup from '@/models/officesetup';
 
 export const PUT = async (req) => {
 	await connect();
@@ -48,9 +49,24 @@ export const PUT = async (req) => {
 		latitude,
 		longitude,
 		deleteme,
+		officeObjId,
 	} = body;
 
 	try {
+		//update office setup just in case not already done
+		const setup = await Officesetup.findOne({ officeObjId: officeObjId });
+		if (setup) {
+			if (!setup.locations) {
+				await Officesetup.findByIdAndUpdate(setup._id, { locations: true }, { new: true });
+			} else {
+				if (setup.basic && setup.locations && setup.users && setup.calcols && !setup.complete) {
+					await Officesetup.findByIdAndUpdate(setup._id, { complete: true }, { new: true });
+				}
+			}
+		} else {
+			await new Officesetup({ locations: true, officeObjId: officeObjId }).save();
+		}
+
 		await Officelocation.findByIdAndUpdate(
 			_id,
 			{

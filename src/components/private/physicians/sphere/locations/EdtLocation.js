@@ -4,6 +4,7 @@ import { geocode, RequestType } from 'react-geocode';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
+import { saveInLocalStorage } from '@/utils/helpers/auth';
 import { CompareByLabel, CompareByName, FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -431,6 +432,8 @@ export default function EdtLocation() {
 					selRscs: [],
 					rscOptions: office.rscOptions,
 				});
+
+				saveInLocalStorage('qsRefresh', true);
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);

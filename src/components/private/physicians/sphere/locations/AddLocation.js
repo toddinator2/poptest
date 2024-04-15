@@ -174,9 +174,6 @@ export default function AddLocation() {
 						rscOptions: office.rscOptions,
 					});
 
-					if (tmpArr.length === 1) {
-						saveInLocalStorage('qsRefresh', true);
-					}
 					toast.success(data.msg);
 				} else {
 					toast.error(data.msg);
