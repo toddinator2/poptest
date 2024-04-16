@@ -24,9 +24,9 @@ export const PUT = async (req) => {
 		}
 
 		await Officeuser.findByIdAndUpdate(_id, { locationObjId }, { new: true });
-
 		return NextResponse.json({ msg: 'User updated successfully', status: 200 });
 	} catch (err) {
-		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
+		//return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
+		return NextResponse.json({ msg: err, status: 500 });
 	}
 };
