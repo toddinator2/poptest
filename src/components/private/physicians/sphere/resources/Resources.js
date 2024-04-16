@@ -2,7 +2,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { getFromLocalStorage } from '@/utils/helpers/auth';
+import { getFromLocalStorage, removeFromLocalStorage } from '@/utils/helpers/auth';
 import Image from 'next/image';
 import edit from '@/assets/images/icoEdit.png';
 
@@ -60,9 +60,9 @@ export default function Resources() {
 			}
 			tmpArr.sort((a, b) => a.order - b.order);
 			setRscList(tmpArr);
-			if (menu.refresh) {
-				setMenu({ type: menu.type, func: '' });
-			}
+			setRefresh(false);
+			removeFromLocalStorage('rscRefresh');
+			setMenu({ type: menu.type, func: '' });
 		}
 		setCurLocId(newLocId);
 	}, [newLocId, curLocId, menu, office, setMenu]);
