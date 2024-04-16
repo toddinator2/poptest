@@ -3,6 +3,7 @@ import { CreateUsername } from '@/components/global/functions/PageFunctions';
 import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
 import Officeuser from '@/models/officeuser';
+import Officesetup from '@/models/officesetup';
 
 export const POST = async (req) => {
 	await connect();
@@ -30,6 +31,20 @@ export const POST = async (req) => {
 		officeObjId,
 	} = body;
 	let uname = '';
+
+	//update office setup just in case not already done
+	const setup = await Officesetup.findOne({ officeObjId: officeObjId });
+	if (setup) {
+		if (!setup.users) {
+			await Officesetup.findByIdAndUpdate(setup._id, { users: true }, { new: true });
+		} else {
+			if (setup.basic && setup.locations && setup.users && setup.calcols && !setup.complete) {
+				await Officesetup.findByIdAndUpdate(setup._id, { complete: true }, { new: true });
+			}
+		}
+	} else {
+		await new Officesetup({ users: true, officeObjId: officeObjId }).save();
+	}
 
 	//Create new username
 	for (let i = 0; i <= 1000000; i++) {

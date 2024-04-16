@@ -6,6 +6,7 @@ import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
+import { saveInLocalStorage } from '@/utils/helpers/auth';
 import { CompareByFName, FormatPhoneNumber, IsValidEmail } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -28,13 +29,15 @@ export default function EdtUser() {
 	const [curPicUrl, setCurPicUrl] = useState('');
 	const [permission, setPermission] = useState('staff');
 	const [role, setRole] = useState('staff');
-	const [supervisor, setSupervisor] = useState('');
+	const [supervisor, setSupervisor] = useState(null);
 	const [spvOptions, setSpvOptions] = useState([]);
+	const [paid, setPaid] = useState(false);
 	const [title, setTitle] = useState('');
 	const [license, setLicense] = useState('');
 	const [npi, setNpi] = useState('');
 	const [specialty, setSpecialty] = useState('');
 	const [selLocations, setSelLocations] = useState([]);
+	const [chkdSpvOpts, setChkdSpvOpts] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [uploaded, setUploaded] = useState(false);
 	const [loading, setLoading] = useState(false);
@@ -46,7 +49,7 @@ export default function EdtUser() {
 	}, [office.selUser, user]);
 
 	useEffect(() => {
-		if (spvOptions.length === 0) {
+		if (spvOptions.length === 0 && !chkdSpvOpts) {
 			let tmpArr = [];
 			const users = office.users;
 			for (let i = 0; i < users.length; i++) {
@@ -56,8 +59,9 @@ export default function EdtUser() {
 				}
 			}
 			setSpvOptions(tmpArr);
+			setChkdSpvOpts(true);
 		}
-	}, [spvOptions, office]);
+	}, [spvOptions, chkdSpvOpts, office]);
 
 	useEffect(() => {
 		if (Object.keys(user).length !== 0) {
@@ -86,8 +90,8 @@ export default function EdtUser() {
 			} else {
 				setCurPicUrl('');
 			}
-			if (user.permission !== '' && user.permission !== undefined) {
-				setPermission(user.permission);
+			if (user.perm !== '' && user.perm !== undefined) {
+				setPermission(user.perm);
 			} else {
 				setPermission('');
 			}
@@ -96,10 +100,15 @@ export default function EdtUser() {
 			} else {
 				setRole('');
 			}
-			if (user.supervisor !== '' && user.supervisor !== undefined) {
-				setSupervisor(user.supervisor);
+			if (user.spv !== '' && user.spv !== undefined) {
+				setSupervisor(user.spv);
 			} else {
-				setSupervisor('');
+				setSupervisor(null);
+			}
+			if (!user.paid && user.spv !== undefined) {
+				setPaid(false);
+			} else {
+				setPaid(user.paid);
 			}
 			if (user.title !== '' && user.title !== undefined) {
 				setTitle(user.title);
@@ -125,7 +134,7 @@ export default function EdtUser() {
 			let tmpArr = [];
 			if (office.locOptions.length !== 0) {
 				const ofcLocArr = office.locOptions;
-				const curLocs = user.locationObjId;
+				const curLocs = user.locObjId;
 
 				for (let i = 0; i < ofcLocArr.length; i++) {
 					const loc = ofcLocArr[i];
@@ -174,37 +183,41 @@ export default function EdtUser() {
 		}
 
 		//set supervisor if pa or staff
-		if (supervisor !== user.supervisor && (permission === 'pa' || permission === 'staff')) {
+		if (spvOptions.length === 1 && !supervisor && (permission === 'pa' || permission === 'staff')) {
+			spv = spvOptions[0]._id;
+		} else if (supervisor && (permission === 'pa' || permission === 'staff')) {
 			spv = supervisor;
 		} else {
-			spv = spvOptions[0]._id;
+			spv = null;
 		}
 
 		//create object to update the users context
-		const updObj = {
+		const userObj = {
 			_id: user._id,
 			fname,
 			lname,
 			email,
 			phone,
 			photo: photoUrl,
-			permission,
+			perm: permission,
 			role,
-			supervisor: spv,
+			spv,
+			paid: user.paid,
 			title,
 			license,
 			npi,
 			specialty,
-			locationObjId: arrLocs,
+			ofcid: user.officeid,
+			locObjId: arrLocs,
+			ofcObjId: user.officeObjId,
 		};
 
 		try {
 			//update the users context array
 			const searchedObj = user;
-			const replacingObj = updObj;
 
 			const i = office.users.findIndex((x) => x._id === searchedObj._id);
-			office.users[i] = replacingObj;
+			office.users[i] = userObj;
 
 			//sort array alphabetically by name
 			office.users.sort(CompareByFName);
@@ -230,11 +243,13 @@ export default function EdtUser() {
 					npi,
 					specialty,
 					locationObjId: arrLocs,
+					officeObjId: auth.user.ofcObjId,
 				}),
 			});
 			const data = await response.json();
 
 			if (data.status === 200) {
+				saveInLocalStorage('qsRefresh', true);
 				toast.success('User updated successfully');
 			} else {
 				toast.error(data.msg);

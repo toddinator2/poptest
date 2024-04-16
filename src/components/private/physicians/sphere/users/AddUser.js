@@ -6,6 +6,7 @@ import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
+import { saveInLocalStorage } from '@/utils/helpers/auth';
 import { CompareByFName, FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -29,6 +30,7 @@ export default function AddUser() {
 	const [role, setRole] = useState('staff');
 	const [supervisor, setSupervisor] = useState('');
 	const [spvOptions, setSpvOptions] = useState([]);
+	const [chkdSpvOpts, setChkdSpvOpts] = useState(false);
 	const [title, setTitle] = useState('');
 	const [license, setLicense] = useState('');
 	const [npi, setNpi] = useState('');
@@ -39,7 +41,7 @@ export default function AddUser() {
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
-		if (spvOptions.length === 0) {
+		if (spvOptions.length === 0 && !chkdSpvOpts) {
 			let tmpArr = [];
 			const users = office.users;
 			for (let i = 0; i < users.length; i++) {
@@ -49,8 +51,9 @@ export default function AddUser() {
 				}
 			}
 			setSpvOptions(tmpArr);
+			setChkdSpvOpts(true);
 		}
-	}, [spvOptions, office]);
+	}, [spvOptions, chkdSpvOpts, office]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
@@ -84,8 +87,10 @@ export default function AddUser() {
 		//set supervisor if pa or staff
 		if (spvOptions.length === 1 && !supervisor && (permission === 'pa' || permission === 'staff')) {
 			spv = spvOptions[0]._id;
-		} else {
+		} else if (supervisor && (permission === 'pa' || permission === 'staff')) {
 			spv = supervisor;
+		} else {
+			spv = null;
 		}
 
 		try {
@@ -118,6 +123,7 @@ export default function AddUser() {
 				}),
 			});
 			const data = await response.json();
+			console.log('data:', data);
 
 			if (data.status === 200) {
 				//set current users
@@ -131,17 +137,41 @@ export default function AddUser() {
 				const userData = await newResponse.json();
 
 				if (userData.status === 200) {
-					tmpArr.push(userData.user);
+					//console.log('data:', userData.user);
+					//create object to update the users context
+					const userObj = {
+						_id: userData.user._id,
+						fname: userData.user.fname,
+						lname: userData.user.lname,
+						email: userData.user.email,
+						phone: userData.user.phone,
+						photo: userData.user.photo,
+						perm: userData.user.permission,
+						role: userData.user.role,
+						spv: userData.user.supervisor,
+						paid: userData.user.paid,
+						title: userData.user.title,
+						license: userData.user.license,
+						npi: userData.user.npi,
+						specialty: userData.user.specialty,
+						ofcid: userData.user.officeid,
+						locObjId: userData.user.locationObjId,
+						ofcObjId: userData.user.officeObjId,
+					};
+					tmpArr.push(userObj);
 
 					//sort array alphabetically by name
 					tmpArr.sort(CompareByFName);
 
 					setOffice({
 						locations: office.locations,
+						selLoc: {},
 						locOptions: office.locOptions,
 						defLoc: office.defLoc,
 						users: tmpArr,
+						selUser: {},
 						resources: office.resources,
+						selRscs: [],
 						rscOptions: office.rscOptions,
 					});
 
@@ -162,6 +192,7 @@ export default function AddUser() {
 
 					//Send email
 					emailjs.send(emlService, tempUserAdded, dataUserAdded, emlUser);
+					saveInLocalStorage('qsRefresh', true);
 					toast.success('User added successfully');
 				} else {
 					toast.error(data.msg);

@@ -6,7 +6,7 @@ import Officesetup from '@/models/officesetup';
 export const PUT = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { _id, fname, lname, email, phone, photo, permission, role, supervisor, title, license, npi, specialty, locationObjId, officeObjId } = body;
+	const { _id, locationObjId, officeObjId } = body;
 
 	try {
 		//update office setup just in case not already done
@@ -23,25 +23,7 @@ export const PUT = async (req) => {
 			await new Officesetup({ users: true, officeObjId: officeObjId }).save();
 		}
 
-		await Officeuser.findByIdAndUpdate(
-			_id,
-			{
-				fname,
-				lname,
-				email,
-				phone,
-				photo,
-				permission,
-				role,
-				supervisor,
-				title,
-				license,
-				npi,
-				specialty,
-				locationObjId,
-			},
-			{ new: true }
-		);
+		await Officeuser.findByIdAndUpdate(_id, { locationObjId }, { new: true });
 
 		return NextResponse.json({ msg: 'User updated successfully', status: 200 });
 	} catch (err) {

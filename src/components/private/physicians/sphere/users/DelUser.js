@@ -31,7 +31,7 @@ export default function DelUser() {
 	useEffect(() => {
 		if (selOptions.length === 0 && Object.keys(user).length !== 0) {
 			let tmpArr = [];
-			const curLocs = user.locationObjId;
+			const curLocs = user.locObjId;
 			for (let i = 0; i < curLocs.length; i++) {
 				const curId = curLocs[i];
 				for (let o = 0; o < office.locOptions.length; o++) {
@@ -59,18 +59,20 @@ export default function DelUser() {
 			await deleteObject(picRef);
 		}
 
-		if (selLocations.length === user.locationObjId.length) {
+		if (selLocations.length === user.locObjId.length) {
 			//Remove completeley
 			//Remove the object from the users context array
 			let tmpArr = office.users;
 			tmpArr = tmpArr.filter((item) => item._id !== userId);
 			setOffice({
 				locations: office.locations,
+				selLoc: {},
 				locOptions: office.locOptions,
 				defLoc: office.defLoc,
 				users: tmpArr,
 				selUser: {},
 				resources: office.resources,
+				selRscs: [],
 				rscOptions: office.rscOptions,
 			});
 
@@ -102,20 +104,28 @@ export default function DelUser() {
 				}
 			}
 			toast.success('User deleted successfully');
-			setOffice({ locations: office.locations, locOptions: office.locOptions, defLoc: office.defLoc, users: tmpArr, selUser: {}, resources: arrRscs, rscOptions: arrOptsRscs });
+			setOffice({
+				locations: office.locations,
+				locOptions: office.locOptions,
+				defLoc: office.defLoc,
+				users: tmpArr,
+				selUser: {},
+				resources: arrRscs,
+				rscOptions: arrOptsRscs,
+			});
 		} else {
 			//Just update the user locations array
-			let locArr = user.locationObjId;
+			let locArr = user.locObjId;
 			for (let i = 0; i < selLocations.length; i++) {
 				const selId = selLocations[i].value;
 				locArr = locArr.filter((item) => item !== selId);
 			}
 
-			user.locationObjId = locArr;
+			user.locObjId = locArr;
 			const index = office.users.findIndex((x) => x._id === user._id);
 			office.users.splice(index, 1, user);
 
-			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/edit`, {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/edit/locations`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
@@ -123,6 +133,7 @@ export default function DelUser() {
 				body: JSON.stringify({
 					_id: user._id,
 					locationObjId: locArr,
+					officeObjId: user.ofcObjId,
 				}),
 			});
 			const data = await response.json();
@@ -130,11 +141,13 @@ export default function DelUser() {
 			if (data.status === 200) {
 				setOffice({
 					locations: office.locations,
+					selLoc: {},
 					locOptions: office.locOptions,
 					defLoc: office.defLoc,
 					users: office.users,
 					selUser: {},
 					resources: arrRscs,
+					selRscs: [],
 					rscOptions: arrOptsRscs,
 				});
 				toast.success('User updated successfully');

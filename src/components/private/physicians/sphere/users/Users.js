@@ -28,11 +28,13 @@ export default function Users() {
 			const edtUser = office.users.find((item) => item._id === id);
 			setOffice({
 				locations: office.locations,
+				selLoc: {},
 				locOptions: office.locOptions,
 				defLoc: office.defLoc,
 				users: office.users,
 				selUser: edtUser,
 				resources: office.resources,
+				selRscs: [],
 				rscOptions: office.rscOptions,
 			});
 		}

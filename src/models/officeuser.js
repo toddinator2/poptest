@@ -62,6 +62,7 @@ const officeuserSchema = new Schema(
 		supervisor: {
 			type: ObjectId,
 			ref: 'officeusers',
+			required: false,
 		},
 		paid: {
 			type: Boolean,

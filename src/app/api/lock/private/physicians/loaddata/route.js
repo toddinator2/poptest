@@ -73,18 +73,35 @@ export const GET = async (request) => {
 	//users and resource options
 	const users = await Officeuser.find({ officeObjId: ofcid, active: true, paid: true }).sort({ fname: 1 });
 	if (users.length !== 0) {
-		//set office users array with all user data
-		arrUsers = users;
-
-		//set resource options array for search elements
-		let tmpArr = [];
+		//set office users and resource options (for search elements) arrays with only certian data
+		let usrArr = [];
+		let rscOptsArr = [];
 		for (let i = 0; i < users.length; i++) {
 			const user = users[i];
-			if (user) {
-				tmpArr.push({ label: user.fname + ' ' + user.lname, value: user._id });
-			}
+			const userObj = {
+				_id: user._id,
+				fname: user.fname,
+				lname: user.lname,
+				email: user.email,
+				phone: user.phone,
+				photo: user.photo,
+				perm: user.permission,
+				role: user.role,
+				spv: user.supervisor,
+				paid: user.paid,
+				title: user.title,
+				license: user.license,
+				npi: user.npi,
+				specialty: user.specialty,
+				ofcid: user.officeid,
+				locObjId: user.locationObjId,
+				ofcObjId: user.officeObjId,
+			};
+			usrArr.push(userObj);
+			rscOptsArr.push({ label: user.fname + ' ' + user.lname, value: user._id });
 		}
-		arrRscOpts = tmpArr;
+		arrUsers = usrArr;
+		arrRscOpts = rscOptsArr;
 	}
 	//resources
 	const rscs = await Resource.find({ officeObjId: ofcid }).sort({ name: 1 });
