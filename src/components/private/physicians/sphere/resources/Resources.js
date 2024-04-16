@@ -2,15 +2,18 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
+import { getFromLocalStorage } from '@/utils/helpers/auth';
 import Image from 'next/image';
 import edit from '@/assets/images/icoEdit.png';
 
 export default function Resources() {
+	let chkRefresh = getFromLocalStorage('rscRefresh');
 	const [menu, setMenu] = useContext(MenuContext);
 	const [office, setOffice] = useContext(OfficeContext);
 	const [newLocId, setNewLocId] = useState('');
 	const [curLocId, setCurLocId] = useState('');
 	const [rscList, setRscList] = useState([]);
+	const [refresh, setRefresh] = useState(null);
 
 	const setFunc = (func) => {
 		setMenu({ type: menu.type, func: func });
@@ -22,10 +25,20 @@ export default function Resources() {
 			locOptions: office.locOptions,
 			defLoc: office.defLoc,
 			users: office.users,
+			selUser: {},
 			resources: office.resources,
+			selRscs: [],
 			rscOptions: office.rscOptions,
 		});
 	};
+
+	useEffect(() => {
+		if (chkRefresh === null) {
+			setRefresh(false);
+		} else {
+			setRefresh(chkRefresh);
+		}
+	}, [chkRefresh]);
 
 	useEffect(() => {
 		if (office.locOptions.length === 1) {
@@ -35,7 +48,7 @@ export default function Resources() {
 	}, [office.locOptions]);
 
 	useEffect(() => {
-		if (newLocId !== curLocId || menu.refresh) {
+		if (newLocId !== curLocId || refresh) {
 			//create new array of resources for new location
 			const allRscs = office.resources;
 			let tmpArr = [];
@@ -48,7 +61,7 @@ export default function Resources() {
 			tmpArr.sort((a, b) => a.order - b.order);
 			setRscList(tmpArr);
 			if (menu.refresh) {
-				setMenu({ type: menu.type, func: '', refresh: false });
+				setMenu({ type: menu.type, func: '' });
 			}
 		}
 		setCurLocId(newLocId);
@@ -81,10 +94,10 @@ export default function Resources() {
 					</div>
 				</div>
 			)}
-			{rscList.length === 0 ? (
+			{rscList.length === 0 && newLocId ? (
 				<div className='row'>
 					<div className='col-12 d-flex justify-content-center'>
-						<div className='errMsg'>No resources found</div>
+						<div className='errMsg'>No resources added yet</div>
 					</div>
 				</div>
 			) : (

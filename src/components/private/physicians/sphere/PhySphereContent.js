@@ -49,7 +49,6 @@ export default function PhySphereContent() {
 					{menu.func === 'phyUserEdt' && <EdtUser />}
 					{menu.func === 'phyUserDel' && <DelUser />}
 					{menu.func === 'phyRscsEdt' && <EdtResources />}
-					{menu.func === 'phyRscsEdt' && <EdtResources />}
 					{menu.func === 'phyLocationAdd' && <AddLocation />}
 					{menu.func === 'phyLocationEdt' && <EdtLocation />}
 					{menu.func === 'phyLocationDel' && <DelLocation />}

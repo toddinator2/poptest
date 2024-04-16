@@ -123,7 +123,6 @@ export default function AddUser() {
 				}),
 			});
 			const data = await response.json();
-			console.log('data:', data);
 
 			if (data.status === 200) {
 				//set current users
@@ -137,7 +136,6 @@ export default function AddUser() {
 				const userData = await newResponse.json();
 
 				if (userData.status === 200) {
-					//console.log('data:', userData.user);
 					//create object to update the users context
 					const userObj = {
 						_id: userData.user._id,

@@ -8,7 +8,6 @@ import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { CompareByLabel } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
-import Select from 'react-select';
 import Button from '@/components/global/forms/buttons/Button';
 import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
@@ -19,7 +18,6 @@ export default function DelUser() {
 	const [office, setOffice] = useContext(OfficeContext);
 	const [user, setUser] = useState({});
 	const [selOptions, setSelOptions] = useState([]);
-	const [selLocations, setSelLocations] = useState([]);
 	const [loading, setLoading] = useState(false);
 
 	useEffect(() => {
@@ -59,104 +57,61 @@ export default function DelUser() {
 			await deleteObject(picRef);
 		}
 
-		if (selLocations.length === user.locObjId.length) {
-			//Remove completeley
-			//Remove the object from the users context array
-			let tmpArr = office.users;
-			tmpArr = tmpArr.filter((item) => item._id !== userId);
-			setOffice({
-				locations: office.locations,
-				selLoc: {},
-				locOptions: office.locOptions,
-				defLoc: office.defLoc,
-				users: tmpArr,
-				selUser: {},
-				resources: office.resources,
-				selRscs: [],
-				rscOptions: office.rscOptions,
-			});
+		//Remove the object from the users context array
+		let tmpArr = office.users;
+		tmpArr = tmpArr.filter((item) => item._id !== userId);
+		setOffice({
+			locations: office.locations,
+			selLoc: {},
+			locOptions: office.locOptions,
+			defLoc: office.defLoc,
+			users: tmpArr,
+			selUser: {},
+			resources: office.resources,
+			selRscs: [],
+			rscOptions: office.rscOptions,
+		});
 
-			//delete the user from database
-			await fetch(`${process.env.API_URL}/private/physicians/office/users/delete?userid=${userId}`, {
-				method: 'DELETE',
-			});
+		//delete the user from database
+		await fetch(`${process.env.API_URL}/private/physicians/office/users/delete?userid=${userId}`, {
+			method: 'DELETE',
+		});
 
-			//reset office context
-			const rscResponse = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/all?ofcid=${auth.user.ofcObjId}`, {
-				method: 'GET',
-			});
-			const rscData = await rscResponse.json();
+		//reset office context
+		const rscResponse = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/all?ofcid=${auth.user.ofcObjId}`, {
+			method: 'GET',
+		});
+		const rscData = await rscResponse.json();
 
-			if (rscData?.status === 200) {
-				arrRscs = rscData.rscs;
+		if (rscData?.status === 200) {
+			arrRscs = rscData.rscs;
 
-				//reset resource options as well
-				if (rscData?.rscs.length !== 0) {
-					let tmpOptsArr = [];
-					const rscs = rscData?.rscs;
-					for (let i = 0; i < rscs.length; i++) {
-						const rsc = rscs[i];
-						const _id = rsc._id;
-						const name = rsc.name;
-						tmpOptsArr.push({ label: name, value: _id });
-					}
-					arrOptsRscs = tmpOptsArr;
+			//reset resource options as well
+			if (rscData?.rscs.length !== 0) {
+				let tmpOptsArr = [];
+				const rscs = rscData?.rscs;
+				for (let i = 0; i < rscs.length; i++) {
+					const rsc = rscs[i];
+					const _id = rsc._id;
+					const name = rsc.name;
+					tmpOptsArr.push({ label: name, value: _id });
 				}
-			}
-			toast.success('User deleted successfully');
-			setOffice({
-				locations: office.locations,
-				locOptions: office.locOptions,
-				defLoc: office.defLoc,
-				users: tmpArr,
-				selUser: {},
-				resources: arrRscs,
-				rscOptions: arrOptsRscs,
-			});
-		} else {
-			//Just update the user locations array
-			let locArr = user.locObjId;
-			for (let i = 0; i < selLocations.length; i++) {
-				const selId = selLocations[i].value;
-				locArr = locArr.filter((item) => item !== selId);
-			}
-
-			user.locObjId = locArr;
-			const index = office.users.findIndex((x) => x._id === user._id);
-			office.users.splice(index, 1, user);
-
-			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/edit/locations`, {
-				method: 'PUT',
-				headers: {
-					'Content-Type': 'application/json',
-				},
-				body: JSON.stringify({
-					_id: user._id,
-					locationObjId: locArr,
-					officeObjId: user.ofcObjId,
-				}),
-			});
-			const data = await response.json();
-
-			if (data.status === 200) {
-				/*
-				setOffice({
-					locations: office.locations,
-					selLoc: {},
-					locOptions: office.locOptions,
-					defLoc: office.defLoc,
-					users: office.users,
-					selUser: {},
-					resources: office.resources,
-					selRscs: [],
-					rscOptions: office,
-				});
-				*/
-				toast.success('User updated successfully');
-			} else {
-				toast.error(data.msg);
+				arrOptsRscs = tmpOptsArr;
 			}
 		}
+
+		setOffice({
+			locations: office.locations,
+			selLoc: {},
+			locOptions: office.locOptions,
+			defLoc: office.defLoc,
+			users: tmpArr,
+			selUser: {},
+			resources: arrRscs,
+			selRscs: [],
+			rscOptions: arrOptsRscs,
+		});
+		toast.success('User deleted successfully');
 		setLoading(false);
 		handleClose();
 	};
@@ -178,26 +133,6 @@ export default function DelUser() {
 			<div className='row'>
 				<div className='alertSubHdng mb-3 text-center'>CAUTION: This cannot be undone!</div>
 				<div className='alertText text-center'>
-					<div className='row mb-4'>
-						<div className='col-12'>
-							<label className='frmLabel'>Please choose all locations to delete this user from:</label>
-						</div>
-						<div className='col-12'>
-							<Select
-								isMulti={true}
-								options={selOptions}
-								onChange={setSelLocations}
-								styles={{
-									control: (baseStyles) => ({
-										...baseStyles,
-										backgroundColor: 'transparent',
-										border: '1px solid #c9c9c9',
-										borderRadius: '7px',
-									}),
-								}}
-							/>
-						</div>
-					</div>
 					<p>Please make sure you have reassigned all data for this user to another user, location, or other physician.</p>
 					<p>All associated data for this user, by location(s), will be deleted as well.</p>
 					<p>Main things to reassign are:</p>

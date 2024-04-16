@@ -2,13 +2,27 @@ import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Resource from '@/models/resource';
 import Officeuser from '@/models/officeuser';
+import Officesetup from '@/models/officesetup';
 
 export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { rows, locid } = body;
+	const { rows, locid, ofcid } = body;
 
 	await Resource.deleteMany({ locationObjId: locid });
+
+	//update office setup just in case not already done
+	const setup = await Officesetup.findOne({ officeObjId: ofcid });
+	if (setup) {
+		if (!setup.calcols) {
+			await Officesetup.findByIdAndUpdate(setup._id, { calcols: true }, { new: true });
+		}
+		if (setup.basic && setup.locations && setup.users && !setup.complete) {
+			await Officesetup.findByIdAndUpdate(setup._id, { complete: true }, { new: true });
+		}
+	} else {
+		await new Officesetup({ calcols: true, officeObjId: ofcid }).save();
+	}
 
 	for (let i = 0; i < rows.length; i++) {
 		let description = '';

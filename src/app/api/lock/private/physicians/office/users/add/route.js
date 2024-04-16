@@ -37,10 +37,9 @@ export const POST = async (req) => {
 	if (setup) {
 		if (!setup.users) {
 			await Officesetup.findByIdAndUpdate(setup._id, { users: true }, { new: true });
-		} else {
-			if (setup.basic && setup.locations && setup.users && setup.calcols && !setup.complete) {
-				await Officesetup.findByIdAndUpdate(setup._id, { complete: true }, { new: true });
-			}
+		}
+		if (setup.basic && setup.locations && setup.calcols && !setup.complete) {
+			await Officesetup.findByIdAndUpdate(setup._id, { complete: true }, { new: true });
 		}
 	} else {
 		await new Officesetup({ users: true, officeObjId: officeObjId }).save();

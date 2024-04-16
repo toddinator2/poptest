@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
+import { saveInLocalStorage } from '@/utils/helpers/auth';
 import { CompareByFName } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -27,7 +28,7 @@ export default function EdtResources() {
 			let tmpArr = [];
 			for (let i = 0; i < allUsers.length; i++) {
 				const user = allUsers[i];
-				const usrLocs = user.locationObjId;
+				const usrLocs = user.locObjId;
 				for (let o = 0; o < usrLocs.length; o++) {
 					const locId = usrLocs[o];
 					if (locId === office.selLoc) {
@@ -76,6 +77,7 @@ export default function EdtResources() {
 			body: JSON.stringify({
 				rows,
 				locid: office.selLoc,
+				ofcid: auth.user.ofcObjId,
 			}),
 		});
 		const data = await response.json();
@@ -88,13 +90,17 @@ export default function EdtResources() {
 			const rscData = await rscResponse.json();
 			setOffice({
 				locations: office.locations,
-				selLoc: '',
+				selLoc: {},
 				locOptions: office.locOptions,
 				defLoc: office.defLoc,
 				users: office.users,
+				selUser: {},
 				resources: rscData.rscs,
+				selRscs: [],
 				rscOptions: office.rscOptions,
 			});
+			saveInLocalStorage('rscRefresh', true);
+			saveInLocalStorage('qsRefresh', true);
 			toast.success(data.msg);
 			setLoading(false);
 			handleClose();
@@ -175,7 +181,11 @@ export default function EdtResources() {
 										<tr id='addr0' key={idx}>
 											<td className='pe-3' colSpan={6}>
 												<div style={{ width: '100%' }}>
-													<select className='inpBorder form-control mb-2' value={rows[idx]?.userId} onChange={(e) => handleUserChange(e, idx)}>
+													<select
+														className='inpBorder form-control mb-2'
+														value={rows[idx]?.userId}
+														onChange={(e) => handleUserChange(e, idx)}
+													>
 														<option value=''>Select One...</option>
 														{locUsers.map((user) => (
 															<option value={user._id} key={user._id}>
@@ -186,7 +196,11 @@ export default function EdtResources() {
 												</div>
 											</td>
 											<td className='pe-3' colSpan={4}>
-												<select className='inpBorder form-control mb-2' value={rows[idx]?.order} onChange={(e) => handleOrderChange(e, idx)}>
+												<select
+													className='inpBorder form-control mb-2'
+													value={rows[idx]?.order}
+													onChange={(e) => handleOrderChange(e, idx)}
+												>
 													<option value=''>Order</option>
 													{[...Array(30)]
 														.map((_, i) => i + 1)
