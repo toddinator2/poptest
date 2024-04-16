@@ -122,7 +122,6 @@ export default function SphSidebar() {
 		}
 		if (openMenu === 'patients') {
 			setSideMenuSettings('patients');
-			document.getElementById('divSetup').style.display = 'none';
 			document.getElementById('divPatients').style.display = 'block';
 			document.getElementById('divSettings').style.display = 'none';
 			document.getElementById('divEcomm').style.display = 'none';
@@ -130,7 +129,6 @@ export default function SphSidebar() {
 		}
 		if (openMenu === 'settings') {
 			setSideMenuSettings('settings');
-			document.getElementById('divSetup').style.display = 'none';
 			document.getElementById('divPatients').style.display = 'none';
 			document.getElementById('divSettings').style.display = 'block';
 			document.getElementById('divEcomm').style.display = 'none';
@@ -138,7 +136,6 @@ export default function SphSidebar() {
 		}
 		if (openMenu === 'ecomm') {
 			setSideMenuSettings('ecomm');
-			document.getElementById('divSetup').style.display = 'none';
 			document.getElementById('divPatients').style.display = 'none';
 			document.getElementById('divSettings').style.display = 'none';
 			document.getElementById('divEcomm').style.display = 'block';
@@ -146,7 +143,6 @@ export default function SphSidebar() {
 		}
 		if (openMenu === 'custom') {
 			setSideMenuSettings('custom');
-			document.getElementById('divSetup').style.display = 'none';
 			document.getElementById('divPatients').style.display = 'none';
 			document.getElementById('divSettings').style.display = 'none';
 			document.getElementById('divEcomm').style.display = 'none';
@@ -160,18 +156,10 @@ export default function SphSidebar() {
 		if (closeMenu === 'setup') {
 			document.getElementById('divSetup').style.display = 'none';
 		}
-		if (closeMenu === 'patients') {
-			document.getElementById('divPatients').style.display = 'none';
-		}
-		if (closeMenu === 'settings') {
-			document.getElementById('divSettings').style.display = 'none';
-		}
-		if (closeMenu === 'ecomm') {
-			document.getElementById('divEcomm').style.display = 'none';
-		}
-		if (closeMenu === 'custom') {
-			document.getElementById('divCustom').style.display = 'none';
-		}
+		document.getElementById('divPatients').style.display = 'none';
+		document.getElementById('divSettings').style.display = 'none';
+		document.getElementById('divEcomm').style.display = 'none';
+		document.getElementById('divCustom').style.display = 'none';
 	};
 
 	const handlePatient = (e, ptId) => {
@@ -305,20 +293,12 @@ export default function SphSidebar() {
 			</div>
 			<div id='divSettings' style={{ display: 'none' }}>
 				<div className='row mb-3 d-flex align-items-center justify-content-center'>
-					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyUsers')}>
+					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyBasic')}>
 						<div className='row'>
 							<div className='col-12 d-flex justify-content-center'>
-								<Image className='sphSideLinkIcon' src={users} title='Manage Users' alt='Users' />
+								<Image className='sphSideLinkIcon' src={basic} title='Basic Settings' alt='Basic' />
 							</div>
-							<div className='col-12 d-none d-md-flex justify-content-center'>Users</div>
-						</div>
-					</div>
-					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyResources')}>
-						<div className='row'>
-							<div className='col-12 d-flex justify-content-center'>
-								<Image className='sphSideLinkIcon' src={calcols} title='Manage Calendar Columns' alt='Calendar' />
-							</div>
-							<div className='col-12 d-none d-md-flex justify-content-center'>Calendar</div>
+							<div className='col-12 d-none d-md-flex justify-content-center'>Office</div>
 						</div>
 					</div>
 					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyLocations')}>
@@ -329,14 +309,22 @@ export default function SphSidebar() {
 							<div className='col-12 d-none d-md-flex justify-content-center'>Locations</div>
 						</div>
 					</div>
-				</div>
-				<div className='row mb-5 d-flex align-items-center'>
-					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyBasic')}>
+					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyUsers')}>
 						<div className='row'>
 							<div className='col-12 d-flex justify-content-center'>
-								<Image className='sphSideLinkIcon' src={basic} title='Basic Settings' alt='Basic' />
+								<Image className='sphSideLinkIcon' src={users} title='Manage Users' alt='Users' />
 							</div>
-							<div className='col-12 d-none d-md-flex justify-content-center'>Office</div>
+							<div className='col-12 d-none d-md-flex justify-content-center'>Users</div>
+						</div>
+					</div>
+				</div>
+				<div className='row mb-5 d-flex align-items-center'>
+					<div className='sphSideLink col-4 d-flex justify-content-center' onClick={() => setDiv('phyResources')}>
+						<div className='row'>
+							<div className='col-12 d-flex justify-content-center'>
+								<Image className='sphSideLinkIcon' src={calcols} title='Manage Calendar Columns' alt='Calendar' />
+							</div>
+							<div className='col-12 d-none d-md-flex justify-content-center'>Calendar</div>
 						</div>
 					</div>
 				</div>

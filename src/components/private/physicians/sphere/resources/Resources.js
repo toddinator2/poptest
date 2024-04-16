@@ -65,7 +65,7 @@ export default function Resources() {
 			setMenu({ type: menu.type, func: '' });
 		}
 		setCurLocId(newLocId);
-	}, [newLocId, curLocId, menu, office, setMenu]);
+	}, [newLocId, curLocId, refresh, menu, office, setMenu]);
 
 	return (
 		<>
