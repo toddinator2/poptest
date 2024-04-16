@@ -139,6 +139,7 @@ export default function DelUser() {
 			const data = await response.json();
 
 			if (data.status === 200) {
+				/*
 				setOffice({
 					locations: office.locations,
 					selLoc: {},
@@ -146,10 +147,11 @@ export default function DelUser() {
 					defLoc: office.defLoc,
 					users: office.users,
 					selUser: {},
-					resources: arrRscs,
+					resources: office.resources,
 					selRscs: [],
-					rscOptions: arrOptsRscs,
+					rscOptions: office,
 				});
+				*/
 				toast.success('User updated successfully');
 			} else {
 				toast.error(data.msg);
