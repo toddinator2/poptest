@@ -1,17 +1,67 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import Image from 'next/image';
 import edit from '@/assets/images/icoEdit.png';
-import { getFromLocalStorage, removeFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/auth';
+import { saveInLocalStorage } from '@/utils/helpers/auth';
+
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
 
 export default function Office() {
-	let chkRefresh = getFromLocalStorage('ofcRefresh');
+	const dbName = process.env.REALM_DB;
 	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
 	const [ofcData, setOfcData] = useState({});
-	const [refresh, setRefresh] = useState(null);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadOffice = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${auth.user.ofcObjId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setOfcData(data.office);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadOffice();
+	}, [loadOffice]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchOffice = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const ofc = mongodb.db(dbName).collection('offices');
+
+			for await (const change of ofc.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadOffice();
+				}
+			}
+		};
+		wchOffice();
+	}, [dbName, loadOffice]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const setFunc = (func, id) => {
 		setMenu({ type: menu.type, func: func });
 
@@ -19,33 +69,6 @@ export default function Office() {
 			saveInLocalStorage('ofcId', id);
 		}
 	};
-
-	useEffect(() => {
-		if (chkRefresh === null) {
-			setRefresh(false);
-		} else {
-			setRefresh(chkRefresh);
-		}
-	}, [chkRefresh]);
-
-	useEffect(() => {
-		if (Object.keys(ofcData).length === 0 || refresh === true) {
-			const getData = async () => {
-				const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${auth.user.ofcObjId}`, {
-					method: 'GET',
-				});
-				const data = await response.json();
-
-				if (data.status === 200) {
-					setOfcData(data.office);
-				}
-
-				setRefresh(false);
-				removeFromLocalStorage('ofcRefresh');
-			};
-			getData();
-		}
-	}, [ofcData, auth, refresh]);
 
 	return (
 		<>

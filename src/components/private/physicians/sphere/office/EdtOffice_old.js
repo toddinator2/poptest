@@ -1,4 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import { FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
@@ -11,6 +12,7 @@ import { getFromLocalStorage, removeFromLocalStorage, saveInLocalStorage } from 
 
 export default function EdtOffice() {
 	const id = getFromLocalStorage('ofcId');
+	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
 	const [ofcData, setOfcData] = useState({});
 	const [name, setName] = useState('');
@@ -21,7 +23,7 @@ export default function EdtOffice() {
 	useEffect(() => {
 		if (id && !name) {
 			const getOfcData = async () => {
-				const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${id}`, {
+				const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${auth.user.ofcObjId}`, {
 					method: 'GET',
 				});
 				const data = await response.json();
@@ -35,7 +37,7 @@ export default function EdtOffice() {
 			};
 			getOfcData();
 		}
-	}, [id, name]);
+	}, [id, name, auth]);
 
 	useEffect(() => {
 		if (ofcData !== undefined) {
@@ -66,7 +68,7 @@ export default function EdtOffice() {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					_id: id,
+					_id: auth.user.ofcObjId,
 					name,
 					phone,
 				}),
@@ -74,6 +76,7 @@ export default function EdtOffice() {
 			const data = await response.json();
 
 			if (data.status === 200) {
+				saveInLocalStorage('ofcRefresh', true);
 				saveInLocalStorage('qsRefresh', true);
 				toast.success(data.msg);
 			} else {

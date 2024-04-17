@@ -115,7 +115,9 @@ export default function Services() {
 					<div className='colHdng'>Services</div>
 				</div>
 				<div className='col-2 d-flex justify-content-end'>
-					{catList.length >= 1 && newCatId && <Image className='icoCols' src={add} title='Add Category' alt='Add' onClick={() => setFunc('phyServiceAdd', '')} />}
+					{catList.length >= 1 && newCatId && (
+						<Image className='icoCols' src={add} title='Add Category' alt='Add' onClick={() => setFunc('phyServiceAdd', '')} />
+					)}
 				</div>
 			</div>
 			{office.locOptions.length > 1 && (
@@ -152,7 +154,7 @@ export default function Services() {
 					</div>
 				</div>
 			)}
-			{currentRecords.length === 0 ? (
+			{currentRecords.length === 0 && newLocId && newCatId ? (
 				<div className='row'>
 					<div className='col-12 d-flex justify-content-center'>
 						<div className='errMsg'>No services found</div>

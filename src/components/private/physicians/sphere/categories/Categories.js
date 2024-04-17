@@ -110,7 +110,7 @@ export default function Categories() {
 					</div>
 				</div>
 			)}
-			{currentRecords.length === 0 ? (
+			{currentRecords.length === 0 && newLocId ? (
 				<div className='row'>
 					<div className='col-12 d-flex justify-content-center'>
 						<div className='errMsg'>No categories found</div>
