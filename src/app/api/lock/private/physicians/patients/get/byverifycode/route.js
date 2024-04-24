@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Patient from '@/models/patient';
-import el from '@mobiscroll/react/dist/src/i18n/el';
 
 export const GET = async (request) => {
 	await connect();
