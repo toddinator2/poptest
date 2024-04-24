@@ -13,7 +13,7 @@ export default function SchDatadiv({ dataType }) {
 
 	const closeDivs = () => {
 		setShwData('');
-		setMenu({ type: '', func: '', id: '' });
+		setMenu({ type: '', func: '' });
 	};
 
 	return (

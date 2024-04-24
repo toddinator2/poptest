@@ -83,7 +83,7 @@ export const POST = async (req) => {
 			officeObjId,
 		}).save();
 
-		return NextResponse.json({ msg: 'User added successfully', status: 200 });
+		return NextResponse.json({ msg: 'User added successfully', uname: uname, status: 200 });
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
 	}

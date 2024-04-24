@@ -13,8 +13,28 @@ export const GET = async (request) => {
 	}
 
 	try {
-		const user = await Officeuser.findOne({ email: lwrEmail });
-		if (user) {
+		const allUser = await Officeuser.findOne({ email: lwrEmail });
+		if (allUser) {
+			const user = {
+				_id: allUser._id,
+				fname: allUser.fname,
+				lname: allUser.lname,
+				email: allUser.email,
+				phone: allUser.phone,
+				photo: allUser.photo,
+				permission: allUser.permission,
+				role: allUser.role,
+				supervisor: allUser.supervisor,
+				paid: allUser.paid,
+				title: allUser.title,
+				license: allUser.license,
+				npi: allUser.npi,
+				specialty: allUser.specialty,
+				officeid: allUser.officeid,
+				locationObjId: allUser.locationObjId,
+				officeObjId: allUser.officeObjId,
+			};
+
 			return NextResponse.json({ user: user, status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'User Not Found', status: 400 });

@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import './NewPatient.css';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { PatientContext } from '@/utils/context/physicians/PatientsContext';
+import { PatientSearchContext } from '@/utils/context/physicians/PatientSearchContext';
 import { CompareByFName, FixDob, FixPhone, FormatDob, FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -13,9 +13,9 @@ import Spinner from '@/components/global/spinner/Spinner';
 import icoClose from '@/assets/images/icoClose.png';
 
 export default function NewPatient({ funcClose }) {
-	const [auth, _setAuth] = useContext(AuthContext);
-	const [schPatients, setSchPatients] = useContext(PatientContext);
-	const [ptOffices] = useState([]);
+	const [auth] = useContext(AuthContext);
+	const [schPatients, setSchPatients] = useContext(PatientSearchContext);
+	const [ptOffices, setPtOffices] = useState([]);
 	const [ptExists, setPtExists] = useState('');
 	const [s3xid, setS3xId] = useState('');
 	const [fname, setFname] = useState('');
@@ -26,6 +26,9 @@ export default function NewPatient({ funcClose }) {
 	const [weightloss, setWeightLoss] = useState(false);
 	const [loading, setLoading] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handlePtExists = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -43,26 +46,6 @@ export default function NewPatient({ funcClose }) {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				//update the patient search array
-				//get the patient data
-				const ptResponse = await fetch(`${process.env.API_URL}/private/physicians/patients/get/bys3xid?s3xid=${s3xid}`, {
-					method: 'GET',
-				});
-				const ptData = await ptResponse.json();
-				const pt = ptData.user;
-
-				let curPts = schPatients.patients;
-				const newObj = {
-					_id: pt._id,
-					fname: pt.fname,
-					lname: pt.lname,
-					dob: pt.dob,
-					phone: pt.mphone,
-				};
-				curPts.push(newObj);
-				curPts.sort(CompareByFName);
-				setSchPatients({ patients: curPts, selected: '', filtered: [] });
-
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
@@ -131,71 +114,58 @@ export default function NewPatient({ funcClose }) {
 			const data = await response.json();
 
 			if (data.status === 200) {
+				/*
 				//Get new patient data
 				const ptResponse = await fetch(`${process.env.API_URL}/private/physicians/patients/get/byverifycode?vc=${verifycode}`, {
 					method: 'GET',
 				});
 				const ptData = await ptResponse.json();
 
-				if (!ptResponse.ok) {
-					toast.error(ptData?.msg);
+				if (ptData.status !== 200) {
+					toast.error(ptData.msg);
 				} else {
-					const newPt = ptData?.user;
-					const newUname = newPt.username;
+					const newPt = ptData.patient;
+					*/
+				const newUname = data.uname;
 
-					//update patient search array
-					let curPts = schPatients.patients;
-					const newObj = {
-						_id: newPt._id,
-						fname: newPt.fname,
-						lname: newPt.lname,
-						dob: newPt.dob,
-						phone: newPt.mphone,
-					};
-					curPts.push(newObj);
-					curPts.sort(CompareByFName);
+				//prepare data and send email to new patient
+				const url = process.env.NEXTAUTH_URL;
+				const domain = process.env.DOMAIN;
+				const emlService = process.env.EMAILJS_SERVICE;
+				const emlUser = process.env.EMAILJS_USER;
+				const emlTemplate = 'ptRegWelcomeOfficeNew';
+				const verifyLink = `${url}/subscribers/verify/email/${verifycode}`;
+				let contactLink = `${url}/contact`;
+				let ofcName = '';
 
-					setSchPatients({ patients: curPts, selected: '', filtered: [] });
+				//Get office data
+				const ofcResponse = await fetch(`${process.env.API_URL}/private/physicians/office/data/get/namephone?id=${auth.user.ofcObjId}`, {
+					method: 'GET',
+				});
+				const ofcData = await ofcResponse.json();
 
-					//prepare data and send email to new patient
-					const url = process.env.NEXTAUTH_URL;
-					const domain = process.env.DOMAIN;
-					const emlService = process.env.EMAILJS_SERVICE;
-					const emlUser = process.env.EMAILJS_USER;
-					const emlTemplate = 'ptRegWelcomeOfficeNew';
-					const verifyLink = `${url}/subscribers/verify/email/${verifycode}`;
-					let contactLink = `${url}/contact`;
-					let ofcName = '';
-
-					//Get office data
-					const ofcResponse = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${auth.user.ofcObjId}`, {
-						method: 'GET',
-					});
-					const ofcData = await ofcResponse.json();
-
-					if (!ofcResponse.ok) {
-						toast.error(ofcData?.msg);
-					} else {
-						const ofc = ofcData?.office;
-						ofcName = ofc.name;
-					}
-
-					//Set welcome email data
-					const emlData = {
-						domain: domain,
-						toEmail: email.toLowerCase(),
-						toName: fname,
-						officeName: ofcName,
-						verifyLink: verifyLink,
-						userName: newUname,
-						tmpPassword: tmpPwrd,
-						contactLink: contactLink,
-					};
-
-					//Send email
-					emailjs.send(emlService, emlTemplate, emlData, emlUser);
-					toast.success(data.msg);
+				if (ofcData.status === 200) {
+					ofcName = ofcData.name;
+				} else {
+					toast.error(ofcData.msg);
 				}
+
+				//Set welcome email data
+				const emlData = {
+					domain: domain,
+					toEmail: email.toLowerCase(),
+					toName: fname,
+					officeName: ofcName,
+					verifyLink: verifyLink,
+					userName: newUname,
+					tmpPassword: tmpPwrd,
+					contactLink: contactLink,
+				};
+
+				//Send email
+				emailjs.send(emlService, emlTemplate, emlData, emlUser);
+				toast.success(data.msg);
+				//}
 			}
 		} catch (err) {
 			toast.error(err);

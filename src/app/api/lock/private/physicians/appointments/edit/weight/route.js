@@ -5,10 +5,10 @@ import Appointment from '@/models/appointment';
 export const PUT = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { _id, weight } = body;
+	const { _id, weight, bfat } = body;
 
 	try {
-		await Appointment.findByIdAndUpdate(_id, { weight }, { new: true });
+		await Appointment.findByIdAndUpdate(_id, { weight, bfat }, { new: true });
 		return NextResponse.json({ msg: 'Appointment updated successfully', status: 200 });
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });

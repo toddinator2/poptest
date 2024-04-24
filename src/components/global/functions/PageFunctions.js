@@ -1,5 +1,8 @@
 import { getFromLocalStorage, removeFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/auth';
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CREATE VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function Today() {
 	const today = new Date();
 	const yyyy = today.getFullYear();
@@ -23,6 +26,28 @@ export function RandomStringMake(count) {
 	return randomString;
 }
 
+export function RandomNums(count) {
+	const letter = '0123456789';
+	let randomString = '';
+	for (let i = 0; i < count; i++) {
+		const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
+		randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
+	}
+	return randomString;
+}
+
+export function CreateUsername(fname, lname) {
+	let username = '';
+	const fInit = fname.charAt(0).toLowerCase();
+	const lInit = lname.slice(0, 3).toLowerCase();
+	const end = RandomNums(4);
+	username = fInit + lInit + end;
+	return username;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CHECK VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function IsValidEmail(email) {
 	const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 	return emailRegex.test(email);
@@ -44,6 +69,9 @@ export function IsAlphanumeric(str) {
 	return regex.test(str);
 }
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FORMAT VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function FormatDob(dobDate) {
 	let newString = dobDate.split('/').join('');
 	newString = newString.replace(/[^\d]/g, '');
@@ -72,15 +100,6 @@ export function FormatDob(dobDate) {
 		year = newString.substring(4, 8);
 		return month + '/' + day + '/' + year;
 	}
-}
-
-export function CalculateAge(date) {
-	const dob = new Date(date);
-	const month_diff = Date.now() - dob.getTime();
-	const age_dt = new Date(month_diff);
-	const year = age_dt.getUTCFullYear();
-	const age = Math.abs(year - 1970);
-	return age;
 }
 
 export function FormatPhoneNumber(value) {
@@ -114,6 +133,71 @@ export function FormatZip(value) {
 	}
 }
 
+export function FormatNumEmps(value) {
+	if (!value) return value;
+	let newEmps = value.replace(/[^\d]/g, '');
+	if (newEmps.length <= 7) {
+		return newEmps;
+	} else {
+		return newEmps.slice(0, 7);
+	}
+}
+
+export function FormatCurrency(value) {
+	if (!value) return value;
+	let strValue = value.toString();
+	let tmpPrice = strValue.replace(/[^\d]/g, '');
+	const tmpPriceLength = tmpPrice.length;
+
+	if (tmpPriceLength < 3) return tmpPrice;
+
+	if (tmpPriceLength >= 3) {
+		let convertPrice = tmpPrice.toString();
+		let cents = convertPrice.slice(-2);
+		let dollars = convertPrice.slice(0, -2);
+		return `${dollars}.${cents}`;
+	}
+}
+
+export function FormatDate(date) {
+	let newMonth = '';
+	let newDay = '';
+	let newHour = '';
+	let newMinutes = '';
+	const oldDate = new Date(date);
+	let year = oldDate.getFullYear();
+	let month = oldDate.getMonth() + 1;
+	let day = oldDate.getDate();
+	let hour = oldDate.getHours();
+	let minutes = oldDate.getMinutes();
+
+	if (month <= 9) {
+		newMonth = ('0' + month).toString();
+	} else {
+		newMonth = month.toString();
+	}
+	if (day <= 9) {
+		newDay = ('0' + day).toString();
+	} else {
+		newDay = day.toString();
+	}
+	if (hour <= 9) {
+		newHour = ('0' + hour).toString();
+	} else {
+		newHour = hour.toString();
+	}
+	if (minutes <= 9) {
+		newMinutes = ('0' + minutes).toString();
+	} else {
+		newMinutes = minutes.toString();
+	}
+
+	return `${year}-${newMonth}-${newDay}T${newHour}:${newMinutes}`;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FIX VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function FixVisitDate(date) {
 	const [year, month, day] = date.split('-');
 	const result = `${month}/${day}/${year}`;
@@ -133,35 +217,9 @@ export function FixPhone(num) {
 	return result;
 }
 
-export function FormatNumEmps(value) {
-	if (!value) return value;
-	let newEmps = value.replace(/[^\d]/g, '');
-	if (newEmps.length <= 7) {
-		return newEmps;
-	} else {
-		return newEmps.slice(0, 7);
-	}
-}
-
-export function RandomNums(count) {
-	const letter = '0123456789';
-	let randomString = '';
-	for (let i = 0; i < count; i++) {
-		const randomStringNumber = Math.floor(1 + Math.random() * (letter.length - 1));
-		randomString += letter.substring(randomStringNumber, randomStringNumber + 1);
-	}
-	return randomString;
-}
-
-export function CreateUsername(fname, lname) {
-	let username = '';
-	const fInit = fname.charAt(0).toLowerCase();
-	const lInit = lname.slice(0, 3).toLowerCase();
-	const end = RandomNums(4);
-	username = fInit + lInit + end;
-	return username;
-}
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// COMPARE VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function CompareByName(a, b) {
 	return a.name.localeCompare(b.name);
 }
@@ -174,28 +232,148 @@ export function CompareByLabel(a, b) {
 	return a.label.localeCompare(b.label);
 }
 
-export function FormatCurrency(value) {
-	if (!value) return value;
-	let strValue = value.toString();
-	let tmpPrice = strValue.replace(/[^\d]/g, '');
-	const tmpPriceLength = tmpPrice.length;
-
-	if (tmpPriceLength < 3) return tmpPrice;
-
-	if (tmpPriceLength >= 3) {
-		let convertPrice = tmpPrice.toString();
-		let cents = convertPrice.slice(-2);
-		let dollars = convertPrice.slice(0, -2);
-		return `${dollars}.${cents}`;
-	}
-}
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CALCULATE VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function CalcBFat(weight, feet, inches) {
 	const w = parseInt(weight);
 	const h = parseInt(feet) * 12 + parseInt(inches);
 	return ((w / (h * h)) * 703).toFixed(2);
 }
 
+export function CalculateAge(date) {
+	const dob = new Date(date);
+	const month_diff = Date.now() - dob.getTime();
+	const age_dt = new Date(month_diff);
+	const year = age_dt.getUTCFullYear();
+	const age = Math.abs(year - 1970);
+	return age;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// FILTER VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export function FilterPtSearch(value, ptList) {
+	let filteredData = [];
+	const excludeColumns = ['_id', 'photo'];
+	const lowercasedValue = value.toLowerCase().trim();
+	if (lowercasedValue === '') {
+		return filteredData;
+	} else {
+		filteredData = ptList.filter((item) => {
+			return Object.keys(item).some((key) => (excludeColumns.includes(key) ? false : item[key].toString().toLowerCase().includes(lowercasedValue)));
+		});
+		return filteredData;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// AUTH VALUES
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+export function GetAuthData(type) {
+	if (type === 'patient') {
+		const lsUserData = process.env.DATA_SUB;
+		const lsRemUname = process.env.REM_SUB;
+		const lsUsername = process.env.UNAME_SUB;
+		const user = getFromLocalStorage(lsUserData);
+		const remember = getFromLocalStorage(lsRemUname);
+		const userUname = getFromLocalStorage(lsUsername);
+		return { user: user, remember: remember, userUname: userUname };
+	} else if (type === 'sponsor') {
+		const lsUserData = process.env.DATA_SPN;
+		const lsRemUname = process.env.REM_SPN;
+		const lsUsername = process.env.UNAME_SPN;
+		const user = getFromLocalStorage(lsUserData);
+		const remember = getFromLocalStorage(lsRemUname);
+		const userUname = getFromLocalStorage(lsUsername);
+		return { user: user, remember: remember, userUname: userUname };
+	} else if (type === 'physician') {
+		const lsUserData = process.env.DATA_PHY;
+		const lsOfficeData = process.env.DATA_OFC;
+		const lsRemUname = process.env.REM_PHY;
+		const lsUsername = process.env.UNAME_PHY;
+		const lsOfficeId = process.env.OFC_ID;
+		const user = getFromLocalStorage(lsUserData);
+		const office = getFromLocalStorage(lsOfficeData);
+		const remember = getFromLocalStorage(lsRemUname);
+		const userUname = getFromLocalStorage(lsUsername);
+		const officeid = getFromLocalStorage(lsOfficeId);
+		return { user: user, office: office, remember: remember, userUname: userUname, officeid: officeid };
+	} else if (type === 's3x') {
+		const lsUserData = process.env.DATA_S3X;
+		const lsRemUname = process.env.REM_S3X;
+		const lsUsername = process.env.UNAME_S3X;
+		const user = getFromLocalStorage(lsUserData);
+		const remember = getFromLocalStorage(lsRemUname);
+		const userUname = getFromLocalStorage(lsUsername);
+		return { user: user, remember: remember, userUname: userUname };
+	}
+}
+
+export function SaveAuthData(type, data) {
+	if (type === 'patient') {
+		const lsUserData = process.env.DATA_SUB;
+		const lsRemUname = process.env.REM_SUB;
+		const lsUsername = process.env.UNAME_SUB;
+		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
+		if (data.remember) {
+			saveInLocalStorage(lsRemUname, data.remember);
+			saveInLocalStorage(lsUsername, data.uname);
+		} else {
+			removeFromLocalStorage(lsRemUname);
+			removeFromLocalStorage(lsUsername);
+		}
+		return;
+	} else if (type === 'sponsor') {
+		const lsUserData = process.env.DATA_SPN;
+		const lsRemUname = process.env.REM_SPN;
+		const lsUsername = process.env.UNAME_SPN;
+		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
+		if (data.remember) {
+			saveInLocalStorage(lsRemUname, data.remember);
+			saveInLocalStorage(lsUsername, data.uname);
+		} else {
+			removeFromLocalStorage(lsRemUname);
+			removeFromLocalStorage(lsUsername);
+		}
+		return;
+	} else if (type === 'physician') {
+		const lsUserData = process.env.DATA_PHY;
+		const lsOfficeData = process.env.DATA_OFC;
+		const lsRemUname = process.env.REM_PHY;
+		const lsUsername = process.env.UNAME_PHY;
+		const lsOfficeId = process.env.OFC_ID;
+		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
+		saveInLocalStorage(lsOfficeData, JSON.stringify(data.ofcData));
+		if (data.remember) {
+			saveInLocalStorage(lsUsername, data.uname);
+			saveInLocalStorage(lsOfficeId, data.ofcId);
+			saveInLocalStorage(lsRemUname, data.remember);
+		} else {
+			removeFromLocalStorage(lsUsername);
+			removeFromLocalStorage(lsOfficeId);
+			removeFromLocalStorage(lsRemUname);
+		}
+		return;
+	} else if (type === 's3x') {
+		const lsUserData = process.env.DATA_S3X;
+		const lsRemUname = process.env.REM_S3X;
+		const lsUsername = process.env.UNAME_S3X;
+		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
+		if (data.remember) {
+			saveInLocalStorage(lsRemUname, data.remember);
+			saveInLocalStorage(lsUsername, data.uname);
+		} else {
+			removeFromLocalStorage(lsRemUname);
+			removeFromLocalStorage(lsUsername);
+		}
+		return;
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// CREATE IDS
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 export function CreateS3xId(count) {
 	const curYear = new Date().getFullYear();
 	let letter = '';
@@ -464,155 +642,4 @@ export function CreateOfficeId(count) {
 		randomString = randomString + string.substring(randomStringNumber, randomStringNumber + 1);
 	}
 	return randomString;
-}
-
-export function GetAuthData(type) {
-	if (type === 'patient') {
-		const lsUserData = process.env.DATA_SUB;
-		const lsRemUname = process.env.REM_SUB;
-		const lsUsername = process.env.UNAME_SUB;
-		const user = getFromLocalStorage(lsUserData);
-		const remember = getFromLocalStorage(lsRemUname);
-		const userUname = getFromLocalStorage(lsUsername);
-		return { user: user, remember: remember, userUname: userUname };
-	} else if (type === 'sponsor') {
-		const lsUserData = process.env.DATA_SPN;
-		const lsRemUname = process.env.REM_SPN;
-		const lsUsername = process.env.UNAME_SPN;
-		const user = getFromLocalStorage(lsUserData);
-		const remember = getFromLocalStorage(lsRemUname);
-		const userUname = getFromLocalStorage(lsUsername);
-		return { user: user, remember: remember, userUname: userUname };
-	} else if (type === 'physician') {
-		const lsUserData = process.env.DATA_PHY;
-		const lsOfficeData = process.env.DATA_OFC;
-		const lsRemUname = process.env.REM_PHY;
-		const lsUsername = process.env.UNAME_PHY;
-		const lsOfficeId = process.env.OFC_ID;
-		const user = getFromLocalStorage(lsUserData);
-		const office = getFromLocalStorage(lsOfficeData);
-		const remember = getFromLocalStorage(lsRemUname);
-		const userUname = getFromLocalStorage(lsUsername);
-		const officeid = getFromLocalStorage(lsOfficeId);
-		return { user: user, office: office, remember: remember, userUname: userUname, officeid: officeid };
-	} else if (type === 's3x') {
-		const lsUserData = process.env.DATA_S3X;
-		const lsRemUname = process.env.REM_S3X;
-		const lsUsername = process.env.UNAME_S3X;
-		const user = getFromLocalStorage(lsUserData);
-		const remember = getFromLocalStorage(lsRemUname);
-		const userUname = getFromLocalStorage(lsUsername);
-		return { user: user, remember: remember, userUname: userUname };
-	}
-}
-
-export function SaveAuthData(type, data) {
-	if (type === 'patient') {
-		const lsUserData = process.env.DATA_SUB;
-		const lsRemUname = process.env.REM_SUB;
-		const lsUsername = process.env.UNAME_SUB;
-		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
-		if (data.remember) {
-			saveInLocalStorage(lsRemUname, data.remember);
-			saveInLocalStorage(lsUsername, data.uname);
-		} else {
-			removeFromLocalStorage(lsRemUname);
-			removeFromLocalStorage(lsUsername);
-		}
-		return;
-	} else if (type === 'sponsor') {
-		const lsUserData = process.env.DATA_SPN;
-		const lsRemUname = process.env.REM_SPN;
-		const lsUsername = process.env.UNAME_SPN;
-		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
-		if (data.remember) {
-			saveInLocalStorage(lsRemUname, data.remember);
-			saveInLocalStorage(lsUsername, data.uname);
-		} else {
-			removeFromLocalStorage(lsRemUname);
-			removeFromLocalStorage(lsUsername);
-		}
-		return;
-	} else if (type === 'physician') {
-		const lsUserData = process.env.DATA_PHY;
-		const lsOfficeData = process.env.DATA_OFC;
-		const lsRemUname = process.env.REM_PHY;
-		const lsUsername = process.env.UNAME_PHY;
-		const lsOfficeId = process.env.OFC_ID;
-		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
-		saveInLocalStorage(lsOfficeData, JSON.stringify(data.ofcData));
-		if (data.remember) {
-			saveInLocalStorage(lsUsername, data.uname);
-			saveInLocalStorage(lsOfficeId, data.ofcId);
-			saveInLocalStorage(lsRemUname, data.remember);
-		} else {
-			removeFromLocalStorage(lsUsername);
-			removeFromLocalStorage(lsOfficeId);
-			removeFromLocalStorage(lsRemUname);
-		}
-		return;
-	} else if (type === 's3x') {
-		const lsUserData = process.env.DATA_S3X;
-		const lsRemUname = process.env.REM_S3X;
-		const lsUsername = process.env.UNAME_S3X;
-		saveInLocalStorage(lsUserData, JSON.stringify(data.userData));
-		if (data.remember) {
-			saveInLocalStorage(lsRemUname, data.remember);
-			saveInLocalStorage(lsUsername, data.uname);
-		} else {
-			removeFromLocalStorage(lsRemUname);
-			removeFromLocalStorage(lsUsername);
-		}
-		return;
-	}
-}
-
-export function FormatDate(date) {
-	let newMonth = '';
-	let newDay = '';
-	let newHour = '';
-	let newMinutes = '';
-	const oldDate = new Date(date);
-	let year = oldDate.getFullYear();
-	let month = oldDate.getMonth() + 1;
-	let day = oldDate.getDate();
-	let hour = oldDate.getHours();
-	let minutes = oldDate.getMinutes();
-
-	if (month <= 9) {
-		newMonth = ('0' + month).toString();
-	} else {
-		newMonth = month.toString();
-	}
-	if (day <= 9) {
-		newDay = ('0' + day).toString();
-	} else {
-		newDay = day.toString();
-	}
-	if (hour <= 9) {
-		newHour = ('0' + hour).toString();
-	} else {
-		newHour = hour.toString();
-	}
-	if (minutes <= 9) {
-		newMinutes = ('0' + minutes).toString();
-	} else {
-		newMinutes = minutes.toString();
-	}
-
-	return `${year}-${newMonth}-${newDay}T${newHour}:${newMinutes}`;
-}
-
-export function FilterPtSearch(value, ptList) {
-	let filteredData = [];
-	const excludeColumns = ['_id', 'photo'];
-	const lowercasedValue = value.toLowerCase().trim();
-	if (lowercasedValue === '') {
-		return filteredData;
-	} else {
-		filteredData = ptList.filter((item) => {
-			return Object.keys(item).some((key) => (excludeColumns.includes(key) ? false : item[key].toString().toLowerCase().includes(lowercasedValue)));
-		});
-		return filteredData;
-	}
 }

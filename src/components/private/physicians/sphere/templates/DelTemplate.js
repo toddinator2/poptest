@@ -1,7 +1,7 @@
 'use client';
 import React, { useContext, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { getFromLocalStorage, removeFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/auth';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Button from '@/components/global/forms/buttons/Button';
@@ -9,27 +9,29 @@ import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
 
 export default function DelTemplate() {
-	const id = getFromLocalStorage('tmpId');
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [loading, setLoading] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleDelete = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 
 		//delete the template from database
-		await fetch(`${process.env.API_URL}/private/physicians/templates/delete?id=${id}`, {
+		await fetch(`${process.env.API_URL}/private/physicians/templates/delete?id=${misc.editId}`, {
 			method: 'DELETE',
 		});
 
 		toast.success('Template deleted successfully');
+		setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
 		setLoading(false);
 		handleClose();
 	};
 
 	function handleClose() {
-		saveInLocalStorage('tmpRefresh', true);
-		removeFromLocalStorage('tmpId');
 		setMenu({ type: menu.type, func: '' });
 	}
 

@@ -1,71 +1,74 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { getFromLocalStorage, removeFromLocalStorage } from '@/utils/helpers/auth';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import edit from '@/assets/images/icoEdit.png';
 
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
+
 export default function Resources() {
-	let chkRefresh = getFromLocalStorage('rscRefresh');
+	const dbName = process.env.REALM_DB;
+	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, setOffice] = useContext(OfficeContext);
-	const [newLocId, setNewLocId] = useState('');
-	const [curLocId, setCurLocId] = useState('');
+	const [misc] = useContext(MiscContext);
 	const [rscList, setRscList] = useState([]);
-	const [refresh, setRefresh] = useState(null);
 
-	const setFunc = (func) => {
-		setMenu({ type: menu.type, func: func });
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadResources = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/forlist?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-		//Get selected location from array and save in office context
-		setOffice({
-			locations: office.locations,
-			selLoc: newLocId,
-			locOptions: office.locOptions,
-			defLoc: office.defLoc,
-			users: office.users,
-			selUser: {},
-			resources: office.resources,
-			selRscs: [],
-			rscOptions: office.rscOptions,
-		});
-	};
-
-	useEffect(() => {
-		if (chkRefresh === null) {
-			setRefresh(false);
-		} else {
-			setRefresh(chkRefresh);
+			if (data.status === 200) {
+				setRscList(data.rscs);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
 		}
-	}, [chkRefresh]);
+	}, [misc, auth]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (office.locOptions.length === 1) {
-			setNewLocId(office.locOptions[0].value);
-			setCurLocId(office.locOptions[0].value);
-		}
-	}, [office.locOptions]);
+		loadResources();
+	}, [loadResources]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (newLocId !== curLocId || refresh) {
-			//create new array of resources for new location
-			const allRscs = office.resources;
-			let tmpArr = [];
-			for (let i = 0; i < allRscs.length; i++) {
-				const rsc = allRscs[i];
-				if (rsc.locationObjId === newLocId) {
-					tmpArr.push(rsc);
+		const wchResources = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const rscs = mongodb.db(dbName).collection('resources');
+
+			for await (const change of rscs.watch()) {
+				if (change.operationType === 'insert') {
+					loadResources();
 				}
 			}
-			tmpArr.sort((a, b) => a.order - b.order);
-			setRscList(tmpArr);
-			setRefresh(false);
-			removeFromLocalStorage('rscRefresh');
-			setMenu({ type: menu.type, func: '' });
-		}
-		setCurLocId(newLocId);
-	}, [newLocId, curLocId, refresh, menu, office, setMenu]);
+		};
+		wchResources();
+	}, [dbName, loadResources]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const setFunc = (func) => {
+		setMenu({ type: menu.type, func: func });
+	};
 
 	return (
 		<>
@@ -74,36 +77,13 @@ export default function Resources() {
 					<div className='colHdng'>Calendar Columns</div>
 				</div>
 				<div className='col-2 d-flex justify-content-end'>
-					{newLocId && <Image className='icoCols' src={edit} title='Edit Resources' alt='Edit' onClick={() => setFunc('phyRscsEdt', '')} />}
+					{misc.defLocId && <Image className='icoCols' src={edit} title='Edit Resources' alt='Edit' onClick={() => setFunc('phyRscsEdt', '')} />}
 				</div>
 			</div>
-			{office.locOptions.length > 1 && (
-				<div className='row mb-4 d-flex justify-content-center'>
-					<div className='col-8'>
-						<label className='frmLabel'>Select Location</label>
-					</div>
-					<div className='col-8'>
-						<select className='inpBorder form-control mb-2' value={curLocId} onChange={(e) => setNewLocId(e.target.value)}>
-							<option value=''>Select One...</option>
-							{office.locOptions.map((loc) => (
-								<option value={loc.value} key={loc.value}>
-									{loc.label}
-								</option>
-							))}
-						</select>
-					</div>
-				</div>
-			)}
-			{rscList.length === 0 && newLocId ? (
-				<div className='row'>
-					<div className='col-12 d-flex justify-content-center'>
-						<div className='errMsg'>No resources added yet</div>
-					</div>
-				</div>
-			) : (
+			{rscList.length !== 0 && misc.defLocId && (
 				<>
 					{rscList.map((rsc) => (
-						<div className='row mb-2 d-flex align-items-center' key={rsc._id}>
+						<div className='row mb-2 d-flex align-items-center' key={rsc.id}>
 							<div className='col-10'>
 								<div className='colDataText'>{rsc.name}</div>
 							</div>

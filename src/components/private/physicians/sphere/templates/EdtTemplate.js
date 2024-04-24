@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { getFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/auth';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -9,33 +9,44 @@ import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
 
 export default function EdtTemplate() {
-	const id = getFromLocalStorage('tmpId');
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [temp, setTemp] = useState({});
 	const [name, setName] = useState('');
 	const [cat, setCat] = useState('');
 	const [body, setBody] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (id && !name) {
-			const getTmpData = async () => {
-				const response = await fetch(`${process.env.API_URL}/private/physicians/templates/get/byid?id=${id}`, {
-					method: 'GET',
-				});
-				const data = await response.json();
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadTemp = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/templates/get/byid?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-				if (data.status === 200) {
-					setTemp(data.temp);
-				} else {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getTmpData();
+			if (data.status === 200) {
+				setTemp(data.temp);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
 		}
-	}, [id, name]);
+	}, [misc]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadTemp();
+	}, [loadTemp]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (temp !== undefined) {
 			if (Object.keys(temp).length !== 0) {
@@ -58,6 +69,9 @@ export default function EdtTemplate() {
 		}
 	}, [temp]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -69,7 +83,7 @@ export default function EdtTemplate() {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					_id: id,
+					_id: temp._id,
 					name,
 					category: cat,
 					tmpBody: body,
@@ -78,13 +92,13 @@ export default function EdtTemplate() {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				saveInLocalStorage('tmpRefresh', true);
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
 			}
-		} catch (error) {
-			toast.error(error);
+		} catch (err) {
+			toast.error(err);
 		} finally {
 			setLoading(false);
 			handleClose();

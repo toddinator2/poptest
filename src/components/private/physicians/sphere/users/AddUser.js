@@ -1,13 +1,11 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { storage } from '../../../../../firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { saveInLocalStorage } from '@/utils/helpers/auth';
-import { CompareByFName, FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/PageFunctions';
+import { FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import emailjs from '@emailjs/browser';
@@ -19,7 +17,6 @@ import close from '@/assets/images/icoClose.png';
 
 export default function AddUser() {
 	const [auth] = useContext(AuthContext);
-	const [office, setOffice] = useContext(OfficeContext);
 	const [menu, setMenu] = useContext(MenuContext);
 	const [fname, setFname] = useState('');
 	const [lname, setLname] = useState('');
@@ -30,31 +27,74 @@ export default function AddUser() {
 	const [role, setRole] = useState('staff');
 	const [supervisor, setSupervisor] = useState('');
 	const [spvOptions, setSpvOptions] = useState([]);
-	const [chkdSpvOpts, setChkdSpvOpts] = useState(false);
 	const [title, setTitle] = useState('');
 	const [license, setLicense] = useState('');
 	const [npi, setNpi] = useState('');
 	const [specialty, setSpecialty] = useState('');
+	const [locOptions, setLocOptions] = useState([]);
 	const [selLocations, setSelLocations] = useState([]);
 	const [uploading, setUploading] = useState(false);
 	const [uploaded, setUploaded] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (spvOptions.length === 0 && !chkdSpvOpts) {
-			let tmpArr = [];
-			const users = office.users;
-			for (let i = 0; i < users.length; i++) {
-				const user = users[i];
-				if (user.permission === 'provider') {
-					tmpArr.push(user);
-				}
-			}
-			setSpvOptions(tmpArr);
-			setChkdSpvOpts(true);
-		}
-	}, [spvOptions, chkdSpvOpts, office]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadSupervisorOptions = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/get/all?ofcid=${auth.user.ofcObjId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
+			if (data.status === 200) {
+				let tmpArr = [];
+				for (let i = 0; i < data.users.length; i++) {
+					const user = data.users[i];
+					if (user.permission === 'provider') {
+						tmpArr.push(user);
+					}
+				}
+				setSpvOptions(tmpArr);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error('Network Error: Please try again');
+		}
+	}, [auth]);
+
+	const loadLocationOptions = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/locations/get/forselect?ofcid=${auth.user.ofcObjId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setLocOptions(data.locs);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error('Network Error: Please try again');
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadSupervisorOptions();
+	}, [loadSupervisorOptions]);
+
+	useEffect(() => {
+		loadLocationOptions();
+	}, [loadLocationOptions]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -76,7 +116,7 @@ export default function AddUser() {
 
 		//set selected location(s) if not already set
 		if (selLocations.length === 0) {
-			arrLocs.push(office.locations[0]._id);
+			arrLocs.push(locOptions[0]._id);
 		} else {
 			for (let i = 0; i < selLocations.length; i++) {
 				const loc = selLocations[i];
@@ -125,76 +165,26 @@ export default function AddUser() {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				//set current users
-				let tmpArr = [];
-				tmpArr = office.users;
+				//Email user new credentials
+				const domain = process.env.DOMAIN;
+				const emlService = process.env.EMAILJS_SERVICE;
+				const emlUser = process.env.EMAILJS_USER;
+				const tempUserAdded = 'ofcUserAdded';
 
-				//get new user and add to current users
-				const newResponse = await fetch(`${process.env.API_URL}/private/physicians/office/users/get/byemail?email=${email}`, {
-					method: 'GET',
-				});
-				const userData = await newResponse.json();
+				//Set welcome email data
+				const dataUserAdded = {
+					domain: domain,
+					toEmail: email,
+					toName: fname,
+					username: data.uname,
+					password: tmpPwrd,
+				};
 
-				if (userData.status === 200) {
-					//create object to update the users context
-					const userObj = {
-						_id: userData.user._id,
-						fname: userData.user.fname,
-						lname: userData.user.lname,
-						email: userData.user.email,
-						phone: userData.user.phone,
-						photo: userData.user.photo,
-						perm: userData.user.permission,
-						role: userData.user.role,
-						spv: userData.user.supervisor,
-						paid: userData.user.paid,
-						title: userData.user.title,
-						license: userData.user.license,
-						npi: userData.user.npi,
-						specialty: userData.user.specialty,
-						ofcid: userData.user.officeid,
-						locObjId: userData.user.locationObjId,
-						ofcObjId: userData.user.officeObjId,
-					};
-					tmpArr.push(userObj);
-
-					//sort array alphabetically by name
-					tmpArr.sort(CompareByFName);
-
-					setOffice({
-						locations: office.locations,
-						selLoc: {},
-						locOptions: office.locOptions,
-						defLoc: office.defLoc,
-						users: tmpArr,
-						selUser: {},
-						resources: office.resources,
-						selRscs: [],
-						rscOptions: office.rscOptions,
-					});
-
-					//Email user new credentials
-					const domain = process.env.DOMAIN;
-					const emlService = process.env.EMAILJS_SERVICE;
-					const emlUser = process.env.EMAILJS_USER;
-					const tempUserAdded = 'ofcUserAdded';
-
-					//Set welcome email data
-					const dataUserAdded = {
-						domain: domain,
-						toEmail: email,
-						toName: fname,
-						username: userData.user.username,
-						password: tmpPwrd,
-					};
-
-					//Send email
-					emailjs.send(emlService, tempUserAdded, dataUserAdded, emlUser);
-					saveInLocalStorage('qsRefresh', true);
-					toast.success('User added successfully');
-				} else {
-					toast.error(data.msg);
-				}
+				//Send email
+				emailjs.send(emlService, tempUserAdded, dataUserAdded, emlUser);
+				toast.success(data.msg);
+			} else {
+				toast.error(data.msg);
 			}
 		} catch (error) {
 			toast.error(error);
@@ -220,6 +210,9 @@ export default function AddUser() {
 		setMenu({ type: menu.type, func: '' });
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleFileChange = async (e) => {
 		e.preventDefault();
 		setUploading(true);
@@ -324,7 +317,7 @@ export default function AddUser() {
 							<div className='col-12'>
 								<Select
 									isMulti={true}
-									options={office.locOptions}
+									options={locOptions}
 									onChange={setSelLocations}
 									styles={{
 										control: (baseStyles) => ({

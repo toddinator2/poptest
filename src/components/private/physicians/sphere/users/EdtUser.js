@@ -1,13 +1,12 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { nanoid } from 'nanoid';
 import { storage } from '@/firebase';
 import { deleteObject, getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { saveInLocalStorage } from '@/utils/helpers/auth';
-import { CompareByFName, FormatPhoneNumber, IsValidEmail } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { FormatPhoneNumber, IsValidEmail } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Select from 'react-select';
@@ -18,8 +17,8 @@ import close from '@/assets/images/icoClose.png';
 
 export default function EdtUser() {
 	const [auth] = useContext(AuthContext);
-	const [office] = useContext(OfficeContext);
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [user, setUser] = useState({});
 	const [fname, setFname] = useState('');
 	const [lname, setLname] = useState('');
@@ -31,38 +30,95 @@ export default function EdtUser() {
 	const [role, setRole] = useState('staff');
 	const [supervisor, setSupervisor] = useState(null);
 	const [spvOptions, setSpvOptions] = useState([]);
-	const [paid, setPaid] = useState(false);
 	const [title, setTitle] = useState('');
 	const [license, setLicense] = useState('');
 	const [npi, setNpi] = useState('');
 	const [specialty, setSpecialty] = useState('');
+	const [locOptions, setLocOptions] = useState([]);
 	const [selLocations, setSelLocations] = useState([]);
-	const [chkdSpvOpts, setChkdSpvOpts] = useState(false);
 	const [uploading, setUploading] = useState(false);
 	const [uploaded, setUploaded] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(office.selUser).length !== 0 && (Object.keys(user).length === 0 || user._id !== office.selUser._id)) {
-			setUser(office.selUser);
-		}
-	}, [office.selUser, user]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadUser = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/get/byid?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-	useEffect(() => {
-		if (spvOptions.length === 0 && !chkdSpvOpts) {
-			let tmpArr = [];
-			const users = office.users;
-			for (let i = 0; i < users.length; i++) {
-				const user = users[i];
-				if (user.permission === 'provider') {
-					tmpArr.push(user);
-				}
+			if (data.status === 200) {
+				setUser(data.user);
+			} else {
+				toast.error(data.msg);
 			}
-			setSpvOptions(tmpArr);
-			setChkdSpvOpts(true);
+		} catch (err) {
+			toast.error(data.msg);
 		}
-	}, [spvOptions, chkdSpvOpts, office]);
+	}, [misc]);
 
+	const loadSupervisorOptions = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/get/all?ofcid=${auth.user.ofcObjId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				let tmpArr = [];
+				for (let i = 0; i < data.users.length; i++) {
+					const user = data.users[i];
+					if (user.permission === 'provider') {
+						tmpArr.push(user);
+					}
+				}
+				setSpvOptions(tmpArr);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [auth]);
+
+	const loadLocationOptions = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/locations/get/forselect?ofcid=${auth.user.ofcObjId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setLocOptions(data.locs);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadUser();
+	}, [loadUser]);
+
+	useEffect(() => {
+		loadSupervisorOptions();
+	}, [loadSupervisorOptions]);
+
+	useEffect(() => {
+		loadLocationOptions();
+	}, [loadLocationOptions]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (Object.keys(user).length !== 0) {
 			if (user.fname !== '' && user.fname !== undefined) {
@@ -90,8 +146,8 @@ export default function EdtUser() {
 			} else {
 				setCurPicUrl('');
 			}
-			if (user.perm !== '' && user.perm !== undefined) {
-				setPermission(user.perm);
+			if (user.permission !== '' && user.permission !== undefined) {
+				setPermission(user.permission);
 			} else {
 				setPermission('');
 			}
@@ -100,15 +156,10 @@ export default function EdtUser() {
 			} else {
 				setRole('');
 			}
-			if (user.spv !== '' && user.spv !== undefined) {
-				setSupervisor(user.spv);
+			if (user.supervisor !== '' && user.supervisor !== undefined) {
+				setSupervisor(user.supervisor);
 			} else {
 				setSupervisor(null);
-			}
-			if (!user.paid && user.spv !== undefined) {
-				setPaid(false);
-			} else {
-				setPaid(user.paid);
 			}
 			if (user.title !== '' && user.title !== undefined) {
 				setTitle(user.title);
@@ -132,16 +183,14 @@ export default function EdtUser() {
 			}
 			//Need to set default values for locations select
 			let tmpArr = [];
-			if (office.locOptions.length !== 0) {
-				const ofcLocArr = office.locOptions;
-				const curLocs = user.locObjId;
-
-				for (let i = 0; i < ofcLocArr.length; i++) {
-					const loc = ofcLocArr[i];
+			if (locOptions.length !== 0) {
+				const curLocs = user.locationObjId;
+				for (let i = 0; i < locOptions.length; i++) {
+					const loc = locOptions[i];
 					for (let o = 0; o < curLocs.length; o++) {
 						const curId = curLocs[o];
 						if (curId === loc.value) {
-							tmpArr.push(office.locOptions[i]);
+							tmpArr.push(loc);
 							break;
 						}
 					}
@@ -149,8 +198,11 @@ export default function EdtUser() {
 				setSelLocations(tmpArr);
 			}
 		}
-	}, [user, office]);
+	}, [user]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -174,7 +226,7 @@ export default function EdtUser() {
 
 		//set selected location(s) if not already set
 		if (selLocations.length === 0) {
-			arrLocs.push(office.locations[0]._id);
+			arrLocs.push(locOptions[0]._id);
 		} else {
 			for (let i = 0; i < selLocations.length; i++) {
 				const loc = selLocations[i];
@@ -191,38 +243,7 @@ export default function EdtUser() {
 			spv = null;
 		}
 
-		//create object to update the users context
-		const userObj = {
-			_id: user._id,
-			fname,
-			lname,
-			email,
-			phone,
-			photo: photoUrl,
-			perm: permission,
-			role,
-			spv,
-			paid: user.paid,
-			title,
-			license,
-			npi,
-			specialty,
-			ofcid: user.officeid,
-			locObjId: arrLocs,
-			ofcObjId: user.officeObjId,
-		};
-
 		try {
-			//update the users context array
-			const searchedObj = user;
-
-			const i = office.users.findIndex((x) => x._id === searchedObj._id);
-			office.users[i] = userObj;
-
-			//sort array alphabetically by name
-			office.users.sort(CompareByFName);
-
-			//update the database
 			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/edit`, {
 				method: 'PUT',
 				headers: {
@@ -249,13 +270,13 @@ export default function EdtUser() {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				saveInLocalStorage('qsRefresh', true);
-				toast.success('User updated successfully');
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
+				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
 			}
 		} catch (error) {
-			toast.error(error);
+			toast.error('Network Error: Please try again');
 		} finally {
 			setLoading(false);
 			handleClose();
@@ -278,6 +299,9 @@ export default function EdtUser() {
 		setMenu({ type: menu.type, func: '' });
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleFileChange = async (e) => {
 		e.preventDefault();
 		setUploading(true);
@@ -389,7 +413,7 @@ export default function EdtUser() {
 								<Select
 									isMulti={true}
 									value={selLocations}
-									options={office.locOptions}
+									options={locOptions}
 									onChange={setSelLocations}
 									styles={{
 										control: (baseStyles) => ({

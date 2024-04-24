@@ -25,8 +25,8 @@ const officeSchema = new Schema(
 		},
 		patients: [
 			{
-				type: ObjectId,
-				ref: 'patients',
+				type: String,
+				trim: true,
 			},
 		],
 		medcompanyObjId: {

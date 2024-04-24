@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const id = searchParams.get('id');
 
 	try {
-		const appt = await Appointment.findOne({ _id: id });
+		const appt = await Appointment.findById(id);
 		if (appt) {
 			return NextResponse.json({ appt: appt, status: 200 });
 		} else {

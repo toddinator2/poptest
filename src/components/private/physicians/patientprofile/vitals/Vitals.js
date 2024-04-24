@@ -1,102 +1,42 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
+import React, { useEffect, useState } from 'react';
 import { IsNumeric } from '@/components/global/functions/PageFunctions';
 import toast from 'react-hot-toast';
 
-export default function Vitals(apptId) {
-	const id = apptId.apptId;
-	const [appts, setAppts] = useContext(ApptContext);
-	const [appt, setAppt] = useState({});
-	const [stop, setStop] = useState(false);
+export default function Vitals({ props }) {
+	const newApptId = props._id;
+	const [curApptId, setCurApptId] = useState('');
+	const [id, setId] = useState('');
 	const [temp, setTemp] = useState('');
 	const [pulse, setPulse] = useState('');
 	const [pressure, setPressure] = useState('');
 	const [resp, setResp] = useState('');
 	const [oxygen, setOxygen] = useState('');
+	const [pasigned, setPaSigned] = useState(false);
+	const [prsigned, setPrSigned] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VALUES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		//get initial appointment data
-		if (Object.keys(appt).length === 0 && id !== '') {
-			const getAppt = async () => {
-				try {
-					const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/byid?id=${id}`, {
-						method: 'GET',
-					});
-					const data = await response.json();
-
-					if (data.status === 200) {
-						setAppt(data.appt);
-					}
-				} catch (error) {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getAppt();
+		if (curApptId !== newApptId) {
+			setId(props._id);
+			setTemp(props.temp);
+			setPulse(props.pulse);
+			setPressure(props.bp);
+			setResp(props.resp);
+			setOxygen(props.oxy);
+			setPaSigned(props.pa);
+			setPrSigned(props.pr);
+			setCurApptId(newApptId);
 		}
-	}, [appt, id, setAppt]);
+	}, [props, curApptId, newApptId]);
 
-	useEffect(() => {
-		//get appointment data if another appointment is clicked on
-		if (Object.keys(appt).length !== 0 && id !== appt._id) {
-			const getAppt = async () => {
-				try {
-					const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/byid?id=${id}`, {
-						method: 'GET',
-					});
-					const data = await response.json();
-
-					if (data.status === 200) {
-						setAppt(data.appt);
-						setStop(false);
-					}
-				} catch (error) {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getAppt();
-		}
-	}, [appt, id, setAppt]);
-
-	useEffect(() => {
-		if (Object.keys(appt).length !== 0 && !stop && id === appt._id) {
-			if (appt.temperature !== null && appt.temperature !== undefined) {
-				setTemp(appt.temperature);
-			} else {
-				setTemp('');
-			}
-			if (appt.pulse !== null && appt.pulse !== undefined) {
-				setPulse(appt.pulse);
-			} else {
-				setPulse('');
-			}
-			if (appt.bloodpressure !== null && appt.bloodpressure !== undefined) {
-				setPressure(appt.bloodpressure);
-			} else {
-				setPressure('');
-			}
-			if (appt.respiration !== null && appt.respiration !== undefined) {
-				setResp(appt.respiration);
-			} else {
-				setResp('');
-			}
-			if (appt.oxygen !== null && appt.oxygen !== undefined) {
-				setOxygen(appt.oxygen);
-			} else {
-				setOxygen('');
-			}
-			setStop(true);
-		}
-	}, [appt, id, stop]);
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Handle Quick Saves
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const submitTemp = async (e) => {
 		e.preventDefault();
-		//update the database
 		const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/temperature`, {
 			method: 'PUT',
 			headers: {
@@ -109,27 +49,7 @@ export default function Vitals(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.temperature = temp;
-			}
-			if (idxApptTdy) {
-				apptTdy.temperature = temp;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-		} else {
+		if (data.status !== 200) {
 			toast.error('Temperature did not save, please try again');
 			setTemp('');
 			document.getElementById('temp').focus();
@@ -139,7 +59,6 @@ export default function Vitals(apptId) {
 
 	const submitPulse = async (e) => {
 		e.preventDefault();
-		//update the database
 		const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/pulse`, {
 			method: 'PUT',
 			headers: {
@@ -152,27 +71,7 @@ export default function Vitals(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.pulse = pulse;
-			}
-			if (idxApptTdy) {
-				apptTdy.pulse = pulse;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-		} else {
+		if (data.status !== 200) {
 			toast.error('Pulse did not save, please try again');
 			setPulse('');
 			document.getElementById('pulse').focus();
@@ -182,7 +81,6 @@ export default function Vitals(apptId) {
 
 	const submitBp = async (e) => {
 		e.preventDefault();
-		//update the database
 		const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/bloodpressure`, {
 			method: 'PUT',
 			headers: {
@@ -195,27 +93,7 @@ export default function Vitals(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.bloodpressure = pressure;
-			}
-			if (idxApptTdy) {
-				apptTdy.bloodpressure = pressure;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-		} else {
+		if (data.status !== 200) {
 			toast.error('Blood Pressure did not save, please try again');
 			setPressure('');
 			document.getElementById('pressure').focus();
@@ -225,7 +103,6 @@ export default function Vitals(apptId) {
 
 	const submitResp = async (e) => {
 		e.preventDefault();
-		//update the database
 		const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/respiration`, {
 			method: 'PUT',
 			headers: {
@@ -238,31 +115,12 @@ export default function Vitals(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.respiration = resp;
-			}
-			if (idxApptTdy) {
-				apptTdy.respiration = resp;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-		} else {
+		if (data.status !== 200) {
 			toast.error('Respiratrion did not save, please try again');
 			setResp('');
 			document.getElementById('resp').focus();
 			return;
+		} else {
 		}
 	};
 	const submitOxygen = async (e) => {
@@ -279,27 +137,7 @@ export default function Vitals(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.oxygen = oxygen;
-			}
-			if (idxApptTdy) {
-				apptTdy.oxygen = oxygen;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-		} else {
+		if (data.status !== 200) {
 			toast.error('Oxygen did not save, please try again');
 			setOxygen('');
 			document.getElementById('oxygen').focus();
@@ -319,8 +157,8 @@ export default function Vitals(apptId) {
 					<div className='frmLabel'>Temperature:</div>
 				</div>
 				<div className='col-4 ps-1'>
-					{(appt.pasigned || appt.prsigned) && <div className='ppDataText'>{appt.temperature}</div>}
-					{!appt.pasigned && !appt.prsigned && (
+					{(pasigned || prsigned) && <div className='ppDataText'>{temp}</div>}
+					{!pasigned && !prsigned && (
 						<input
 							className='form-control inpBorder'
 							type='text'
@@ -338,8 +176,8 @@ export default function Vitals(apptId) {
 					<div className='frmLabel'>Pulse:</div>
 				</div>
 				<div className='col-4 ps-1'>
-					{(appt.pasigned || appt.prsigned) && <div className='ppDataText'>{appt.pulse}</div>}
-					{!appt.pasigned && !appt.prsigned && (
+					{(pasigned || prsigned) && <div className='ppDataText'>{pulse}</div>}
+					{!pasigned && !prsigned && (
 						<input
 							className='form-control inpBorder'
 							type='text'
@@ -357,8 +195,8 @@ export default function Vitals(apptId) {
 					<label className='frmLabel'>Blood Pressure:</label>
 				</div>
 				<div className='col-4 ps-1'>
-					{(appt.pasigned || appt.prsigned) && <div className='ppDataText'>{appt.bloodpressure}</div>}
-					{!appt.pasigned && !appt.prsigned && (
+					{(pasigned || prsigned) && <div className='ppDataText'>{pressure}</div>}
+					{!pasigned && !prsigned && (
 						<input
 							className='form-control inpBorder'
 							type='text'
@@ -376,8 +214,8 @@ export default function Vitals(apptId) {
 					<label className='frmLabel'>Respiration:</label>
 				</div>
 				<div className='col-4 ps-1'>
-					{(appt.pasigned || appt.prsigned) && <div className='ppDataText'>{appt.respiration}</div>}
-					{!appt.pasigned && !appt.prsigned && (
+					{(pasigned || prsigned) && <div className='ppDataText'>{resp}</div>}
+					{!pasigned && !prsigned && (
 						<input
 							className='form-control inpBorder'
 							type='text'
@@ -395,8 +233,8 @@ export default function Vitals(apptId) {
 					<label className='frmLabel'>Oxygen:</label>
 				</div>
 				<div className='col-4 ps-1'>
-					{(appt.pasigned || appt.prsigned) && <div className='ppDataText'>{appt.oxygen}</div>}
-					{!appt.pasigned && !appt.prsigned && (
+					{(pasigned || prsigned) && <div className='ppDataText'>{oxygen}</div>}
+					{!pasigned && !prsigned && (
 						<input
 							className='form-control inpBorder'
 							type='text'

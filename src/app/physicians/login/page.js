@@ -3,6 +3,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signIn, useSession } from 'next-auth/react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { getFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/auth';
 import { GetAuthData, SaveAuthData } from '@/components/global/functions/PageFunctions';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
@@ -14,7 +16,6 @@ import CheckBox from '@/components/global/forms/checkbox/Checkbox';
 import Button from '@/components/global/forms/buttons/Button';
 import Spinner from '@/components/global/spinner/Spinner';
 import icoMemberPhy from '@/assets/images/hmpgIcoPhy.png';
-import { saveInLocalStorage } from '@/utils/helpers/auth';
 
 export default function PhyLogin() {
 	const CryptoJS = require('crypto-js');
@@ -22,14 +23,15 @@ export default function PhyLogin() {
 	const lsDefLoc = process.env.DEFAULT_LOCATION;
 	const router = useRouter();
 	const { status } = useSession();
+	const svdDefLoc = getFromLocalStorage(lsDefLoc);
 	const [_auth, setAuth] = useContext(AuthContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [svdUser, setSvdUser] = useState({});
 	const [svdRem, setSvdRem] = useState(false);
 	const [svdUname, setSvdUname] = useState('');
 	const [svdOfcId, setSvdOfcId] = useState('');
 	const [uname, setUname] = useState('');
 	const [pword, setPword] = useState('');
-	const [ofcId, setOfcId] = useState('');
 	const [remember, setRemember] = useState(false);
 	const [getLsAuth, setGetLsAuth] = useState(false);
 	const [loggingIn, setLoggingIn] = useState(false);
@@ -63,7 +65,6 @@ export default function PhyLogin() {
 		if (svdRem) {
 			if (!uname && !beenHere) {
 				setUname(svdUname);
-				setOfcId(svdOfcId);
 				setRemember(true);
 				setBeenHere(true);
 			}
@@ -114,6 +115,7 @@ export default function PhyLogin() {
 				}
 
 				if (usrStatus === 200) {
+					let locId = '';
 					if (!user.resetcreds && (user.permission === 'provider' || user.permission === 'pa' || user.permission === 'staff')) {
 						const userObj = {
 							_id: user._id,
@@ -135,10 +137,12 @@ export default function PhyLogin() {
 							ofcObjId: user.officeObjId,
 						};
 
-						if (user.locationObjId.length === 1) {
-							const locId = user.locationObjId[0];
-							saveInLocalStorage(lsDefLoc, locId);
+						if (svdDefLoc) {
+							locId = svdDefLoc;
+						} else {
+							locId = user.locationObjId[0];
 						}
+						saveInLocalStorage(lsDefLoc, locId);
 
 						const saveAuthData = {
 							uname: uname,

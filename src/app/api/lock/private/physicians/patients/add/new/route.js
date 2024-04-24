@@ -9,7 +9,6 @@ import Office from '@/models/office';
 
 const createSponsor = async (body, uname) => {
 	let newSpn;
-	let newSpnUser;
 	let chkEmail = body.email;
 	let lwrEmail = '';
 
@@ -124,7 +123,7 @@ export const POST = async (req) => {
 		ptArr.push(newPtId);
 		await Office.findByIdAndUpdate(ofcObjId, { patients: ptArr }, { new: true });
 
-		return NextResponse.json({ msg: 'Patient Registration Successful', status: 200 });
+		return NextResponse.json({ msg: 'Patient Registration Successful', uname: uname, status: 200 });
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
 	}

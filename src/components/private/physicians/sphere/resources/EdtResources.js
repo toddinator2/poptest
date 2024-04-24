@@ -1,7 +1,8 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { saveInLocalStorage } from '@/utils/helpers/auth';
 import { CompareByFName } from '@/components/global/functions/PageFunctions';
@@ -13,59 +14,69 @@ import add from '@/assets/images/icoAdd.png';
 import del from '@/assets/images/icoDel.png';
 
 export default function EdtResources() {
-	const [auth, _setAuth] = useContext(AuthContext);
+	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc] = useContext(MiscContext);
 	const [office, setOffice] = useContext(OfficeContext);
-	const [locUsers, setLocUsers] = useState([]);
+	const [users, setUsers] = useState([]);
 	const [rows, setRows] = useState([]);
 	const [chkdRows, setChkdRows] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (locUsers.length === 0) {
-			//create new array of users for this location
-			const allUsers = office.users;
-			let tmpArr = [];
-			for (let i = 0; i < allUsers.length; i++) {
-				const user = allUsers[i];
-				const usrLocs = user.locObjId;
-				for (let o = 0; o < usrLocs.length; o++) {
-					const locId = usrLocs[o];
-					if (locId === office.selLoc) {
-						tmpArr.push(user);
-						break;
-					}
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadUsers = useCallback(async () => {
+		try {
+			const response = await fetch(
+				`${process.env.API_URL}/private/physicians/office/users/get/forloc?ofcid=${auth.user.ofcObjId}&locid=${misc.defLocId}`,
+				{
+					method: 'GET',
 				}
+			);
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setUsers(data.users);
+			} else {
+				toast.error(data.msg);
 			}
-			tmpArr.sort(CompareByFName);
-			setLocUsers(tmpArr);
+		} catch (err) {
+			toast.error(err);
 		}
-	}, [locUsers, office]);
+	}, [auth, misc]);
+
+	const loadResources = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/forlist?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setRows(data.rscs);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [misc, auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadUsers();
+	}, [loadUsers]);
 
 	useEffect(() => {
-		if (rows.length === 0 && office.resources?.length !== 0 && !chkdRows) {
-			const curLocId = office.selLoc;
-			//create initial rows array
-			const allRscs = office.resources;
-			let tmpArr = [];
-			for (let i = 0; i < allRscs.length; i++) {
-				const rsc = allRscs[i];
-				if (rsc.locationObjId === curLocId) {
-					const calObj = {
-						userId: rsc.officeuserObjId,
-						order: rsc.order,
-						locId: rsc.locationObjId,
-						ofcId: rsc.officeObjId,
-					};
-					tmpArr.push(calObj);
-				}
-			}
-			tmpArr.sort((a, b) => a.order - b.order);
-			setRows(tmpArr);
-			setChkdRows(true);
-		}
-	}, [rows, office, chkdRows]);
+		loadResources();
+	}, [loadResources]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -76,31 +87,13 @@ export default function EdtResources() {
 			},
 			body: JSON.stringify({
 				rows,
-				locid: office.selLoc,
+				locid: misc.defLocId,
 				ofcid: auth.user.ofcObjId,
 			}),
 		});
 		const data = await response.json();
 
 		if (data.status === 200) {
-			//reload all resources into context
-			const rscResponse = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/all?ofcid=${auth.user.ofcObjId}`, {
-				method: 'GET',
-			});
-			const rscData = await rscResponse.json();
-			setOffice({
-				locations: office.locations,
-				selLoc: {},
-				locOptions: office.locOptions,
-				defLoc: office.defLoc,
-				users: office.users,
-				selUser: {},
-				resources: rscData.rscs,
-				selRscs: [],
-				rscOptions: office.rscOptions,
-			});
-			saveInLocalStorage('rscRefresh', true);
-			saveInLocalStorage('qsRefresh', true);
 			toast.success(data.msg);
 			setLoading(false);
 			handleClose();
@@ -109,17 +102,20 @@ export default function EdtResources() {
 
 	const handleClose = () => {
 		setRows([]);
-		setMenu({ type: menu.type, func: '', refresh: true });
+		setMenu({ type: menu.type, func: '' });
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleAddRow = () => {
-		const calObj = {
+		const rscObj = {
 			userId: '',
 			order: '',
-			locId: office.selLoc,
+			locId: misc.defLocId,
 			ofcId: auth.user.ofcObjId,
 		};
-		setRows([...rows, calObj]);
+		setRows([...rows, rscObj]);
 		return;
 	};
 
@@ -136,7 +132,7 @@ export default function EdtResources() {
 		const newObj = {
 			userId: value,
 			order: rows[idx].order,
-			locId: office.selLoc,
+			locId: misc.defLocId,
 			ofcId: auth.user.ofcObjId,
 		};
 		const curRows = [...rows];
@@ -151,7 +147,7 @@ export default function EdtResources() {
 		const newObj = {
 			userId: rows[idx].userId,
 			order: value,
-			locId: office.selLoc,
+			locId: misc.defLocId,
 			ofcId: auth.user.ofcObjId,
 		};
 		const curRows = [...rows];
@@ -187,7 +183,7 @@ export default function EdtResources() {
 														onChange={(e) => handleUserChange(e, idx)}
 													>
 														<option value=''>Select One...</option>
-														{locUsers.map((user) => (
+														{users.map((user) => (
 															<option value={user._id} key={user._id}>
 																{user.fname} {user.lname}
 															</option>

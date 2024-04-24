@@ -53,11 +53,12 @@ export const DELETE = async (request) => {
 		//Delete Daily Tasks
 		await Taskdaily.deleteMany({ locationObjId: locid });
 
-		const loc = await Officelocation.findByIdAndDelete(locid);
-		if (loc) {
+		//Delete Location
+		const del = await Officelocation.findByIdAndDelete(locid);
+		if (del) {
 			return NextResponse.json({ msg: 'Location deleted successfully', status: 200 });
 		} else {
-			return NextResponse.json({ msg: 'Location not found', status: 400 });
+			return NextResponse.json({ msg: 'Error deleting location, please try again', status: 400 });
 		}
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });

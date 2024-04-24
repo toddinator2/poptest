@@ -1,10 +1,8 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
-import { AuthContext } from '@/utils/context/global/AuthContext';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { CompareByName, FormatCurrency } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { FormatCurrency } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -13,22 +11,44 @@ import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
 
 export default function EdtService() {
-	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, _setOffice] = useContext(OfficeContext);
-	const [ecomm, setEcomm] = useContext(EcommContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [service, setService] = useState({});
 	const [name, setName] = useState('');
 	const [fmtPrice, setFmtPrice] = useState('');
 	const [price, setPrice] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(ecomm.selSvc).length !== 0 && (Object.keys(service).length === 0 || service._id !== ecomm.selSvc._id)) {
-			setService(ecomm.selSvc);
-		}
-	}, [ecomm.selSvc, service]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadService = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/get/byid?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
+			if (data.status === 200) {
+				setService(data.svc);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadService();
+	}, [loadService]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (Object.keys(service).length !== 0) {
 			if (service.name !== '' && service.name !== undefined) {
@@ -47,33 +67,14 @@ export default function EdtService() {
 		}
 	}, [service]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 
-		//create object to update the services context
-		const updObj = {
-			_id: service._id,
-			name,
-			price,
-			catObjId: ecomm.selCat._id,
-			locationObjId: office.selLoc,
-			office: auth.user.ofcObjId,
-		};
-
 		try {
-			//update the services context array
-			const searchedObj = service;
-			const replacingObj = updObj;
-
-			const i = ecomm.services.findIndex((x) => x._id === searchedObj._id);
-			ecomm.services[i] = replacingObj;
-
-			//sort array alphabetically by name
-			const newSvcs = ecomm.services.sort(CompareByName);
-			setEcomm({ cats: ecomm.cats, selCat: ecomm.selCat, services: newSvcs, selSvc: {} });
-
-			//update the database
 			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/edit`, {
 				method: 'PUT',
 				headers: {
@@ -83,6 +84,7 @@ export default function EdtService() {
 					_id: service._id,
 					name,
 					price,
+					catObjId: service.catObjId,
 				}),
 			});
 			const data = await response.json();
@@ -94,12 +96,13 @@ export default function EdtService() {
 			}
 
 			if (data.status === 200) {
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: service.catObjId });
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
 			}
-		} catch (error) {
-			toast.error(error);
+		} catch (err) {
+			toast.error(err);
 		} finally {
 			setLoading(false);
 			handleClose();
@@ -110,9 +113,12 @@ export default function EdtService() {
 		setName('');
 		setFmtPrice('');
 		setPrice('');
-		setMenu({ type: menu.type, func: '', refresh: true });
+		setMenu({ type: menu.type, func: '' });
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function handlePrice(e) {
 		const value = e.target.value;
 		const tmpPrice = FormatCurrency(value);

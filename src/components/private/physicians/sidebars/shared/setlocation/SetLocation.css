@@ -1,0 +1,7 @@
+.icoChgLoc {
+	width: auto;
+	height: 20px;
+}
+.icoChgLoc:hover {
+	cursor: pointer;
+}

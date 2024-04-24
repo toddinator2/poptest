@@ -26,10 +26,6 @@
 	height: auto;
 	max-height: 30px;
 }
-.icoChgLoc {
-	width: auto;
-	height: 20px;
-}
 .sphPtImg {
 	width: auto;
 	max-height: 50px;
@@ -45,4 +41,7 @@
 }
 .sphPtInits:hover {
 	cursor: pointer;
+}
+.sphLocText {
+	color: #73b9ff;
 }

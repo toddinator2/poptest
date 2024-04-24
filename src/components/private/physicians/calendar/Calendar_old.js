@@ -3,7 +3,7 @@ import '@mobiscroll/react/dist/css/mobiscroll.min.css';
 import './Calendar.css';
 import { Button, CalendarNav, CalendarToday, Draggable, Eventcalendar, Popup, SegmentedGroup, SegmentedItem, setOptions } from '@mobiscroll/react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { PatientContext } from '@/utils/context/physicians/PatientsContext';
+import { PatientSearchContext } from '@/utils/context/physicians/PatientsSearchContext';
 import { AddMinutes, FormatDate, SetColorOptions, SetInvalidTimes } from '@/components/global/functions/PageFunctions';
 import toast from 'react-hot-toast';
 import axios from 'axios';
@@ -71,7 +71,7 @@ export default function Schedule() {
 	const [apptType, setApptType] = useState('none');
 	const [edtApptId, setEdtApptId] = useState('');
 	//Patient
-	const [ctxPatients, setCtxPatients] = useContext(PatientContext);
+	const [schPatients, setSchPatients] = useContext(PatientSearchContext);
 	const [ptSearchText, setPtSearchText] = useState('');
 	const [ptFiltered, setPtFiltered] = useState([]);
 	const [patientObjId, setPatientObjId] = useState('');
@@ -1287,7 +1287,14 @@ export default function Schedule() {
 								</label>
 							</div>
 							<div className='col-10'>
-								<input className='form-control' type='datetime-local' name='stDate' id='stDate' value={start} onChange={(e) => setStart(e.target.value)} />
+								<input
+									className='form-control'
+									type='datetime-local'
+									name='stDate'
+									id='stDate'
+									value={start}
+									onChange={(e) => setStart(e.target.value)}
+								/>
 							</div>
 						</div>
 						<div className='row mb-1 d-flex align-items-center'>
@@ -1297,7 +1304,14 @@ export default function Schedule() {
 								</label>
 							</div>
 							<div className='col-10'>
-								<input className='form-control' type='datetime-local' name='endDate' id='endDate' value={end} onChange={(e) => setEnd(e.target.value)} />
+								<input
+									className='form-control'
+									type='datetime-local'
+									name='endDate'
+									id='endDate'
+									value={end}
+									onChange={(e) => setEnd(e.target.value)}
+								/>
 							</div>
 						</div>
 						<div className='row mb-1'>
@@ -1317,7 +1331,14 @@ export default function Schedule() {
 								</label>
 							</div>
 							<div className='col-10'>
-								<textarea className='form-control' name='comment' id='comment' rows='3' value={comment} onChange={(e) => setComment(e.target.value)} />
+								<textarea
+									className='form-control'
+									name='comment'
+									id='comment'
+									rows='3'
+									value={comment}
+									onChange={(e) => setComment(e.target.value)}
+								/>
 							</div>
 						</div>
 						{isEdit ? (

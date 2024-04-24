@@ -1,11 +1,10 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { geocode, RequestType } from 'react-geocode';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { saveInLocalStorage } from '@/utils/helpers/auth';
-import { CompareByLabel, CompareByName, FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -18,7 +17,7 @@ export default function EdtLocation() {
 	const gglKey = process.env.MAPS_KEY;
 	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, setOffice] = useContext(OfficeContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [location, setLocation] = useState({});
 	const [name, setName] = useState('');
 	const [add, setAdd] = useState('');
@@ -65,12 +64,36 @@ export default function EdtLocation() {
 	const [endLunch6, setEndLunch6] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(office.selLoc).length !== 0 && (Object.keys(location).length === 0 || location._id !== office.selLoc._id)) {
-			setLocation(office.selLoc);
-		}
-	}, [office.selLoc, location]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadLocation = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/locations/get/byid?locid=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
+			if (data.status === 200) {
+				setLocation(data.loc);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadLocation();
+	}, [loadLocation]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (Object.keys(location).length !== 0) {
 			if (location.name !== '' && location.name !== undefined) {
@@ -276,6 +299,9 @@ export default function EdtLocation() {
 		}
 	}, [location]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -299,74 +325,7 @@ export default function EdtLocation() {
 				});
 		}
 
-		const updObj = {
-			_id: location._id,
-			name,
-			address: add,
-			address2: add2,
-			city,
-			state,
-			zip,
-			phone,
-			startday: dayStart,
-			endday: dayEnd,
-			sametimes: sameTimes,
-			starttime0: startTime0,
-			endtime0: endTime0,
-			startlunch0: startLunch0,
-			endlunch0: endLunch0,
-			starttime1: startTime1,
-			endtime1: endTime1,
-			startlunch1: startLunch1,
-			endlunch1: endLunch1,
-			starttime2: startTime2,
-			endtime2: endTime2,
-			startlunch2: startLunch2,
-			endlunch2: endLunch2,
-			starttime3: startTime3,
-			endtime3: endTime3,
-			startlunch3: startLunch3,
-			endlunch3: endLunch3,
-			starttime4: startTime4,
-			endtime4: endTime4,
-			startlunch4: startLunch4,
-			endlunch4: endLunch4,
-			starttime5: startTime5,
-			endtime5: endTime5,
-			startlunch5: startLunch5,
-			endlunch5: endLunch5,
-			starttime6: startTime6,
-			endtime6: endTime6,
-			startlunch6: startLunch6,
-			endlunch6: endLunch6,
-			latitude,
-			longitude,
-			deleteme: false,
-			officeObjId: auth.user.ofcObjId,
-		};
-		const optObj = {
-			label: name,
-			value: location._id,
-		};
-
 		try {
-			//update the locations context array
-			const searchedObj = location;
-			const searchedOptObj = office.locOptions;
-			const replacingObj = updObj;
-			const replacingOptObj = optObj;
-
-			const i = office.locations.findIndex((x) => x._id === searchedObj._id);
-			office.locations[i] = replacingObj;
-
-			const o = office.locOptions.findIndex((x) => x.value === searchedOptObj.value);
-			office.locOptions[o] = replacingOptObj;
-
-			//sort array alphabetically by name
-			office.locations.sort(CompareByName);
-			office.locOptions.sort(CompareByLabel);
-
-			//update the database
 			const response = await fetch(`${process.env.API_URL}/private/physicians/office/locations/edit`, {
 				method: 'PUT',
 				headers: {
@@ -414,26 +373,13 @@ export default function EdtLocation() {
 					endlunch6: endLunch6,
 					latitude,
 					longitude,
-					deleteme: false,
 					officeObjId: auth.user.ofcObjId,
 				}),
 			});
 			const data = await response.json();
 
 			if (data.status === 200) {
-				setOffice({
-					locations: office.locations,
-					selLoc: {},
-					locOptions: office.locOptions,
-					defLoc: office.defLoc,
-					users: office.users,
-					selUser: {},
-					resources: office.resources,
-					selRscs: [],
-					rscOptions: office.rscOptions,
-				});
-
-				saveInLocalStorage('qsRefresh', true);
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
@@ -450,6 +396,9 @@ export default function EdtLocation() {
 		setMenu({ type: menu.type, func: '' });
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleShwDiv = async (e) => {
 		e.preventDefault();
 		const value = e.target.checked;
@@ -589,7 +538,7 @@ export default function EdtLocation() {
 								</select>
 							</div>
 						</div>
-						<Input label='Zip Code' type='text' required={true} value={zip} setValue={setZip} />
+						<Input label='Zip Code' type='number' required={true} value={zip} setValue={setZip} />
 						<Input label='Phone' type='tel' required={true} value={phone} funcCall={handlePhone} />
 						<div className='row mb-2'>
 							<div className='col-12'>

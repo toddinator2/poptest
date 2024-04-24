@@ -1,77 +1,96 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { CompareByName } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 import Pagination from '@/components/global/pagination/Pagination';
+import Spinner from '@/components/global/spinner/Spinner';
 import add from '@/assets/images/icoAdd.png';
 import edit from '@/assets/images/icoEdit.png';
 import del from '@/assets/images/icoDel.png';
 
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
+
 export default function Categories() {
+	const dbName = process.env.REALM_DB;
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, setOffice] = useContext(OfficeContext);
-	const [ecomm, setEcomm] = useContext(EcommContext);
-	const [newLocId, setNewLocId] = useState('');
-	const [curLocId, setCurLocId] = useState('');
-	const [catList, setCatList] = useState([]);
+	const [misc, setMisc] = useContext(MiscContext);
+	const [cats, setCats] = useState([]);
+	const [loading, setLoading] = useState(false);
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
 	const [recordsPerPage] = useState(15);
 	const indexOfLastRecord = currentPage * recordsPerPage;
 	const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-	const currentRecords = catList.slice(indexOfFirstRecord, indexOfLastRecord);
-	const nPages = Math.ceil(catList.length / recordsPerPage);
+	const currentRecords = cats.slice(indexOfFirstRecord, indexOfLastRecord);
+	const nPages = Math.ceil(cats.length / recordsPerPage);
 	const pageNumbers = Array.from({ length: nPages }, (_, index) => index + 1);
 
-	const setFunc = (func, id) => {
-		setMenu({ type: menu.type, func: func });
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadCats = useCallback(async () => {
+		try {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/category/get/forloc?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-		//Get selected location from array and save in office context
-		setOffice({
-			locations: office.locations,
-			selLoc: newLocId,
-			locOptions: office.locOptions,
-			defLoc: office.defLoc,
-			users: office.users,
-			resources: office.resources,
-			rscOptions: office.rscOptions,
-		});
-
-		//Get selected category from array and save in ecomm context
-		const selCat = ecomm.cats.find((item) => item._id === id);
-		setEcomm({ cats: ecomm.cats, selCat: selCat, services: ecomm.services, selSvc: {} });
-	};
-
-	useEffect(() => {
-		if (office.locOptions.length === 1) {
-			setNewLocId(office.locOptions[0].value);
-			setCurLocId(office.locOptions[0].value);
+			if (data.status === 200) {
+				setCats(data.cats);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		} finally {
+			setLoading(false);
 		}
-	}, [office.locOptions]);
+	}, [misc]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (newLocId !== curLocId || menu.refresh) {
-			//create new array of resources for new location
-			const allCats = ecomm.cats;
-			let tmpArr = [];
-			for (let i = 0; i < allCats.length; i++) {
-				const cat = allCats[i];
-				if (cat.locationObjId === newLocId) {
-					tmpArr.push(cat);
+		loadCats();
+	}, [loadCats]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchCats = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const cats = mongodb.db(dbName).collection('categories');
+
+			for await (const change of cats.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadCats();
 				}
 			}
-			tmpArr.sort(CompareByName);
-			setCatList(tmpArr);
-			if (menu.refresh) {
-				setMenu({ type: menu.type, func: '', refresh: false });
-			}
-		}
-		setCurLocId(newLocId);
-	}, [newLocId, curLocId, menu, ecomm, setMenu]);
+		};
+		wchCats();
+	}, [dbName, loadCats]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const setFunc = (func, id) => {
+		setMenu({ type: menu.type, func: func });
+		if (id) {
+			setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: id });
+		}
+	};
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGINATION FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const nextPage = () => {
 		if (currentPage !== nPages) {
 			setCurrentPage(currentPage + 1);
@@ -90,33 +109,10 @@ export default function Categories() {
 					<div className='colHdng'>Categories</div>
 				</div>
 				<div className='col-2 d-flex justify-content-end'>
-					{newLocId && <Image className='icoCols' src={add} title='Add Category' alt='Add' onClick={() => setFunc('phyCategoryAdd', '')} />}
+					<Image className='icoCols' src={add} title='Add Category' alt='Add' onClick={() => setFunc('phyCategoryAdd', '')} />
 				</div>
 			</div>
-			{office.locOptions.length > 1 && (
-				<div className='row mb-4 d-flex justify-content-center'>
-					<div className='col-8'>
-						<label className='frmLabel'>Select Location</label>
-					</div>
-					<div className='col-8'>
-						<select className='inpBorder form-control mb-2' value={curLocId} onChange={(e) => setNewLocId(e.target.value)}>
-							<option value=''>Select One...</option>
-							{office.locOptions.map((loc) => (
-								<option value={loc.value} key={loc.value}>
-									{loc.label}
-								</option>
-							))}
-						</select>
-					</div>
-				</div>
-			)}
-			{currentRecords.length === 0 && newLocId ? (
-				<div className='row'>
-					<div className='col-12 d-flex justify-content-center'>
-						<div className='errMsg'>No categories found</div>
-					</div>
-				</div>
-			) : (
+			{currentRecords.length !== 0 && (
 				<>
 					{currentRecords.map((cat) => (
 						<div className='row mb-2 d-flex align-items-center' key={cat._id}>
@@ -140,6 +136,7 @@ export default function Categories() {
 					)}
 				</>
 			)}
+			{loading && <Spinner />}
 		</>
 	);
 }

@@ -164,11 +164,6 @@ const officelocationSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		deleteme: {
-			type: Boolean,
-			default: false,
-			required: true,
-		},
 		officeObjId: {
 			type: ObjectId,
 			ref: 'offices',

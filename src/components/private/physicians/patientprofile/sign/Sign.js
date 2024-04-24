@@ -1,82 +1,59 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { Today } from '@/components/global/functions/PageFunctions';
 import toast from 'react-hot-toast';
 import CheckBox from '@/components/global/forms/checkbox/Checkbox';
 
-export default function Sign(apptId) {
-	const id = apptId.apptId;
+export default function Sign({ props }) {
+	const newApptId = props._id;
 	const today = Today();
 	const router = useRouter();
-	const [appts, _setAppts] = useContext(ApptContext);
-	const [auth, _setAuth] = useContext(AuthContext);
-	const [appt, setAppt] = useState({});
+	const [auth] = useContext(AuthContext);
+	const [curApptId, setCurApptId] = useState('');
+	const [id, setId] = useState('');
 	const [paSignReqId, setPaSignReqId] = useState('');
-	const [prSignReqId, setPrSignReqId] = useState('');
 	const [paSignReqName, setPaSignReqName] = useState('');
-	const [prSignReqName, setPrSignReqName] = useState('');
-	const [paSigned, setPaSigned] = useState(false);
-	const [prSigned, setPrSigned] = useState(false);
-	const [paSignedBy, setPaSignedBy] = useState('');
-	const [prSignedBy, setPrSignedBy] = useState('');
-	const [_paSignedById, setPaSignedById] = useState('');
-	const [_prSignedById, setPrSignedById] = useState('');
 	const [paSignedDate, setPaSignedDate] = useState('');
+	const [paSignedBy, setPaSignedBy] = useState('');
+	const [paSigned, setPaSigned] = useState(false);
+	const [prSignReqId, setPrSignReqId] = useState('');
+	const [prSignReqName, setPrSignReqName] = useState('');
 	const [prSignedDate, setPrSignedDate] = useState('');
+	const [prSignedBy, setPrSignedBy] = useState('');
+	const [prSigned, setPrSigned] = useState(false);
 	const [paChecked, setPaChecked] = useState(false);
 	const [prChecked, setPrChecked] = useState(false);
-	const [stop, setStop] = useState(false);
-	const [curId, setCurId] = useState('');
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VALUES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		//get appointment from context
-		if (Object.keys(appt).length === 0 || curId !== id) {
-			setAppt(appts.all.find((x) => x._id === id));
+		if (curApptId !== newApptId) {
+			setId(props._id);
+			setPaSignReqId(props.paSignReqId);
+			setPaSignReqName(props.paSignReqName);
+			setPaSignedDate(props.paSignDate);
+			setPaSignedBy(props.paSignBy);
+			setPaSigned(props.pa);
+			setPrSignReqId(props.prSignReqId);
+			setPrSignReqName(props.prSignReqName);
+			setPrSignedDate(props.prSignDate);
+			setPrSignedBy(props.prSignBy);
+			setPrSigned(props.pr);
+			setCurApptId(newApptId);
 		}
-	}, [appt, appts, curId, id]);
+	}, [props, curApptId, newApptId]);
 
-	useEffect(() => {
-		if (Object.keys(appt).length !== 0 && curId !== id) {
-			//set PA values
-			setPaSignReqId(appt.pasignreqId);
-			setPaSignReqName(appt.pasignreqname);
-			setPaSigned(appt.pasigned);
-			setPaSignedBy(appt.pasignedby);
-			setPaSignedById(appt.pasignedbyId);
-			setPaSignedDate(appt.pasigneddate);
-			//set PR values
-			setPrSignReqId(appt.prsignreqId);
-			setPrSignReqName(appt.prsignreqname);
-			setPrSigned(appt.prsigned);
-			setPrSignedBy(appt.prsignedby);
-			setPrSignedById(appt.prsignedbyId);
-			setPrSignedDate(appt.prsigneddate);
-			setStop(true);
-			setCurId(id);
-		}
-	}, [appt, curId, id, prSignReqId, prSigned, stop]);
-
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handlePaSign = async (e) => {
 		e.preventDefault();
 		const value = e.target.checked;
 		if (value) {
 			//check it's the person supposed to be signing
 			if (auth.user._id === paSignReqId) {
-				appt.pasigned = true;
-				appt.pasignedby = auth.user.title;
-				appt.pasignedbyId = auth.user._id;
-				appt.pasigneddate = today;
-				setPaSigned(true);
-				setPaSignedBy(auth.user.title);
-				setPaSignedById(auth.user._id);
-				setPaSignedDate(today);
-				//update the appointment context
-				const idx = appts.all.findIndex((x) => x._id === id);
-				appts.all.splice(idx, 1, appt);
-
-				//update in the database
 				const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/sign/pa`, {
 					method: 'PUT',
 					headers: {
@@ -110,21 +87,6 @@ export default function Sign(apptId) {
 		if (value) {
 			//check it's the person supposed to be signing
 			if (auth.user._id === prSignReqId) {
-				appt.prsigned = true;
-				appt.prsignedby = auth.user.title;
-				appt.prsignedbyId = auth.user._id;
-				appt.prsigneddate = today;
-				setPrSigned(true);
-				setPrSignedBy(auth.user.title);
-				setPrSignedById(auth.user._id);
-				setPrSignedDate(today);
-				//update the appointment context
-				const idxAll = appts.all.findIndex((x) => x._id === id);
-				const idxTdy = appts.todays.findIndex((x) => x._id === id);
-				appts.all.splice(idxAll, 1, appt);
-				appts.todays.splice(idxTdy, 1, appt);
-
-				//update in the database
 				const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/sign/pr`, {
 					method: 'PUT',
 					headers: {

@@ -1,8 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
-import { AuthContext } from '@/utils/context/global/AuthContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import { FixVisitDate } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -17,52 +15,55 @@ export default function Visits({ patient }) {
 		}
 	}
 	const router = useRouter();
-	const [appts, setAppts] = useContext(ApptContext);
-	const [auth, _setAuth] = useContext(AuthContext);
-	const [office, _setOffice] = useContext(OfficeContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [curPtId, setCurPtId] = useState('');
-	const [ptAppts, setPtAppts] = useState([]);
+	const [appts, setAppts] = useState([]);
+	const [noAppts, setNoAppts] = useState(false);
 	const [shwVisits, setShwVisits] = useState(false);
 
-	useEffect(() => {
-		if (newPtId !== curPtId) {
-			//get all patient appointments from database
-			const getAppts = async () => {
-				try {
-					const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/byptid?ptid=${newPtId}`, {
-						method: 'GET',
-					});
-					const data = await response.json();
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadAppts = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/forlist?locid=${misc.defLocId}&ptid=${newPtId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-					if (data.status === 200) {
-						let tmpArr = [];
-						for (let i = 0; i < data.appts.length; i++) {
-							const appt = data.appts[i];
-							if (appt.locationObjId === office.defLoc && appt.officeObjId === auth.user.ofcObjId) {
-								tmpArr.push({ _id: appt._id, date: appt.date, reason: appt.reason });
-							}
-						}
-						setPtAppts(tmpArr);
-						setCurPtId(newPtId);
-					} else {
-						toast.error(data.msg);
-						return;
-					}
-				} catch (error) {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getAppts();
+			if (data.status === 400) {
+				setAppts([]);
+				setNoAppts(true);
+			}
+
+			if (data.status === 200) {
+				setAppts(data.appts);
+				setNoAppts(false);
+			}
+			setCurPtId(newPtId);
+		} catch (err) {
+			toast.error(err);
 		}
-	}, [newPtId, curPtId, office, auth]);
+	}, [misc, newPtId]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (curPtId !== newPtId) {
+			loadAppts();
+		}
+	}, [curPtId, newPtId, loadAppts]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleVisits = () => {
 		setShwVisits(!shwVisits);
 	};
 
 	const chgAppt = (apptId) => {
-		setAppts({ all: appts.all, todays: appts.todays, prev: [], selected: apptId });
+		setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: apptId });
 		router.push('/physicians/patientprofile');
 	};
 
@@ -82,9 +83,9 @@ export default function Visits({ patient }) {
 			</div>
 			{shwVisits && (
 				<>
-					{ptAppts.length !== 0 ? (
+					{appts.length !== 0 && (
 						<>
-							{ptAppts.map((appt) => (
+							{appts.map((appt) => (
 								<div className='row mb-1' key={appt._id}>
 									<div className='col-11 col-xl-4 offset-1'>
 										<div className='sphSideLink' onClick={(e) => chgAppt(appt._id)}>
@@ -92,14 +93,13 @@ export default function Visits({ patient }) {
 										</div>
 									</div>
 									<div className='col-11 col-xl-7 offset-1 offset-xl-0'>
-										<div className='sphSideText'>{appt.reason}</div>
+										<div className='sphSideText'>{appt.description}</div>
 									</div>
 								</div>
 							))}
 						</>
-					) : (
-						<div className='errMsg ps-5'>No Visits Found</div>
 					)}
+					{noAppts && <div className='errMsg ps-5'>No Visits Found</div>}
 				</>
 			)}
 		</>

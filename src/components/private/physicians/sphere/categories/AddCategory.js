@@ -1,10 +1,8 @@
 'use client';
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { CompareByName } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -14,13 +12,15 @@ import close from '@/assets/images/icoClose.png';
 
 export default function AddCategory() {
 	const [auth] = useContext(AuthContext);
-	const [office, _setOffice] = useContext(OfficeContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [ecomm, setEcomm] = useContext(EcommContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [name, setName] = useState('');
 	const [color, setColor] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -33,7 +33,7 @@ export default function AddCategory() {
 				body: JSON.stringify({
 					name,
 					color,
-					locationObjId: office.selLoc,
+					locationObjId: misc.defLocId,
 					officeObjId: auth.user.ofcObjId,
 				}),
 			});
@@ -46,30 +46,11 @@ export default function AddCategory() {
 			}
 
 			if (data.status === 200) {
-				//get new category for id
-				const newResponse = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/category/get/bydata?name=${name}&locid=${office.selLoc}`, {
-					method: 'GET',
-				});
-				const catData = await newResponse.json();
-
-				//add new category to context array
-				let curCats = ecomm.cats;
-				const newObj = {
-					_id: catData.cat._id,
-					name,
-					color,
-					locationObjId: office.selLoc,
-					officeObjId: auth.user.ofcObjId,
-				};
-				curCats.push(newObj);
-				curCats.sort(CompareByName);
-				setEcomm({ cats: curCats, selCat: {}, services: ecomm.services, selSvc: {} });
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
 				toast.success(data.msg);
-			} else {
-				toast.error(data.msg);
 			}
-		} catch (error) {
-			toast.error(error);
+		} catch (err) {
+			toast.error(err);
 		} finally {
 			setLoading(false);
 			handleClose();
@@ -79,7 +60,7 @@ export default function AddCategory() {
 	const handleClose = () => {
 		setName('');
 		setColor('');
-		setMenu({ type: menu.type, func: '', refresh: true });
+		setMenu({ type: menu.type, func: '' });
 	};
 
 	return (

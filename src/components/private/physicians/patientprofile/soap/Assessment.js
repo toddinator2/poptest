@@ -1,20 +1,22 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
 import toast from 'react-hot-toast';
 
-export default function Assessment(apptId) {
-	const id = apptId.apptId;
-	const [auth, _setAuth] = useContext(AuthContext);
-	const [appts, setAppts] = useContext(ApptContext);
-	const [noTemps, setNoTemps] = useState(false);
+export default function Assessment({ props }) {
+	const newApptId = props._id;
+	const [auth] = useContext(AuthContext);
+	const [curApptId, setCurApptId] = useState('');
+	const [id, setId] = useState('');
+	const [ass, setAss] = useState('');
+	const [pasigned, setPaSigned] = useState(false);
+	const [prsigned, setPrSigned] = useState(false);
 	const [closeTempSel, setCloseTempSel] = useState(false);
 	const [tmpOptions, setTmpOptions] = useState([]);
-	const [appt, setAppt] = useState({});
-	const [stop, setStop] = useState(false);
-	const [ass, setAss] = useState('');
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const loadTemps = useCallback(async () => {
 		try {
 			const response = await fetch(`${process.env.API_URL}/private/physicians/templates/get/bysoap/ass?userid=${auth.user._id}`, {
@@ -23,86 +25,44 @@ export default function Assessment(apptId) {
 			const data = await response.json();
 
 			if (data.status === 400) {
-				setNoTemps(true);
+				setTmpOptions([]);
 			}
 
 			if (data.status === 200) {
-				setNoTemps(false);
-				const temps = data.temps;
-				let tmpArr = [];
-				for (let i = 0; i < temps.length; i++) {
-					const tmp = temps[i];
-					if (tmp.category === 'Assessment') {
-						tmpArr.push(tmp);
-					}
-				}
-				setTmpOptions(tmpArr);
+				setTmpOptions(data.temps);
 			}
 		} catch (err) {
 			toast.error(err);
 		}
-	}, [auth, setTmpOptions]);
+	}, [auth]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		loadTemps();
 	}, [loadTemps]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VALUES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		//get initial appointment data
-		if (Object.keys(appt).length === 0 && id !== '') {
-			const getAppt = async () => {
-				try {
-					const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/byid?id=${id}`, {
-						method: 'GET',
-					});
-					const data = await response.json();
+		if (curApptId !== newApptId) {
+			setId(props._id);
+			setAss(props.ass);
+			setPaSigned(props.pa);
+			setPrSigned(props.pr);
+			setCurApptId(newApptId);
 
-					if (data.status === 200) {
-						setAppt(data.appt);
-					}
-				} catch (error) {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getAppt();
-		}
-	}, [appt, id, setAppt]);
-
-	useEffect(() => {
-		//get appointment data if another appointment is clicked on
-		if (Object.keys(appt).length !== 0 && id !== appt._id) {
-			const getAppt = async () => {
-				try {
-					const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/byid?id=${id}`, {
-						method: 'GET',
-					});
-					const data = await response.json();
-
-					if (data.status === 200) {
-						setAppt(data.appt);
-						setStop(false);
-					}
-				} catch (error) {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getAppt();
-		}
-	}, [appt, id, setAppt]);
-
-	useEffect(() => {
-		if (Object.keys(appt).length !== 0 && !stop && id === appt._id) {
-			if (appt.assessment !== null && appt.assessment !== undefined) {
-				setAss(appt.assessment);
-			} else {
-				setAss('');
+			if (props.pr) {
+				setCloseTempSel(true);
 			}
-			setStop(true);
 		}
-	}, [appt, id, stop]);
+	}, [props, curApptId, newApptId]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// HANDLE QUICK SAVE
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const submitAss = async (e) => {
 		e.preventDefault();
 		//update assessment in database
@@ -118,33 +78,16 @@ export default function Assessment(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.assessment = ass;
-			}
-			if (idxApptTdy) {
-				apptTdy.assessment = ass;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-		} else {
+		if (data.status !== 200) {
 			toast.error('Assessment did not save, please try again');
 			document.getElementById('assessment').focus();
 			return;
 		}
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleAssessment = (e) => {
 		e.preventDefault();
 		const value = e.target.value;
@@ -185,27 +128,19 @@ export default function Assessment(apptId) {
 
 	return (
 		<div className='ppDivSoap mb-3 py-3'>
-			{!noTemps ? (
+			<div className='row mb-1'>
+				<div className='col-12 d-flex justify-content-center'>
+					<div className='ppCompHdng'>ASSESSMENT</div>
+				</div>
+			</div>
+			{tmpOptions.length === 0 && !closeTempSel && (
 				<div className='row mb-3'>
 					<div className='col-12 d-flex justify-content-center'>
-						<div className='ppCompHdng'>ASSESSMENT</div>
+						<div className='errMsg'>No Templates Found</div>
 					</div>
 				</div>
-			) : (
-				<>
-					<div className='row'>
-						<div className='col-12 d-flex justify-content-center'>
-							<div className='ppCompHdng'>ASSESSMENT</div>
-						</div>
-					</div>
-					<div className='row mb-3'>
-						<div className='col-12 d-flex justify-content-center'>
-							<div className='errMsg'>No Templates Found</div>
-						</div>
-					</div>
-				</>
 			)}
-			{!noTemps && !closeTempSel && (
+			{tmpOptions.length !== 0 && !closeTempSel && (
 				<div className='row mb-3'>
 					<div className='col-10 offset-1'>
 						<div className='frmLabel'>Templates</div>
@@ -221,7 +156,7 @@ export default function Assessment(apptId) {
 					</div>
 				</div>
 			)}
-			{!appt.pasigned && !appt.prsigned && (
+			{!pasigned && !prsigned && (
 				<div className='row'>
 					<div className='col-10 offset-1'>
 						<textarea
@@ -235,10 +170,10 @@ export default function Assessment(apptId) {
 					</div>
 				</div>
 			)}
-			{appt.prsigned && (
+			{prsigned && (
 				<div className='row'>
 					<div className='col-10 offset-1'>
-						<textarea className='ppta inpBorder' rows='2' readOnly value={appt.assessment} />
+						<textarea className='ppta inpBorder' rows='2' readOnly value={props.ass} />
 					</div>
 				</div>
 			)}

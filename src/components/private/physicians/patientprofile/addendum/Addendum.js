@@ -1,42 +1,47 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Today } from '@/components/global/functions/PageFunctions';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import Image from 'next/image';
-import add from '@/assets/images/icoAdd.png';
+import icoAdd from '@/assets/images/icoAdd.png';
 
-export default function Addendum(apptId) {
-	const id = apptId.apptId;
+export default function Addendum({ props }) {
+	const newApptId = props._id;
 	const today = Today();
-	const [appts, setAppts] = useContext(ApptContext);
-	const [auth, _setAuth] = useContext(AuthContext);
-	const [appt, setAppt] = useState({});
-	const [curId, setCurId] = useState('');
+	const [auth] = useContext(AuthContext);
+	const [curApptId, setCurApptId] = useState('');
+	const [id, setId] = useState('');
+	const [add, setAdd] = useState('');
+	const [pasigned, setPaSigned] = useState(false);
+	const [prsigned, setPrSigned] = useState(false);
+
 	const [newAdd, setNewAdd] = useState('');
 	const [shwAddDiv, setShwAddDiv] = useState(false);
 
-	const reLoadAppt = useCallback(() => {
-		setAppt(appts.all.find((x) => x._id === id));
-	}, [appts, id]);
-
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VALUES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		//get appointment from context
-		if (Object.keys(appt).length === 0 || curId !== id) {
-			setAppt(appts.all.find((x) => x._id === id));
-			setCurId(id);
+		if (curApptId !== newApptId) {
+			setId(props._id);
+			setAdd(props.add);
+			setPaSigned(props.pa);
+			setPrSigned(props.pr);
+			setCurApptId(newApptId);
 		}
-	}, [appt, appts, curId, id]);
+	}, [props, curApptId, newApptId]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// HANDLE QUICK SAVE
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const submitAdd = async (e) => {
 		e.preventDefault();
 		let updAdd = '';
-		if (appt.addendum) {
-			updAdd = auth.user.fname + ' ' + auth.user.lname + '\n' + today + '\n' + newAdd + '\n\n' + appt.addendum;
+		if (add) {
+			updAdd = auth.user.fname + ' ' + auth.user.lname + '\n' + today + '\n' + newAdd + '\n\n' + add;
 		} else {
 			updAdd = auth.user.fname + ' ' + auth.user.lname + '\n' + today + '\n' + newAdd;
 		}
 
-		//update addendum in database
 		const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/addendum`, {
 			method: 'PUT',
 			headers: {
@@ -49,36 +54,20 @@ export default function Addendum(apptId) {
 		});
 		const data = await response.json();
 
-		if (data.status === 200) {
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			const idxApptAll = tmpApptsAll.findIndex((x) => x._id === id);
-			const idxApptTdy = tmpApptsTdy.findIndex((x) => x._id === id);
-			const apptAll = tmpApptsAll[idxApptAll];
-			const apptTdy = tmpApptsTdy[idxApptTdy];
-			if (apptAll) {
-				apptAll.addendum = updAdd;
-			}
-			if (idxApptTdy) {
-				apptTdy.addendum = updAdd;
-			}
-
-			tmpApptsAll.splice(idxApptAll, 1, apptAll);
-			if (idxApptTdy !== null && idxApptTdy !== undefined) {
-				tmpApptsTdy.splice(idxApptTdy, 1, apptTdy);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-			setNewAdd('');
-			setShwAddDiv(false);
-			reLoadAppt();
-		} else {
+		if (data.status !== 200) {
 			toast.error('Addendum did not save, please try again');
 			document.getElementById('taAdd').focus();
 			return;
+		} else {
+			setAdd(updAdd);
+			setNewAdd('');
+			setShwAddDiv(false);
 		}
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleAddDiv = () => {
 		setShwAddDiv(!shwAddDiv);
 	};
@@ -86,7 +75,7 @@ export default function Addendum(apptId) {
 	return (
 		<div className='ppDivRest mb-3 py-3'>
 			<div className='row mb-2 d-flex align-items-center'>
-				{!appt.pasigned && !appt.prsigned ? (
+				{!pasigned && !prsigned ? (
 					<div className='col-12 d-flex justify-content-center'>
 						<div className='ppCompHdng'>ADDENDUM</div>
 					</div>
@@ -96,16 +85,16 @@ export default function Addendum(apptId) {
 							<div className='ppCompHdng'>ADDENDUM</div>
 						</div>
 						<div className='col-2 d-flex justify-content-center'>
-							<Image className='sphSideMenuIcon' src={add} title='Add Addendum' alt='Add' onClick={() => handleAddDiv()} />
+							<Image className='sphSideMenuIcon' src={icoAdd} title='Add Addendum' alt='Add' onClick={() => handleAddDiv()} />
 						</div>
 					</>
 				)}
 			</div>
-			{appt.prsigned && (
+			{prsigned && (
 				<>
 					<div className='row'>
 						<div className='col-10 offset-1'>
-							<textarea className='form-control inpBorder' rows={2} readOnly defaultValue={appt.addendum} />
+							<textarea className='form-control inpBorder' rows={2} readOnly defaultValue={add} />
 						</div>
 					</div>
 					{shwAddDiv && (

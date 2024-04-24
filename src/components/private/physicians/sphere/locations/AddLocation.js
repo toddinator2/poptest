@@ -3,8 +3,7 @@ import React, { useContext, useState } from 'react';
 import { geocode, RequestType } from 'react-geocode';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { CompareByLabel, CompareByName, FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
+import { FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -17,7 +16,6 @@ export default function AddLocation() {
 	const gglKey = process.env.MAPS_KEY;
 	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, setOffice] = useContext(OfficeContext);
 	const [name, setName] = useState('');
 	const [add, setAdd] = useState('');
 	const [add2, setAdd2] = useState('');
@@ -63,6 +61,9 @@ export default function AddLocation() {
 	const [endLunch6, setEndLunch6] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -139,45 +140,7 @@ export default function AddLocation() {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				//set current locations
-				let tmpArr = [];
-				let locOpts = [];
-				tmpArr = office.locations;
-				locOpts = office.locOptions;
-
-				//get new location and add to current locations
-				const newResponse = await fetch(
-					`${process.env.API_URL}/private/physicians/office/locations/get/bycoords?lat=${latitude}&lng=${longitude}&ofcid=${auth.user.ofcObjId}`,
-					{
-						method: 'GET',
-					}
-				);
-				const locData = await newResponse.json();
-
-				if (locData.status === 200) {
-					tmpArr.push(locData.loc);
-					locOpts.push({ label: locData.loc.name, value: locData.loc._id });
-
-					//sort array alphabetically by name
-					await tmpArr.sort(CompareByName);
-					await locOpts.sort(CompareByLabel);
-
-					setOffice({
-						locations: tmpArr,
-						selLoc: {},
-						locOptions: locOpts,
-						defLoc: office.defLoc,
-						users: office.users,
-						selUser: {},
-						resources: office.resources,
-						selRscs: [],
-						rscOptions: office.rscOptions,
-					});
-
-					toast.success(data.msg);
-				} else {
-					toast.error(data.msg);
-				}
+				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
 			}
@@ -235,6 +198,9 @@ export default function AddLocation() {
 		setMenu({ type: menu.type, func: '' });
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleShwDiv = async (e) => {
 		e.preventDefault();
 		const value = e.target.checked;
@@ -374,7 +340,7 @@ export default function AddLocation() {
 								</select>
 							</div>
 						</div>
-						<Input label='Zip Code' type='text' required={true} value={zip} setValue={setZip} />
+						<Input label='Zip Code' type='number' required={true} value={zip} setValue={setZip} />
 						<Input label='Phone' type='tel' required={true} value={phone} funcCall={handlePhone} />
 						<div className='row mb-2'>
 							<div className='col-12'>

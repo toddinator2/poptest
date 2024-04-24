@@ -8,6 +8,7 @@ export const POST = async (req) => {
 	const { name, price, catObjId, locationObjId, officeObjId } = body;
 
 	try {
+		//make sure name does not already exist for this category
 		const exists = await Service.findOne({ name: name, catObjId: catObjId });
 		if (exists) {
 			return NextResponse.json({ msg: 'Name already exists in this category, please try another', status: 400 });

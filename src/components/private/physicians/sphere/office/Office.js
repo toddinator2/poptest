@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import edit from '@/assets/images/icoEdit.png';
-import { saveInLocalStorage } from '@/utils/helpers/auth';
 
 import * as Realm from 'realm-web';
 const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
@@ -12,6 +12,7 @@ export default function Office() {
 	const dbName = process.env.REALM_DB;
 	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [ofcData, setOfcData] = useState({});
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +20,7 @@ export default function Office() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const loadOffice = useCallback(async () => {
 		try {
-			const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${auth.user.ofcObjId}`, {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get/namephone?id=${auth.user.ofcObjId}`, {
 				method: 'GET',
 			});
 			const data = await response.json();
@@ -64,9 +65,8 @@ export default function Office() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const setFunc = (func, id) => {
 		setMenu({ type: menu.type, func: func });
-
 		if (id) {
-			saveInLocalStorage('ofcId', id);
+			setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: id });
 		}
 	};
 
@@ -80,7 +80,7 @@ export default function Office() {
 					<Image className='icoCols' src={edit} title='Edit Office' alt='Edit' onClick={() => setFunc('phyBasicEdt', ofcData._id)} />
 				</div>
 			</div>
-			{Object.keys(ofcData).length !== 0 && ofcData.name ? (
+			{Object.keys(ofcData).length !== 0 && ofcData.name && (
 				<>
 					<div className='row mb-2 d-flex align-items-center'>
 						<div className='col-5 pe-1 d-flex justify-content-end'>
@@ -95,16 +95,10 @@ export default function Office() {
 							<div className='colLblText'>Phone:</div>
 						</div>
 						<div className='col-7 ps-1'>
-							<div className='colDataText'>{ofcData.mainphone}</div>
+							<div className='colDataText'>{ofcData.phone}</div>
 						</div>
 					</div>
 				</>
-			) : (
-				<div className='row'>
-					<div className='col-12 d-flex justify-content-center'>
-						<div className='errMsg'>Office not setup yet</div>
-					</div>
-				</div>
 			)}
 		</>
 	);

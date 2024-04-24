@@ -1,45 +1,96 @@
 'use client';
-import React, { useContext, useState } from 'react';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
+import toast from 'react-hot-toast';
 import Pagination from '@/components/global/pagination/Pagination';
 import add from '@/assets/images/icoAdd.png';
 import edit from '@/assets/images/icoEdit.png';
 import del from '@/assets/images/icoDel.png';
 
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
+
 export default function Users() {
+	const dbName = process.env.REALM_DB;
+	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, setOffice] = useContext(OfficeContext);
+	const [misc, setMisc] = useContext(MiscContext);
+	const [users, setUsers] = useState([]);
 	//pagination
 	const [currentPage, setCurrentPage] = useState(1);
 	const [recordsPerPage] = useState(10);
 	const indexOfLastRecord = currentPage * recordsPerPage;
 	const indexOfFirstRecord = indexOfLastRecord - recordsPerPage;
-	const currentRecords = office.users.slice(indexOfFirstRecord, indexOfLastRecord);
-	const nPages = Math.ceil(office.users.length / recordsPerPage);
+	const currentRecords = users.slice(indexOfFirstRecord, indexOfLastRecord);
+	const nPages = Math.ceil(users.length / recordsPerPage);
 	const pageNumbers = Array.from({ length: nPages }, (_, index) => index + 1);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadUsers = useCallback(async () => {
+		try {
+			const response = await fetch(
+				`${process.env.API_URL}/private/physicians/office/users/get/forloc?ofcid=${auth.user.ofcObjId}&locid=${misc.defLocId}`,
+				{
+					method: 'GET',
+				}
+			);
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setUsers(data.users);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [auth, misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadUsers();
+	}, [loadUsers]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchUsers = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const users = mongodb.db(dbName).collection('officeusers');
+
+			for await (const change of users.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadUsers();
+				}
+			}
+		};
+		wchUsers();
+	}, [dbName, loadUsers]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const setFunc = (func, id) => {
 		setMenu({ type: menu.type, func: func });
-
 		if (id) {
-			//Get selected user from array and save in office context
-			const edtUser = office.users.find((item) => item._id === id);
-			setOffice({
-				locations: office.locations,
-				selLoc: {},
-				locOptions: office.locOptions,
-				defLoc: office.defLoc,
-				users: office.users,
-				selUser: edtUser,
-				resources: office.resources,
-				selRscs: [],
-				rscOptions: office.rscOptions,
-			});
+			setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: id });
 		}
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGINATION FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const nextPage = () => {
 		if (currentPage !== nPages) {
 			setCurrentPage(currentPage + 1);
@@ -61,13 +112,7 @@ export default function Users() {
 					<Image className='icoCols' src={add} title='Add User' alt='Add' onClick={() => setFunc('phyUserAdd', '')} />
 				</div>
 			</div>
-			{currentRecords.length === 0 ? (
-				<div className='row'>
-					<div className='col-12 d-flex justify-content-center'>
-						<div className='errMsg'>No users found</div>
-					</div>
-				</div>
-			) : (
+			{currentRecords.length !== 0 && (
 				<>
 					{currentRecords.map((user) => (
 						<div className='row mb-2 d-flex align-items-center' key={user._id}>

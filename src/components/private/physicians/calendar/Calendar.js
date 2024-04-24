@@ -1,17 +1,31 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import '@mobiscroll/react/dist/css/mobiscroll.min.css';
 import './Calendar.css';
-import { Button, Eventcalendar, Popup, Select, setOptions, Toast } from '@mobiscroll/react';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import {
+	Button,
+	CalendarNav,
+	CalendarNext,
+	CalendarPrev,
+	CalendarToday,
+	Eventcalendar,
+	Popup,
+	Segmented,
+	SegmentedGroup,
+	Select,
+	setOptions,
+} from '@mobiscroll/react';
 import { FormatDate } from '@/components/global/functions/PageFunctions';
 import { EarliestStart, LatestEnd, SetColorOptions, SetInvalidTimes } from './functions/PageFunctions';
 import { Header } from './components/header/Header';
 import { CustomResource } from './components/resource/CustomResource';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { PtPopContext } from '@/utils/context/physicians/PtsPopContext';
+import { PatientPopupContext } from '@/utils/context/physicians/PatientPopupContext';
 import toast from 'react-hot-toast';
 import PatientSearch from '../sidebars/shared/patientsearch/PatientSearch';
+import Spinner from '@/components/global/spinner/Spinner';
+
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
 
 const newEventData = (args) => {
 	return {
@@ -29,21 +43,20 @@ setOptions({
 
 //set unix times and offset
 const now = new Date();
-const dt = new Date();
-const diffTZ = dt.getTimezoneOffset();
+const diffTZ = now.getTimezoneOffset();
 const offset = diffTZ * 60;
 let today = new Date().toLocaleDateString();
 let tomorrow = new Date(today);
 tomorrow.setDate(tomorrow.getDate() + 1);
-const unixToday = parseInt((new Date(today).getTime() / 1000 + parseInt(offset)).toFixed(0));
-const unixTomorrow = parseInt((new Date(tomorrow).getTime() / 1000 + parseInt(offset)).toFixed(0));
 
 export default function Schedule() {
 	//Necessary app state
-	const [office, setOffice] = useContext(OfficeContext);
-	const [appts, setAppts] = useContext(ApptContext);
-	const [ecomm, setEcomm] = useContext(EcommContext);
-	const [popPatients, setPopPatients] = useContext(PtPopContext);
+	const dbName = process.env.REALM_DB;
+	const [misc] = useContext(MiscContext);
+	const [popPatients, setPopPatients] = useContext(PatientPopupContext);
+	const [view, setView] = useState('week');
+	const [calView, setCalView] = useState({});
+	const [loading, setLoading] = useState(false);
 	//Default calendar state needed from MBSC
 	const [myEvents, setMyEvents] = useState([]);
 	const [tempEvent, setTempEvent] = useState(null);
@@ -52,159 +65,93 @@ export default function Schedule() {
 	const [isEdit, setEdit] = useState(false);
 	const [anchor, setAnchor] = useState(null);
 	//My state for app and calendar
-	const [edtId, setEdtId] = useState('');
-	const [location, setLocation] = useState({});
-	const [locId, setLocId] = useState('');
-	const [chkdLocId, setChkdLocId] = useState(false);
+	const [appts, setAppts] = useState([]);
+	const [catId, setCatId] = useState('');
 	const [doctors, setDoctors] = useState([]);
-	const [chkdDoctors, setChkdDoctors] = useState(false);
-	const [chkdMyEvents, setChkdMyEvents] = useState(false);
-	const [catOptions, setCatOptions] = useState([]);
-	const [chkdCats, setChkdCats] = useState(false);
-	const [svcOptions, setSvcOptions] = useState([]);
-	const [chkdSvcs, setChkdSvcs] = useState(false);
 	const [rscOptions, setRscOptions] = useState([]);
-	const [chkdRscs, setChkdRscs] = useState(false);
-	const [earliestTime, setEarliestTime] = useState('');
+	const [catOptions, setCatOptions] = useState([]);
+	const [svcOptions, setSvcOptions] = useState([]);
+	const [location, setLocation] = useState({});
 	const [chkdEarly, setChkdEarly] = useState(false);
-	const [latestTime, setLatestTime] = useState('');
+	const [earliestTime, setEarliestTime] = useState('');
 	const [chkdLate, setChkdLate] = useState(false);
-	const [toastMessage, setToastMessage] = useState('');
-	const [isToastOpen, setToastOpen] = useState(false);
+	const [latestTime, setLatestTime] = useState('');
+	const [catColor, setCatColor] = useState('');
+	const [edtId, setEdtId] = useState('');
 	//Calendar Popup
 	const [title, setTitle] = useState('');
 	const [ptSelId, setPtSelId] = useState('');
-	const [apptCalType, setApptCalType] = useState('');
-	const [apptType, setApptType] = useState('');
+	const [description, setDescription] = useState('');
 	const [start, setStart] = useState('');
 	const [end, setEnd] = useState('');
-	const [catId, setCatId] = useState('');
+	const [apptType, setApptType] = useState('');
 	const [catName, setCatName] = useState('');
-	const [catColor, setCatColor] = useState('');
 	const [svcId, setSvcId] = useState('');
-	const [description, setDescription] = useState('');
 	const [rscsSelected, setRscsSelected] = useState(null);
-	const [popupEventAllDay, setAllDay] = useState(true);
+	const [popupEventAllDay, setAllDay] = useState(false);
 	const [popupEventDate, setDate] = useState([]);
 	const [popupEventStatus, setStatus] = useState('busy');
 	const [reason, setReason] = useState('');
 	const [comment, setComment] = useState('');
 	const [mySelectedDate, setSelectedDate] = useState(now);
-	const [colorPickerOpen, setColorPickerOpen] = useState(false);
-	const [colorAnchor, setColorAnchor] = useState(null);
 	const [selectedColor, setSelectedColor] = useState('');
-	const [tempColor, setTempColor] = useState('');
 	const [isSnackbarOpen, setSnackbarOpen] = useState(false);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// RELOAD DATA FUNCTIONS
+	// DATA LOAD FUNCTIONS
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	const loadSvcsArray = useCallback(
-		(value) => {
-			let tmpArr = [];
-			const svcs = ecomm.services;
-			for (let i = 0; i < svcs.length; i++) {
-				const svc = svcs[i];
-				if (svc.catObjId === value) {
-					tmpArr.push(svc);
-				}
-			}
-			if (tmpArr.length === 0) {
-				setSvcOptions([]);
-				setChkdSvcs(true);
-				setCatId('');
-				toast.error('No services found for this category, please choose another category');
-			} else {
-				setSvcOptions(tmpArr);
-			}
-		},
-		[ecomm]
-	);
-
-	const loadApptsContext = useCallback(
-		async (title, starttime) => {
-			let tmpArrAll = appts.all;
-			let tmpArrTdy = appts.todays;
-			//get new appointment to add to context
-			const apptResponse = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/byunixtitle?title=${title}&unixstart=${starttime}`, {
+	const loadAppointments = useCallback(async () => {
+		//all appointments
+		try {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/forloc?locid=${misc.defLocId}&offset=${offset}`, {
 				method: 'GET',
 			});
-			const apptData = await apptResponse.json();
+			const data = await response.json();
 
-			if (apptData.status === 200) {
-				tmpArrAll.push(apptData.appt);
-				if (apptData.appt.unixstart > unixToday && apptData.appt.unixend < unixTomorrow) {
-					tmpArrTdy.push(apptData.appt);
-				}
-
-				//update contexts
-				setAppts({ all: tmpArrAll, todays: tmpArrTdy, prev: [], selected: {} });
-			} else {
-				return;
-			}
-		},
-		[appts, setAppts]
-	);
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// INITIAL LOAD DATA FUNCTIONS
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	useEffect(() => {
-		//set location data
-		if (locId !== office.defLoc) {
-			const curLocs = office.locations;
-			const ofcLoc = office.defLoc;
-			for (let i = 0; i < curLocs.length; i++) {
-				const loc = curLocs[i];
-				if (loc._id === ofcLoc) {
-					setLocation(loc);
-					setChkdLocId(true);
-					break;
-				}
-			}
-		}
-	}, [locId, office]);
-
-	useEffect(() => {
-		//set myEvents
-		if ((myEvents.length === 0 && !chkdMyEvents) || locId !== office.defLoc) {
-			let tmpArr = [];
-			const ofcLoc = office.defLoc;
-			for (let i = 0; i < appts.all.length; i++) {
-				const ev = appts.all[i];
-				if (ev.locationObjId === ofcLoc) {
-					const cat = ecomm.cats.find((item) => item._id === ev.categoryObjId);
-					const svc = ecomm.services.find((item) => item._id === ev.serviceObjId);
+			if (data.status === 200) {
+				let tmpArr = [];
+				setAppts(data.appts);
+				//set myEvents
+				for (let i = 0; i < data.appts.length; i++) {
+					const ev = data.appts[i];
 					const evObj = {
 						id: ev._id,
 						start: ev.start,
 						end: ev.end,
 						resource: ev.resource,
 						title: ev.title,
-						job: svc.name,
-						color: cat.color,
+						job: ev.description,
+						color: ev.color,
 					};
 					tmpArr.push(evObj);
 				}
+				setMyEvents(tmpArr);
+			} else {
+				toast.error(data.msg);
 			}
-			setMyEvents(tmpArr);
-			setChkdMyEvents(true);
+		} catch (err) {
+			toast.error(err);
+		} finally {
+			setLoading(false);
 		}
-	}, [myEvents, chkdMyEvents, locId, office, appts, ecomm]);
+	}, [misc]);
 
-	useEffect(() => {
-		//set doctors for header
-		if ((doctors.length === 0 && !chkdDoctors) || locId !== office.defLoc) {
-			let tmpArr = [];
-			const ofcLoc = office.defLoc;
-			const allRscs = office.resources;
-			for (let i = 0; i < allRscs.length; i++) {
-				const rsc = allRscs[i];
-				if (rsc.locationObjId === ofcLoc) {
+	const loadDoctors = useCallback(async () => {
+		//resources for header
+		try {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/forcalhdr?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				let tmpArr = [];
+				for (let i = 0; i < data.rscs.length; i++) {
+					const rsc = data.rscs[i];
 					const rscObj = {
 						id: rsc._id,
 						name: rsc.name,
@@ -213,85 +160,332 @@ export default function Schedule() {
 					};
 					tmpArr.push(rscObj);
 				}
+				setDoctors(tmpArr);
+			} else {
+				toast.error(data.msg);
 			}
-			setDoctors(tmpArr);
-			setChkdDoctors(true);
+		} catch (err) {
+			toast.error(err);
+		} finally {
+			setLoading(false);
 		}
-	}, [doctors, chkdDoctors, locId, office]);
+	}, [misc]);
+
+	const loadRscOpts = useCallback(async () => {
+		//resources for select
+		try {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/forselect?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setRscOptions(data.rscs);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		} finally {
+			setLoading(false);
+		}
+	}, [misc]);
+
+	const loadCatOpts = useCallback(async () => {
+		//categories for select
+		try {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/category/get/forloc?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setCatOptions(data.cats);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		} finally {
+			setLoading(false);
+		}
+	}, [misc]);
+
+	const loadSvcOpts = useCallback(async () => {
+		//services for select by category id
+		if (catId) {
+			try {
+				setLoading(true);
+				const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/get/forcat?catid=${catId}`, {
+					method: 'GET',
+				});
+				const data = await response.json();
+
+				if (data.status === 200) {
+					setSvcOptions(data.svcs);
+				}
+			} catch (err) {
+				toast.error(err);
+			} finally {
+				setLoading(false);
+			}
+		} else {
+			setSvcOptions([]);
+		}
+	}, [catId]);
+
+	const loadLocation = useCallback(async () => {
+		try {
+			setLoading(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/locations/get/byid?locid=${misc.defLocId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setLocation(data.loc);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		} finally {
+			setLoading(false);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (misc.defLocId) {
+			loadAppointments();
+		}
+	}, [misc, loadAppointments]);
 
 	useEffect(() => {
-		//set categories for this location
-		if ((ecomm.cats.length !== 0 && !chkdCats) || locId !== office.defLoc) {
-			let tmpArr = [];
-			const ofcLoc = office.defLoc;
-			const allCats = ecomm.cats;
-			for (let i = 0; i < allCats.length; i++) {
-				const cat = allCats[i];
-				if (cat.locationObjId === ofcLoc) {
-					const catObj = {
-						id: cat._id,
-						name: cat.name,
-						color: cat.color,
-					};
-					tmpArr.push(catObj);
-				}
-			}
-			setCatOptions(tmpArr);
-			setChkdCats(true);
+		if (misc.defLocId) {
+			loadDoctors();
 		}
-	}, [ecomm, chkdCats, locId, office]);
+	}, [misc, loadDoctors]);
 
 	useEffect(() => {
-		//set resources for dropdown
-		if ((rscOptions.length === 0 && !chkdRscs) || locId !== office.defLoc) {
-			let tmpArr = [];
-			const ofcLoc = office.defLoc;
-			const allRscs = office.resources;
-			for (let i = 0; i < allRscs.length; i++) {
-				const rsc = allRscs[i];
-				if (rsc.locationObjId === ofcLoc) {
-					const rscObj = {
-						value: rsc._id,
-						text: rsc.name,
-					};
-					tmpArr.push(rscObj);
+		if (misc.defLocId) {
+			loadRscOpts();
+		}
+	}, [misc, loadRscOpts]);
+
+	useEffect(() => {
+		if (misc.defLocId) {
+			loadCatOpts();
+		}
+	}, [misc, loadCatOpts]);
+
+	useEffect(() => {
+		if (catId) {
+			loadSvcOpts();
+		}
+	}, [catId, loadSvcOpts]);
+
+	useEffect(() => {
+		if (misc.defLocId) {
+			loadLocation();
+		}
+	}, [misc, loadLocation]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchAppts = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const appts = mongodb.db(dbName).collection('appointments');
+
+			for await (const change of appts.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadAppointments();
 				}
 			}
-			setRscOptions(tmpArr);
-			setChkdRscs(true);
-		}
-	}, [rscOptions, chkdRscs, locId, office]);
+		};
+		wchAppts();
+	}, [dbName, loadAppointments]);
 
+	useEffect(() => {
+		const wchDocs = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const rscs = mongodb.db(dbName).collection('resources');
+
+			for await (const change of rscs.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadDoctors();
+					loadRscOpts();
+				}
+			}
+		};
+		wchDocs();
+	}, [dbName, loadDoctors]);
+
+	useEffect(() => {
+		const wchCats = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const cats = mongodb.db(dbName).collection('categories');
+
+			for await (const change of cats.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadCatOpts();
+				}
+			}
+		};
+		wchCats();
+	}, [dbName, loadCatOpts]);
+
+	useEffect(() => {
+		const wchSvcs = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const svcs = mongodb.db(dbName).collection('services');
+
+			for await (const change of svcs.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadSvcOpts();
+				}
+			}
+		};
+		wchSvcs();
+	}, [dbName, loadSvcOpts]);
+
+	useEffect(() => {
+		const wchLocs = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const locs = mongodb.db(dbName).collection('officelocations');
+
+			for await (const change of locs.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadLocation();
+				}
+			}
+		};
+		wchLocs();
+	}, [dbName, loadLocation]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOCATION SPECIFIC VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		//set earliest start time for location
-		if ((!earliestTime && !chkdEarly && Object.keys(location).length !== 0) || locId !== office.defLoc) {
+		if ((!earliestTime && !chkdEarly && Object.keys(location).length !== 0) || location._id !== misc.defLocId) {
 			const start = EarliestStart(location);
 			setEarliestTime(start);
 			setChkdEarly(true);
 		}
-	}, [earliestTime, chkdEarly, location, locId, office]);
+	}, [earliestTime, chkdEarly, location, misc]);
 
 	useEffect(() => {
 		//set latest end time for location
-		if ((!latestTime && !chkdLate && Object.keys(location).length !== 0) || locId !== office.defLoc) {
+		if ((!latestTime && !chkdLate && Object.keys(location).length !== 0) || location._id !== misc.defLocId) {
 			const end = LatestEnd(location);
 			setLatestTime(end);
 			setChkdLate(true);
 		}
-	}, [latestTime, chkdLate, location, locId, office]);
+	}, [latestTime, chkdLate, location, misc]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CALENDAR VIEW OPTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const invalid = useMemo(() => SetInvalidTimes(location), [location]);
+	const colorOptions = useMemo(() => SetColorOptions(location), [location]);
 	useEffect(() => {
-		//set locId to default location id
-		if (chkdLocId && chkdMyEvents && chkdDoctors && chkdEarly && chkdLate) {
-			setLocId(office.defLoc);
+		if (earliestTime && latestTime && Object.keys(calView).length === 0 && Object.keys(location).length !== 0) {
+			setCalView({
+				schedule: {
+					type: 'week',
+					allDay: false,
+					startDay: location.startday,
+					endDay: location.endday,
+					startTime: earliestTime,
+					endTime: latestTime,
+				},
+			});
 		}
-	}, [chkdLocId, chkdMyEvents, chkdDoctors, chkdEarly, chkdLate, office]);
+	}, [earliestTime, latestTime, calView, location]);
 
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const changeView = useCallback(
+		(event) => {
+			const value = event.target.value;
+			setView(event.target.value);
+			if (value === 'week' && earliestTime && latestTime) {
+				setCalView({
+					schedule: {
+						type: 'week',
+						allDay: false,
+						startDay: location.startday,
+						endDay: location.endday,
+						startTime: earliestTime,
+						endTime: latestTime,
+					},
+				});
+			}
+			if (value === 'day' && earliestTime && latestTime) {
+				setCalView({
+					schedule: {
+						type: 'day',
+						allDay: false,
+						startDay: location.startday,
+						endDay: location.endday,
+						startTime: earliestTime,
+						endTime: latestTime,
+					},
+				});
+			}
+		},
+		[earliestTime, latestTime, location]
+	);
+
+	const customWithNavButtons = useCallback(
+		() => (
+			<>
+				<div className='row d-flex align-items-center' style={{ width: '100%' }}>
+					<div className='col-4'>
+						<CalendarNav className='cal-header-nav' />
+					</div>
+					<div className='col-4 d-flex justify-content-center'>
+						<div className='cal-header-picker'>
+							<SegmentedGroup value={view} onChange={changeView}>
+								<Segmented value='week'>Week</Segmented>
+								<Segmented value='day'>Day</Segmented>
+							</SegmentedGroup>
+						</div>
+					</div>
+					<div className='col-4 d-flex justify-content-end'>
+						<CalendarPrev className='cal-header-prev' />
+						<CalendarToday className='cal-header-today' />
+						<CalendarNext className='cal-header-next' />
+					</div>
+				</div>
+			</>
+		),
+		[changeView, view]
+	);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// POPUP VALUES
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		//set title and patient id in popup
 		if (popPatients.selected && !title) {
@@ -308,33 +502,6 @@ export default function Schedule() {
 		}
 	}, [popPatients, title]);
 
-	const viewOption = {
-		schedule: {
-			type: 'week',
-			allDay: false,
-			startDay: location.startday,
-			endDay: location.endday,
-			startTime: earliestTime,
-			endTime: latestTime,
-		},
-	};
-
-	const invalid = useMemo(() => SetInvalidTimes(location), [location]);
-	const colorOptions = useMemo(() => SetColorOptions(location), [location]);
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// EVERYTHING ABOVE HERE IS GOOD
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SAVE AND DELETE FUNCTIONS
@@ -342,10 +509,6 @@ export default function Schedule() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const saveEvent = async () => {
 		const date = start.slice(0, 10);
-		let paId = '';
-		let paName = '';
-		let prId = '';
-		let prName = '';
 		const unixstart = parseInt((new Date(start).getTime() / 1000).toFixed(0));
 		const unixend = parseInt((new Date(end).getTime() / 1000).toFixed(0));
 
@@ -361,94 +524,12 @@ export default function Schedule() {
 			resource: rscsSelected,
 		};
 
-		//set people who need to sign visit
-		const users = office.users;
-		const resources = office.resources;
-		for (let i = 0; i < rscsSelected.length; i++) {
-			const rsc = rscsSelected[i];
-			for (let r = 0; r < resources.length; r++) {
-				const resource = resources[r];
-				if (resource._id === rsc) {
-					for (let u = 0; u < users.length; u++) {
-						const user = users[u];
-						if (user._id === resource.officeuserObjId) {
-							if (user.permission === 'provider') {
-								prId = user._id;
-								prName = user.fname + ' ' + user.lname;
-							} else if (user.permission === 'pa') {
-								paId = user._id;
-								paName = user.fname + ' ' + user.lname;
-								if (!prId) {
-									prId = user.supervisor;
-									for (let s = 0; s < office.users.length; s++) {
-										const prv = office.users[s];
-										if (prv._id === prId) {
-											prName = prv.fname + ' ' + prv.lname;
-										}
-									}
-								}
-							} else {
-								if (!prId && i === rscsSelected.length - 1) {
-									prId = user.supervisor;
-									for (let s = 0; s < office.users.length; s++) {
-										const prv = office.users[s];
-										if (prv._id === prId) {
-											prName = prv.fname + ' ' + prv.lname;
-										}
-									}
-								}
-							}
-							break;
-						}
-					}
-					break;
-				}
-			}
-		}
-
 		if (isEdit) {
 			// update the event in the list
 			const index = myEvents.findIndex((x) => x.id === tempEvent.id);
 			let newEventList = [...myEvents];
 			newEventList.splice(index, 1, newEvent);
 			setMyEvents(newEventList);
-
-			//update the appointments context
-			let tmpApptsAll = appts.all;
-			let tmpApptsTdy = appts.todays;
-			let evIdxTdy = null;
-			const evIdxAll = tmpApptsAll.findIndex((x) => x._id === edtId);
-			if (unixstart > unixToday && unixend < unixTomorrow) {
-				evIdxTdy = tmpApptsTdy.findIndex((x) => x._id === edtId);
-			}
-			const evObj = {
-				_id: edtId,
-				date,
-				title,
-				description,
-				start,
-				end,
-				color: catColor,
-				comment,
-				reason,
-				unixstart,
-				unixend,
-				pasignreqId: paId,
-				pasignreqname: paName,
-				prsignreqId: prId,
-				prsignreqname: prName,
-				resource: rscsSelected,
-				categoryObjId: catId,
-				serviceObjId: svcId,
-				patientObjId: ptSelId,
-				locationObjId: locId,
-				officeObjId: location.officeObjId,
-			};
-			tmpApptsAll.splice(evIdxAll, 1, evObj);
-			if (evIdxTdy !== null) {
-				tmpApptsTdy.splice(evIdxTdy, 1, evObj);
-			}
-			setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
 
 			//update the appointment in the database
 			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit`, {
@@ -467,13 +548,11 @@ export default function Schedule() {
 					reason,
 					unixstart,
 					unixend,
-					pasignreqId: paId,
-					pasignreqname: paName,
-					prsignreqId: prId,
-					prsignreqname: prName,
-					resource: rscsSelected,
+					rscsSelected,
 					categoryObjId: catId,
 					serviceObjId: svcId,
+					locationObjId: misc.defLocId,
+					officeObjId: location.officeObjId,
 				}),
 			});
 			const data = await response.json();
@@ -486,7 +565,7 @@ export default function Schedule() {
 		} else {
 			// add the new event to the list
 			setMyEvents([...myEvents, newEvent]);
-			// add new appointment to database first to get new _id
+			// add new appointment to database
 			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/add`, {
 				method: 'POST',
 				headers: {
@@ -503,31 +582,26 @@ export default function Schedule() {
 					reason,
 					unixstart,
 					unixend,
-					pasignreqId: paId,
-					pasignreqname: paName,
-					prsignreqId: prId,
-					prsignreqname: prName,
-					resource: rscsSelected,
+					rscsSelected,
 					categoryObjId: catId,
 					serviceObjId: svcId,
 					patientObjId: ptSelId,
-					locationObjId: locId,
+					locationObjId: misc.defLocId,
 					officeObjId: location.officeObjId,
 				}),
 			});
 			const data = await response.json();
 
 			if (data.status === 200) {
-				//update context
-				await loadApptsContext(title, unixstart);
-				toast.success('Appointment created successfully');
+				toast.success(data.msg);
+			} else {
+				toast.error(data.msg);
 			}
 		}
 		setSelectedDate(popupEventDate[0]);
 
 		// close the popup and set all variables back to empty
 		setPopPatients({ patients: popPatients.patients, selected: '', filtered: [] });
-		setEcomm({ cats: ecomm.cats, selCat: {}, services: ecomm.services, selSvc: {} });
 		setTitle('');
 		setCatId('');
 		setCatName('');
@@ -543,12 +617,18 @@ export default function Schedule() {
 	};
 
 	const deleteEvent = useCallback(
-		(event) => {
+		async (event) => {
 			setMyEvents(myEvents.filter((item) => item.id !== event.id));
-			setUndoEvent(event);
-			setTimeout(() => {
-				setSnackbarOpen(true);
+			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/delete?id=${event.id}`, {
+				method: 'DELETE',
 			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				toast.success(data.msg);
+			} else {
+				toast.error(data.msg);
+			}
 		},
 		[myEvents]
 	);
@@ -594,13 +674,12 @@ export default function Schedule() {
 
 	const onEventClick = (args) => {
 		const curTime = Math.floor(Date.now() / 1000);
-		const event = appts.all.find((item) => item._id === args.event.id);
+		const event = appts.find((item) => item._id === args.event.id);
 		if (event.unixstart >= curTime - 1800) {
 			setEdit(true);
 			setTempEvent({ ...args.event });
 			setAnchor(args.domEvent.target);
 			// set all data for popup form and load it
-			loadSvcsArray(event.categoryObjId);
 			setEdtId(event._id);
 			setTitle(event.title);
 			setCatName('');
@@ -612,6 +691,7 @@ export default function Schedule() {
 			setEnd(event.end);
 			setReason(event.reason);
 			setComment(event.comment);
+			loadSvcOpts();
 			loadPopupForm(event);
 			setOpen(true);
 		} else {
@@ -635,77 +715,63 @@ export default function Schedule() {
 		const newEnd = FormatDate(args.event.end);
 		const newUnixstart = parseInt((new Date(newStart).getTime() / 1000).toFixed(0));
 		const newUnixend = parseInt((new Date(newEnd).getTime() / 1000).toFixed(0));
-		let event = appts.all.find((item) => item._id === args.event.id);
+		let event = args.event;
 
-		//*** update the event in the list ***
-		const updEvent = {
-			id: args.event.id,
-			title: event.title,
-			description: event.description,
-			start: newStart,
-			end: newEnd,
-			allDay: null,
-			status: null,
-			color: event.color,
-			resource: args.event.resource,
-		};
-		const index = myEvents.findIndex((x) => x.id === args.event.id);
-		let newEventList = [...myEvents];
-		newEventList.splice(index, 1, updEvent);
-		setMyEvents(newEventList);
-
-		//*** update the event in context ***
-		event['date'] = newStart.slice(0, 10);
-		event['start'] = newStart;
-		event['end'] = newEnd;
-		event['unixstart'] = newUnixstart;
-		event['unixend'] = newUnixend;
-		event['resource'] = args.event.resource;
-		let tmpApptsAll = appts.all;
-		let tmpApptsTdy = appts.todays;
-		let evIdxTdy = null;
-		const evIdxAll = tmpApptsAll.findIndex((x) => x._id === args.event.id);
-		if (newUnixstart > unixToday && newUnixend < unixTomorrow) {
-			evIdxTdy = tmpApptsTdy.findIndex((x) => x._id === args.event.id);
-		}
-
-		tmpApptsAll.splice(evIdxAll, 1, event);
-		if (evIdxTdy !== null) {
-			tmpApptsTdy.splice(evIdxTdy, 1, event);
-		}
-		setAppts({ all: tmpApptsAll, todays: tmpApptsTdy, prev: [], selected: {} });
-
-		//*** update event in database ***
-		const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit`, {
-			method: 'PUT',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				_id: args.event.id,
-				date: newStart.slice(0, 10),
+		if (event.ptId) {
+			//this was dragged from header so a new appointment
+			setTitle(event.title);
+			setPtSelId(event.ptId);
+			handleEventCreate(args);
+		} else {
+			//this was dragged to change times or day
+			//update event in list
+			const updEvent = {
+				id: args.event.id,
+				title: event.title,
 				description: event.description,
 				start: newStart,
 				end: newEnd,
 				color: event.color,
-				comment: event.comment,
-				reason: event.reason,
-				unixstart: newUnixstart,
-				unixend: newUnixend,
-				pasignreqId: event.pasignreqId,
-				pasignreqname: event.pasignreqname,
-				prsignreqId: event.prsignreqId,
 				resource: args.event.resource,
-				categoryObjId: event.categoryObjId,
-				serviceObjId: event.serviceObjId,
-			}),
-		});
-		const data = await response.json();
+			};
+			const index = myEvents.findIndex((x) => x.id === args.event.id);
+			let newEventList = [...myEvents];
+			newEventList.splice(index, 1, updEvent);
+			setMyEvents(newEventList);
 
-		if (data.status === 200) {
-			toast.success(data.msg);
-		} else {
-			toast.error(data.msg);
+			//*** update event in database ***
+			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/edit/ondrag`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					_id: args.event.id,
+					date: newStart.slice(0, 10),
+					description: event.description,
+					start: newStart,
+					end: newEnd,
+					color: event.color,
+					comment: event.comment,
+					reason: event.reason,
+					unixstart: newUnixstart,
+					unixend: newUnixend,
+					pasignreqId: event.pasignreqId,
+					pasignreqname: event.pasignreqname,
+					prsignreqId: event.prsignreqId,
+					prsignreqname: event.prsignreqname,
+					resource: args.event.resource,
+					categoryObjId: event.categoryObjId,
+					serviceObjId: event.serviceObjId,
+				}),
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				toast.success(data.msg);
+			} else {
+				toast.error(data.msg);
+			}
 		}
 	};
 
@@ -729,15 +795,15 @@ export default function Schedule() {
 	const handleCategory = (e) => {
 		const value = e.target.value;
 		setCatId(value);
+		//set category color
 		for (let i = 0; i < catOptions.length; i++) {
 			const cat = catOptions[i];
-			if (cat.id === value) {
-				setCatName(cat.name);
+			if (cat._id === value) {
 				setCatColor(cat.color);
 				break;
 			}
 		}
-		loadSvcsArray(value);
+		loadSvcOpts();
 	};
 
 	const handleService = (e) => {
@@ -754,17 +820,6 @@ export default function Schedule() {
 
 	const handleRscSelected = (args) => {
 		setRscsSelected(args.value);
-		setOffice({
-			locations: office.locations,
-			selLoc: office.selLoc,
-			locOptions: office.locOptions,
-			defLoc: office.defLoc,
-			users: office.users,
-			selUser: office.selUser,
-			resources: office.resources,
-			selRscs: args.value,
-			rscOptions: office.rscOptions,
-		});
 	};
 
 	const onClose = useCallback(() => {
@@ -834,39 +889,59 @@ export default function Schedule() {
 		[]
 	);
 
-	const handleCloseToast = useCallback(() => {
-		setToastOpen(false);
-	}, []);
-
 	return (
 		<>
-			{office?.defLoc !== '' && (
+			{misc.defLocId !== '' && (
 				<div className='mbsc-grid mbsc-no-padding'>
 					<div className='mbsc-row'>
 						<Header />
 					</div>
 					<div className='mbsc-row'>
 						<div className='mbsc-col-sm-12 docs-appointment-calendar'>
-							<Eventcalendar
-								data={myEvents}
-								view={viewOption}
-								dragToMove={true}
-								dragToCreate={true}
-								dragToResize={true}
-								dragTimeStep={15}
-								eventOverlap={true}
-								externalDrop={true}
-								externalDrag={true}
-								resources={doctors}
-								renderResource={CustomResource}
-								clickToCreate='double'
-								invalid={invalid}
-								colors={colorOptions}
-								onEventCreate={handleEventCreate}
-								onEventClick={onEventClick}
-								onEventDragEnd={onEventDragEnd}
-								extendDefaultEvent={newEventData}
-							/>
+							{doctors.length >= 2 ? (
+								<Eventcalendar
+									data={myEvents}
+									view={calView}
+									dragToMove={true}
+									dragToCreate={true}
+									dragToResize={true}
+									dragTimeStep={15}
+									eventOverlap={true}
+									externalDrop={true}
+									externalDrag={true}
+									resources={doctors}
+									renderHeader={customWithNavButtons}
+									renderResource={CustomResource}
+									clickToCreate='double'
+									invalid={invalid}
+									colors={colorOptions}
+									onEventCreate={handleEventCreate}
+									onEventClick={onEventClick}
+									onEventDragEnd={onEventDragEnd}
+									extendDefaultEvent={newEventData}
+								/>
+							) : (
+								<Eventcalendar
+									data={myEvents}
+									view={calView}
+									dragToMove={true}
+									dragToCreate={true}
+									dragToResize={true}
+									dragTimeStep={15}
+									eventOverlap={true}
+									externalDrop={true}
+									externalDrag={true}
+									resources={doctors}
+									renderHeader={customWithNavButtons}
+									clickToCreate='double'
+									invalid={invalid}
+									colors={colorOptions}
+									onEventCreate={handleEventCreate}
+									onEventClick={onEventClick}
+									onEventDragEnd={onEventDragEnd}
+									extendDefaultEvent={newEventData}
+								/>
+							)}
 							<Popup
 								display='anchored'
 								fullScreen={true}
@@ -929,7 +1004,7 @@ export default function Schedule() {
 																select...
 															</option>
 															{catOptions.map((cat) => (
-																<option value={cat.id} key={cat.id}>
+																<option value={cat._id} key={cat._id}>
 																	{cat.name}
 																</option>
 															))}
@@ -1061,7 +1136,7 @@ export default function Schedule() {
 												className='inpBorder form-control'
 												name='comment'
 												id='comment'
-												rows='3'
+												rows='2'
 												value={comment}
 												onChange={(e) => setComment(e.target.value)}
 												style={{ width: '80%' }}
@@ -1077,11 +1152,11 @@ export default function Schedule() {
 									) : null}
 								</div>
 							</Popup>
-							<Toast isOpen={isToastOpen} message={toastMessage} onClose={handleCloseToast} />
 						</div>
 					</div>
 				</div>
 			)}
+			{loading && <Spinner />}
 		</>
 	);
 }

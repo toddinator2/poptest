@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Patient from '@/models/patient';
+import el from '@mobiscroll/react/dist/src/i18n/el';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,11 +9,12 @@ export const GET = async (request) => {
 	const vc = searchParams.get('vc');
 
 	try {
-		const user = await Patient.findOne({ verifycode: vc });
-		if (!user) {
-			return NextResponse.json({ msg: 'User not found', user: user });
+		const pt = await Patient.findOne({ verifycode: vc });
+		if (pt) {
+			return NextResponse.json({ patient: pt, status: 200 });
+		} else {
+			return NextResponse.json({ msg: 'Patient not found', status: 400 });
 		}
-		return NextResponse.json({ user: user });
 	} catch (err) {
 		return NextResponse.json({ status: 500 });
 	}

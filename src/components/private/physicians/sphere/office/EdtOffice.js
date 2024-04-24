@@ -1,5 +1,6 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import { FormatPhoneNumber } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
@@ -7,54 +8,65 @@ import Input from '@/components/global/forms/input/Input';
 import Button from '@/components/global/forms/buttons/Button';
 import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
-import { getFromLocalStorage, removeFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/auth';
 
 export default function EdtOffice() {
-	const id = getFromLocalStorage('ofcId');
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [ofcData, setOfcData] = useState({});
 	const [name, setName] = useState('');
 	const [phone, setPhone] = useState('');
 	const [stop, setStop] = useState(false);
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (id && !name) {
-			const getOfcData = async () => {
-				const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get?id=${id}`, {
-					method: 'GET',
-				});
-				const data = await response.json();
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadOffice = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/data/get/namephone?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-				if (data.status === 200) {
-					setOfcData(data.office);
-				} else {
-					toast.error(data.msg);
-					return;
-				}
-			};
-			getOfcData();
-		}
-	}, [id, name]);
-
-	useEffect(() => {
-		if (ofcData !== undefined) {
-			if (Object.keys(ofcData).length !== 0 && !stop) {
-				if (ofcData.name) {
-					setName(ofcData.name);
-				} else {
-					setName('');
-				}
-				if (ofcData.mainphone) {
-					setPhone(ofcData.mainphone);
-				} else {
-					setPhone('');
-				}
-				setStop(true);
+			if (data.status === 200) {
+				setOfcData(data.office);
+			} else {
+				toast.error(data.msg);
 			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadOffice();
+	}, [loadOffice]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (Object.keys(ofcData).length !== 0 && !stop) {
+			if (ofcData.name !== '' && ofcData.name !== undefined) {
+				setName(ofcData.name);
+			} else {
+				setName('');
+			}
+			if (ofcData.phone !== '' && ofcData.phone !== undefined) {
+				setPhone(ofcData.phone);
+			} else {
+				setPhone('');
+			}
+			setStop(true);
 		}
 	}, [ofcData, stop]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -66,7 +78,7 @@ export default function EdtOffice() {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					_id: id,
+					_id: misc.editId,
 					name,
 					phone,
 				}),
@@ -74,7 +86,7 @@ export default function EdtOffice() {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				saveInLocalStorage('qsRefresh', true);
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
@@ -90,10 +102,12 @@ export default function EdtOffice() {
 	const handleClose = () => {
 		setName('');
 		setPhone('');
-		removeFromLocalStorage('ofcId');
 		setMenu({ type: menu.type, func: '' });
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function handlePhone(e) {
 		const value = e.target.value;
 		const formattedPhoneNumber = FormatPhoneNumber(value);

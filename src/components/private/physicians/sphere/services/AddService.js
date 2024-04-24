@@ -2,9 +2,8 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { CompareByName, FormatCurrency } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { FormatCurrency } from '@/components/global/functions/PageFunctions';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -15,13 +14,15 @@ import close from '@/assets/images/icoClose.png';
 export default function AddService() {
 	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, _setOffice] = useContext(OfficeContext);
-	const [ecomm, setEcomm] = useContext(EcommContext);
+	const [misc] = useContext(MiscContext);
 	const [name, setName] = useState('');
 	const [fmtPrice, setFmtPrice] = useState('');
 	const [price, setPrice] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -35,8 +36,8 @@ export default function AddService() {
 				body: JSON.stringify({
 					name,
 					price,
-					catObjId: ecomm.selCat._id,
-					locationObjId: office.selLoc,
+					catObjId: misc.editId,
+					locationObjId: misc.defLocId,
 					officeObjId: auth.user.ofcObjId,
 				}),
 			});
@@ -48,29 +49,11 @@ export default function AddService() {
 				return;
 			}
 
-			//set current services
-			let tmpArr = [];
-			tmpArr = ecomm.services;
-
-			//get new service and add to current services
-			const newResponse = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/get/bydata?name=${name}&catid=${ecomm.selCat._id}`, {
-				method: 'GET',
-			});
-			const svcData = await newResponse.json();
-
-			if (svcData.status === 200) {
-				tmpArr.push(svcData.svc);
-
-				//sort array alphabetically by name
-				await tmpArr.sort(CompareByName);
-
-				setEcomm({ cats: ecomm.cats, selCat: {}, services: tmpArr, selSvc: {} });
+			if (data.status === 200) {
 				toast.success(data.msg);
-			} else {
-				toast.error(data.msg);
 			}
-		} catch (error) {
-			toast.error(error);
+		} catch (err) {
+			toast.error(err);
 		} finally {
 			setLoading(false);
 			handleClose();
@@ -81,9 +64,12 @@ export default function AddService() {
 		setName('');
 		setFmtPrice('');
 		setPrice('');
-		setMenu({ type: menu.type, func: '', refresh: true });
+		setMenu({ type: menu.type, func: '' });
 	}
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function handlePrice(e) {
 		const value = e.target.value;
 		const tmpPrice = FormatCurrency(value);

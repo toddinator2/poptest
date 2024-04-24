@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { saveInLocalStorage } from '@/utils/helpers/auth';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -17,6 +16,9 @@ export default function AddTemplate() {
 	const [body, setBody] = useState('');
 	const [loading, setLoading] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
@@ -37,13 +39,12 @@ export default function AddTemplate() {
 			const data = await response.json();
 
 			if (data.status === 200) {
-				saveInLocalStorage('tmpRefresh', true);
 				toast.success(data.msg);
 			} else {
 				toast.error(data.msg);
 			}
-		} catch (error) {
-			toast.error(error);
+		} catch (err) {
+			toast.error(err);
 		} finally {
 			setLoading(false);
 			handleClose();

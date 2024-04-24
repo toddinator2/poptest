@@ -122,8 +122,8 @@ const officeuserSchema = new Schema(
 		},
 		locationObjId: [
 			{
-				type: ObjectId,
-				ref: 'officelocations',
+				type: String,
+				trim: true,
 			},
 		],
 		officeObjId: {

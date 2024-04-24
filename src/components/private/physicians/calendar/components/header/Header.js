@@ -1,33 +1,38 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Draggable, Dropcontainer } from '@mobiscroll/react';
-import { ApptContext } from '@/utils/context/physicians/Appointments';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { PatientContext } from '@/utils/context/physicians/PatientsContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import PropTypes from 'prop-types';
 
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
+
 const Appointment = (props) => {
-	let hdrPt = '';
+	let hdrInits = '';
 	const [draggable, setDraggable] = useState();
 
 	const setDragElm = useCallback((elm) => {
 		setDraggable(elm);
 	}, []);
 
-	const event = props.data;
-	if (!event.photo) {
-		const str = event.title;
+	const patient = props.data;
+	const dragData = {
+		title: patient.fname + ' ' + patient.lname,
+		ptId: patient._id,
+	};
+
+	if (!patient.photo || patient.photo === null) {
+		const str = patient.fname + ' ' + patient.lname;
 		const matches = str.match(/\b(\w)/g);
-		hdrPt = matches.join('');
+		hdrInits = matches.join('');
 	}
 
 	return (
 		<div>
-			{!event.hide && (
-				<div className='docs-appointment-task' ref={setDragElm} style={{ border: event.color }}>
-					{event.photo ? <img className='hdrImg mx-2' src={event.photo} alt='img' /> : <div className='hdrInits mx-2'>{hdrPt}</div>}
-					<Draggable dragData={event} element={draggable} />
+			{!patient.hide && (
+				<div className='docs-appointment-task' ref={setDragElm}>
+					{patient.photo ? <img className='hdrImg mx-2' src={patient.photo} alt='img' /> : <div className='hdrInits mx-2'>{hdrInits}</div>}
+					<Draggable dragData={dragData} element={draggable} />
 				</div>
 			)}
 		</div>
@@ -39,44 +44,65 @@ Appointment.propTypes = {
 };
 
 export const Header = () => {
-	const [appts, _setAppts] = useContext(ApptContext);
-	const [office, _setOffice] = useContext(OfficeContext);
-	const [ecomm, _setEcomm] = useContext(EcommContext);
-	const [schPatients, _setSchPatients] = useContext(PatientContext);
+	const dbName = process.env.REALM_DB;
+	const [misc] = useContext(MiscContext);
 	const [dropCont, setDropCont] = useState();
 	const [_contBg, setContBg] = useState('');
-	const [chkdToday, setChkdToday] = useState(false);
 	const [apptsToday, setApptsToday] = useState([]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadPtsToday = useCallback(async () => {
+		//set current machine timezone offset
+		const dt = new Date();
+		const diffTZ = dt.getTimezoneOffset();
+		const offset = diffTZ * 60;
+
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/appointments/get/todays?locid=${misc.defLocId}&offset=${offset}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setApptsToday(data.todays);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		//set todays appointments
-		if ((appts.todays.length !== 0 && apptsToday.length === 0 && !chkdToday) || apptsToday.length !== appts.todays.length) {
-			let tmpArr = [];
-			const defLoc = office.defLoc;
-			for (let i = 0; i < appts.todays.length; i++) {
-				const appt = appts.todays[i];
-				if (appt.locationObjId === defLoc) {
-					const cat = ecomm.cats.find((item) => item._id === appt.categoryObjId);
-					const svc = ecomm.services.find((item) => item._id === appt.serviceObjId);
-					const pt = schPatients.patients.find((item) => item._id === appt.patientObjId);
-					const apptObj = {
-						id: appt._id,
-						title: appt.title,
-						job: svc.name,
-						color: cat.color,
-						start: appt.start,
-						end: appt.end,
-						photo: pt.photo,
-						unscheduled: false,
-					};
-					tmpArr.push(apptObj);
+		loadPtsToday();
+	}, [loadPtsToday]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchAppts = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const appts = mongodb.db(dbName).collection('appointments');
+
+			for await (const change of appts.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadPtsToday();
 				}
 			}
-			setApptsToday(tmpArr);
-			setChkdToday(true);
-		}
-	}, [appts, apptsToday, chkdToday, ecomm, office, schPatients]);
+		};
+		wchAppts();
+	}, [dbName, loadPtsToday]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const setDropElm = useCallback((elm) => {
 		setDropCont(elm);
 	}, []);
@@ -108,7 +134,7 @@ export const Header = () => {
 						{apptsToday.length !== 0 ? (
 							<>
 								{apptsToday.map((appt) => (
-									<Appointment key={appt.id} data={appt} />
+									<Appointment key={appt._id} data={appt} />
 								))}
 							</>
 						) : (

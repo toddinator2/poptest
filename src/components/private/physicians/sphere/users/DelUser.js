@@ -1,11 +1,9 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { storage } from '@/firebase';
 import { deleteObject, ref } from 'firebase/storage';
-import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { CompareByLabel } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Button from '@/components/global/forms/buttons/Button';
@@ -13,43 +11,45 @@ import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
 
 export default function DelUser() {
-	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, setOffice] = useContext(OfficeContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [user, setUser] = useState({});
-	const [selOptions, setSelOptions] = useState([]);
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(office.selUser).length !== 0 && (Object.keys(user).length === 0 || user._id !== office.selUser._id)) {
-			setUser(office.selUser);
-		}
-	}, [office.selUser, user]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadUser = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/get/byid?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-	useEffect(() => {
-		if (selOptions.length === 0 && Object.keys(user).length !== 0) {
-			let tmpArr = [];
-			const curLocs = user.locObjId;
-			for (let i = 0; i < curLocs.length; i++) {
-				const curId = curLocs[i];
-				for (let o = 0; o < office.locOptions.length; o++) {
-					const locId = office.locOptions[o].value;
-					if (locId === curId) {
-						tmpArr.push(office.locOptions[o]);
-					}
-				}
+			if (data.status === 200) {
+				setUser(data.user);
+			} else {
+				toast.error(data.msg);
 			}
-			tmpArr.sort(CompareByLabel);
-			setSelOptions(tmpArr);
+		} catch (err) {
+			toast.error(data.msg);
 		}
-	}, [selOptions, user, office]);
+	}, [misc]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadUser();
+	}, [loadUser]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleDelete = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 		const userId = user._id;
-		let arrRscs = [];
-		let arrOptsRscs = [];
 
 		//Remove photo
 		if (user.photo) {
@@ -57,63 +57,23 @@ export default function DelUser() {
 			await deleteObject(picRef);
 		}
 
-		//Remove the object from the users context array
-		let tmpArr = office.users;
-		tmpArr = tmpArr.filter((item) => item._id !== userId);
-		setOffice({
-			locations: office.locations,
-			selLoc: {},
-			locOptions: office.locOptions,
-			defLoc: office.defLoc,
-			users: tmpArr,
-			selUser: {},
-			resources: office.resources,
-			selRscs: [],
-			rscOptions: office.rscOptions,
-		});
+		try {
+			//delete the user from database
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/users/delete?userid=${userId}`, {
+				method: 'DELETE',
+			});
+			const data = await response.json();
 
-		//delete the user from database
-		await fetch(`${process.env.API_URL}/private/physicians/office/users/delete?userid=${userId}`, {
-			method: 'DELETE',
-		});
-
-		//reset office context
-		const rscResponse = await fetch(`${process.env.API_URL}/private/physicians/office/resources/get/all?ofcid=${auth.user.ofcObjId}`, {
-			method: 'GET',
-		});
-		const rscData = await rscResponse.json();
-
-		if (rscData?.status === 200) {
-			arrRscs = rscData.rscs;
-
-			//reset resource options as well
-			if (rscData?.rscs.length !== 0) {
-				let tmpOptsArr = [];
-				const rscs = rscData?.rscs;
-				for (let i = 0; i < rscs.length; i++) {
-					const rsc = rscs[i];
-					const _id = rsc._id;
-					const name = rsc.name;
-					tmpOptsArr.push({ label: name, value: _id });
-				}
-				arrOptsRscs = tmpOptsArr;
+			if (data.status === 200) {
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
+				toast.success('User deleted successfully');
 			}
+		} catch (err) {
+			toast.error(err);
+		} finally {
+			setLoading(false);
+			handleClose();
 		}
-
-		setOffice({
-			locations: office.locations,
-			selLoc: {},
-			locOptions: office.locOptions,
-			defLoc: office.defLoc,
-			users: tmpArr,
-			selUser: {},
-			resources: arrRscs,
-			selRscs: [],
-			rscOptions: arrOptsRscs,
-		});
-		toast.success('User deleted successfully');
-		setLoading(false);
-		handleClose();
 	};
 
 	function handleClose() {

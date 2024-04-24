@@ -1,8 +1,7 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
-import { CompareByName } from '@/components/global/functions/PageFunctions';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
@@ -11,21 +10,45 @@ import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
 
 export default function EdtCategory() {
-	const [ecomm, setEcomm] = useContext(EcommContext);
 	const [menu, setMenu] = useContext(MenuContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [category, setCategory] = useState({});
 	const [name, setName] = useState('');
 	const [color, setColor] = useState('');
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(ecomm.selCat).length !== 0 && (Object.keys(category).length === 0 || category._id !== ecomm.selCat._id)) {
-			setCategory(ecomm.selCat);
-		}
-	}, [ecomm.selCat, category]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadCategory = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/category/get/byid?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
+			if (data.status === 200) {
+				setCategory(data.cat);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (Object.keys(category).length !== 0) {
+		loadCategory();
+	}, [loadCategory]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VARIABLES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (Object.keys(category).length !== 0 && !name) {
 			if (category.name !== '' && category.name !== undefined) {
 				setName(category.name);
 			} else {
@@ -37,34 +60,16 @@ export default function EdtCategory() {
 				setColor('');
 			}
 		}
-	}, [category]);
+	}, [category, name]);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
 
-		//create object to update the categories context
-		const updObj = {
-			_id: category._id,
-			name,
-			color,
-			locationObjId: category.locationObjId,
-			office: category.officeObjId,
-		};
-
 		try {
-			//update the category context array
-			const searchedObj = category;
-			const replacingObj = updObj;
-
-			const i = ecomm.cats.findIndex((x) => x._id === searchedObj._id);
-			ecomm.cats[i] = replacingObj;
-
-			//sort array alphabetically by name
-			const newCats = ecomm.cats.sort(CompareByName);
-			setEcomm({ cats: newCats, selCat: {}, services: ecomm.services, selSvc: {} });
-
-			//update the database
 			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/category/edit`, {
 				method: 'PUT',
 				headers: {
@@ -85,6 +90,7 @@ export default function EdtCategory() {
 			}
 
 			if (data.status === 200) {
+				setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '' });
 				toast.success(data.msg);
 			}
 		} catch (error) {
@@ -98,7 +104,7 @@ export default function EdtCategory() {
 	const handleClose = () => {
 		setName('');
 		setColor('');
-		setMenu({ type: menu.type, func: '', refresh: true });
+		setMenu({ type: menu.type, func: '' });
 	};
 
 	return (

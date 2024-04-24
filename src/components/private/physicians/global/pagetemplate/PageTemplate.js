@@ -23,8 +23,10 @@ export default function PageTemplate(page) {
 	const [screenWidth, setScreenWidth] = useState(0);
 
 	useEffect(() => {
-		setScreenWidth(window.innerWidth);
-	}, []);
+		if (screenWidth === 0) {
+			setScreenWidth(window.innerWidth);
+		}
+	}, [screenWidth, window]);
 
 	useEffect(() => {
 		function handleResize() {
@@ -38,7 +40,7 @@ export default function PageTemplate(page) {
 		return () => {
 			window.removeEventListener('resize', handleResize);
 		};
-	}, []);
+	}, [window]);
 
 	useEffect(() => {
 		if (status !== 'authenticated') {
@@ -51,35 +53,37 @@ export default function PageTemplate(page) {
 			{status === 'authenticated' && (
 				<div className='phyPgContainer'>
 					<Header />
-					{pg === 'schedule' && (
-						<div className='row'>
-							<div className='phyDataContainer col-12 col-md-4 col-xl-2'>
-								{screenWidth < 1400 ? <SchDatadiv dataType={menu.type} /> : <SchSidebar />}
-							</div>
-							<div className='phyContContainer col-12 col-md-8 col-xl-10'>
-								<Calendar />
-							</div>
-						</div>
-					)}
-					{pg === 'patientprofile' && (
-						<div className='row'>
-							<div className='phyDataContainer col-12 col-md-4 col-xl-2'>
-								{screenWidth < 1400 ? <PtPrfDatadiv dataType={menu.type} /> : <PtPrfSidebar />}
-							</div>
-							<div className='phyContContainer col-12 col-md-8 col-xl-10'>
-								<PatientProfile />
-							</div>
-						</div>
-					)}
-					{pg === 'sphere' && (
-						<div className='row'>
-							<div className='phyDataContainer col-12 col-md-4 col-xl-2'>
-								{screenWidth < 1400 ? <SphDataDiv dataType={menu.type} /> : <SphSidebar />}
-							</div>
-							<div className='phyContContainer col-12 col-md-8 col-xl-10'>
-								<PhySphereContent />
-							</div>
-						</div>
+					{screenWidth !== 0 && (
+						<>
+							{pg === 'schedule' && (
+								<div className='row'>
+									<div className='phyDataContainer col-12 col-md-4 col-xl-2'>
+										{screenWidth < 1400 ? <SchDatadiv dataType={menu.type} /> : <SchSidebar />}
+									</div>
+									<div className='phyContContainer col-12 col-md-8 col-xl-10'>
+										<Calendar />
+									</div>
+								</div>
+							)}
+							{pg === 'patientprofile' && (
+								<div className='row'>
+									<div className='phyDataContainer col-12 col-md-4 col-xl-2'>{screenWidth < 1400 ? <PtPrfDatadiv /> : <PtPrfSidebar />}</div>
+									<div className='phyContContainer col-12 col-md-8 col-xl-10'>
+										<PatientProfile />
+									</div>
+								</div>
+							)}
+							{pg === 'sphere' && (
+								<div className='row'>
+									<div className='phyDataContainer col-12 col-md-4 col-xl-2'>
+										{screenWidth < 1400 ? <SphDataDiv dataType={menu.type} /> : <SphSidebar />}
+									</div>
+									<div className='phyContContainer col-12 col-md-8 col-xl-10'>
+										<PhySphereContent />
+									</div>
+								</div>
+							)}
+						</>
 					)}
 				</div>
 			)}

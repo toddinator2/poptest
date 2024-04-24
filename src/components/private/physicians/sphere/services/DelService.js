@@ -1,8 +1,8 @@
 'use client';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
-import { OfficeContext } from '@/utils/context/physicians/OfficeContext';
-import { EcommContext } from '@/utils/context/physicians/EcommContext';
+import { MiscContext } from '@/utils/context/physicians/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import Button from '@/components/global/forms/buttons/Button';
@@ -10,40 +10,59 @@ import Spinner from '@/components/global/spinner/Spinner';
 import close from '@/assets/images/icoClose.png';
 
 export default function DelService() {
+	const [auth] = useContext(AuthContext);
 	const [menu, setMenu] = useContext(MenuContext);
-	const [office, _setOffice] = useContext(OfficeContext);
-	const [ecomm, setEcomm] = useContext(EcommContext);
+	const [misc, setMisc] = useContext(MiscContext);
 	const [service, setService] = useState({});
 	const [loading, setLoading] = useState(false);
 
-	useEffect(() => {
-		if (Object.keys(ecomm.selSvc).length !== 0 && (Object.keys(service).length === 0 || service._id !== ecomm.selSvc._id)) {
-			setService(ecomm.selSvc);
-		}
-	}, [ecomm.selSvc, service]);
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadService = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/get/byid?id=${misc.editId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
+			if (data.status === 200) {
+				setService(data.svc);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [misc]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadService();
+	}, [loadService]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// FORM FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleDelete = async (e) => {
 		e.preventDefault();
 		setLoading(true);
-		const svcId = service._id;
-
-		//Remove the object from the services context
-		let tmpArr = ecomm.services;
-		tmpArr = tmpArr.filter((item) => item._id !== svcId);
-		setEcomm({ cats: ecomm.cats, selCat: ecomm.selCat, services: tmpArr, selSvc: {} });
 
 		//delete the category and associated data from database
-		await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/delete?svcid=${svcId}`, {
+		await fetch(`${process.env.API_URL}/private/physicians/office/ecomm/service/delete?svcid=${misc.editId}`, {
 			method: 'DELETE',
 		});
 
 		toast.success('Service deleted successfully');
+		setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: service.catObjId });
 		setLoading(false);
 		handleClose();
 	};
 
 	function handleClose() {
-		setMenu({ type: menu.type, func: '', refresh: true });
+		setMenu({ type: menu.type, func: '' });
 	}
 
 	return (
@@ -59,7 +78,9 @@ export default function DelService() {
 			<div className='row'>
 				<div className='alertSubHdng mb-3 text-center'>CAUTION: This cannot be undone!</div>
 				<div className='alertText text-center'>
-					{office.locations.length >= 2 && <p>Please Note: Deleting this service only applies to the location selected, it will not affect other locations.</p>}
+					{auth.user.locObjId.length >= 2 && (
+						<p>Please Note: Deleting this service only applies to the location selected, it will not affect other locations.</p>
+					)}
 				</div>
 			</div>
 			<div className='row mt-4 d-flex justify-content-center'>

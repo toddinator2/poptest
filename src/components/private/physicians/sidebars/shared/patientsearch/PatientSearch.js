@@ -1,18 +1,78 @@
 'use client';
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './PatientSearch.css';
 import { useRouter } from 'next/navigation';
+import { AuthContext } from '@/utils/context/global/AuthContext';
+import { PatientSearchContext } from '@/utils/context/physicians/PatientSearchContext';
+import { PatientPopupContext } from '@/utils/context/physicians/PatientPopupContext';
 import { saveInLocalStorage } from '@/utils/helpers/auth';
-import { PatientContext } from '@/utils/context/physicians/PatientsContext';
-import { PtPopContext } from '@/utils/context/physicians/PtsPopContext';
 import { FilterPtSearch, FormatDob } from '@/components/global/functions/PageFunctions';
+import toast from 'react-hot-toast';
+
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: 'rtpoppcapp-neojo' });
 
 export default function PatientSearch({ type }) {
+	const dbName = process.env.REALM_DB;
 	const router = useRouter();
-	const [schPatients, setSchPatients] = useContext(PatientContext);
-	const [popPatients, setPopPatients] = useContext(PtPopContext);
+	const [auth] = useContext(AuthContext);
+	const [schPatients, setSchPatients] = useContext(PatientSearchContext);
+	const [popPatients, setPopPatients] = useContext(PatientPopupContext);
 	const [searchText, setSearchText] = useState('');
+	const [placeholder, setPlaceholder] = useState('');
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadPatients = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/private/physicians/patients/get/forsearch?ofcid=${auth.user.ofcObjId}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setSchPatients({ patients: data.ptArr, selected: '', filtered: [] });
+				setPopPatients({ patients: data.ptArr, selected: '', filtered: [] });
+				setPlaceholder('Patient Search');
+			} else {
+				setPlaceholder('No Patients Found');
+			}
+		} catch (err) {
+			toast.error(data.msg);
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadPatients();
+	}, [loadPatients]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchOffice = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const office = mongodb.db(dbName).collection('offices');
+
+			for await (const change of office.watch()) {
+				if (change.operationType === 'insert' || change.operationType === 'update' || change.operationType === 'delete') {
+					loadPatients();
+				}
+			}
+		};
+		wchOffice();
+	}, [dbName, loadPatients]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleChange = (e) => {
 		const value = e.target.value;
 		setSearchText(value);
@@ -48,7 +108,7 @@ export default function PatientSearch({ type }) {
 							<input
 								className='srchBox ps-2'
 								type='text'
-								placeholder='Patient Search'
+								placeholder={placeholder}
 								autoComplete='off'
 								value={searchText}
 								onChange={handleChange}

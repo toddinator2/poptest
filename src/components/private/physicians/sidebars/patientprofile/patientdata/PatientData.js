@@ -5,18 +5,11 @@ import Image from 'next/image';
 import sidemenuopen from '@/assets/images/icoSidebarOpen.png';
 import sidemenuclose from '@/assets/images/icoSidebarClose.png';
 
-export default function PatientData({ patient }) {
-	let newPtId = '';
-	if (patient !== undefined) {
-		if (Object.keys(patient).length !== 0) {
-			newPtId = patient._id;
-		}
-	}
-	const [curPtId, setCurPtId] = useState('');
-	const [inits, setInits] = useState('');
-	const [photo, setPhoto] = useState('');
+export default function PatientData({ props }) {
 	const [fname, setFname] = useState('');
 	const [lname, setLname] = useState('');
+	const [inits, setInits] = useState('');
+	const [photo, setPhoto] = useState('');
 	const [dob, setDob] = useState('');
 	const [age, setAge] = useState('');
 	const [sex, setSex] = useState('');
@@ -25,44 +18,56 @@ export default function PatientData({ patient }) {
 	const [emgCont, setEmgCont] = useState('');
 	const [emgPhone, setEmgPhone] = useState('');
 	const [emgRel, setEmgRel] = useState('');
-	const [sideMenuSettings, setSideMenuSettings] = useState('ptData');
+	const [shwData, setShwData] = useState(true);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// SET STATE VALUES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (newPtId !== curPtId) {
-			if (Object.keys(patient).length !== 0) {
-				setFname(patient.fname);
-				setLname(patient.lname);
-				let ptDob = FormatDob(patient.dob);
-				setDob(ptDob);
-				setAge(CalculateAge(ptDob.toString()));
-				setSex(patient.sex);
-				if (patient.photo) {
-					setPhoto(patient.photo);
-				} else {
-					const finit = patient.fname.slice(0, 1);
-					const linit = patient.lname.slice(0, 1);
-					setInits((finit + linit).toUpperCase());
-				}
-				setPhone(FormatPhoneNumber(patient.mphone));
-				setEmail(patient.email);
-				setEmgCont(patient.emergencycontact);
-				setEmgPhone(patient.emergencyphone);
-				setEmgRel(patient.emergencyrelation);
-			}
-			setCurPtId(newPtId);
+		if (props.fname) {
+			setFname(props.fname);
 		}
-	}, [newPtId, curPtId, patient]);
+		if (props.lname) {
+			setLname(props.lname);
+		}
+		if (!props.photo) {
+			const str = props.fname + ' ' + props.lname;
+			const matches = str.match(/\b(\w)/g);
+			setInits(matches.join(''));
+		} else {
+			setPhoto(props.photo);
+		}
+		if (props.dob) {
+			let ptDob = FormatDob(props.dob);
+			setDob(ptDob);
+			setAge(CalculateAge(ptDob.toString()));
+		}
+		if (props.sex) {
+			setSex(props.sex);
+		}
+		if (props.phone) {
+			setPhone(FormatPhoneNumber(props.phone));
+		}
+		if (props.email) {
+			setEmail(props.email);
+		}
+		if (props.emgName) {
+			setEmgCont(props.emgName);
+		}
+		if (props.emgPhone) {
+			setEmgPhone(props.emgPhone);
+		}
+		if (props.emgRelation) {
+			setEmgRel(props.emgRelation);
+		}
+	}, [props]);
 
-	const openSideMenu = (openMenu) => {
-		if (openMenu === 'ptData') {
-			setSideMenuSettings('ptData');
+	const handleshow = () => {
+		const change = !shwData;
+		setShwData(change);
+		if (change) {
 			document.getElementById('divPtInfo').style.display = 'block';
-		}
-	};
-
-	const closeSideMenu = (closeMenu) => {
-		if (closeMenu === 'ptData') {
-			setSideMenuSettings('');
+		} else {
 			document.getElementById('divPtInfo').style.display = 'none';
 		}
 	};
@@ -74,10 +79,10 @@ export default function PatientData({ patient }) {
 					<div className='pdSecHdng'>Current Patient Info</div>
 				</div>
 				<div className='col-2 d-flex justify-content-center'>
-					{sideMenuSettings === 'ptData' ? (
-						<Image className='pdSideMenuIcon' src={sidemenuclose} title='Close Menu' alt='Close' onClick={() => closeSideMenu('ptData')} />
+					{shwData ? (
+						<Image className='pdSideMenuIcon' src={sidemenuclose} title='Close Menu' alt='Close' onClick={() => handleshow()} />
 					) : (
-						<Image className='pdSideMenuIcon' src={sidemenuopen} title='Open Menu' alt='Open' onClick={() => openSideMenu('ptData')} />
+						<Image className='pdSideMenuIcon' src={sidemenuopen} title='Open Menu' alt='Open' onClick={() => handleshow()} />
 					)}
 				</div>
 			</div>
