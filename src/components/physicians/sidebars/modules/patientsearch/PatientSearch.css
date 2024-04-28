@@ -1,0 +1,39 @@
+.srchBox {
+	min-width: 250px;
+	height: 42px;
+	padding-left: 7px;
+	color: #cacad9 !important;
+	border: 2px solid #cacad9;
+	border-radius: 7px;
+	background: transparent url('../../../../../assets/images/icoSearch.png') right no-repeat;
+}
+input::placeholder {
+	color: #73b9ff !important;
+	opacity: 1; /* Firefox */
+}
+input::-ms-input-placeholder {
+	/* Edge 12 -18 */
+	color: #73b9ff !important;
+}
+.resContainer {
+	width: 90%;
+	margin-left: auto;
+	margin-right: auto;
+	background-color: #151922;
+	border-radius: 10px;
+}
+.hide {
+	display: none;
+}
+.listLinkText {
+	font-size: 14px;
+	color: #cacad9;
+	text-decoration: none;
+}
+.listLinkText:hover {
+	color: #73b9ff;
+	cursor: pointer;
+}
+.listInfoText {
+	font-size: 14px;
+}

@@ -1,0 +1,16 @@
+.pgPhyHdrContainer {
+	width: 100%;
+	border-bottom: 2px dotted #555;
+}
+.pgPhyHdrLogo {
+	width: auto;
+	height: auto;
+	max-width: 400px;
+	max-height: 140px;
+}
+.pgPhyHdrAd {
+	width: auto;
+	height: auto;
+	max-width: 96%;
+	max-height: 140px;
+}

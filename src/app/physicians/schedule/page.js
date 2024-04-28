@@ -1,16 +1,30 @@
 'use client';
 import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { AuthContext } from '@/utils/context/global/AuthContext';
-import PageTemplate from '@/components/private/physicians/global/pagetemplate/PageTemplate';
+import { useSession } from 'next-auth/react';
+import { AuthContext } from '@/utils/context/physicians/AuthContext';
+import PageTemplate from '@/components/physicians/pagetemplate/PageTemplate';
 
 export default function PhySchedule() {
 	const router = useRouter();
+	const { status } = useSession();
 	const [auth] = useContext(AuthContext);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHECK TO MAKE SURE USER IS AUTHENTICATED
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (status === 'unauthenticated') {
+			router.push('/physicians/login');
+		}
+	}, [status]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHECK TO MAKE SURE AUTH CONTEXT IS SET (THIS IS MOSTLY FOR PAGE REFRESH)
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (Object.keys(auth.user).length === 0) {
-			router.push('/physicians/setup');
+			router.push('/physicians/authorize');
 		}
 	}, [auth]);
 
