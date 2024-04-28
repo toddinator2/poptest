@@ -32,7 +32,7 @@ export default function Login() {
 			}
 			setChkdUname(true);
 		}
-	}, [uname, chkdUname]);
+	}, [uname, chkdUname, lsUname, lsRem]);
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

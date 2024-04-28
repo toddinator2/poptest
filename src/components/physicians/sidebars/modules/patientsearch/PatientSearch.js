@@ -48,7 +48,7 @@ export default function PatientSearch({ type }) {
 		} finally {
 			setLoading(false);
 		}
-	}, [auth]);
+	}, [auth, setSchPatients, setPopPatients]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LOAD DATA

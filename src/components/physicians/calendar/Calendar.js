@@ -328,7 +328,7 @@ export default function Schedule() {
 			}
 		};
 		wchDocs();
-	}, [dbName, loadDoctors]);
+	}, [dbName, loadDoctors, loadRscOpts]);
 
 	useEffect(() => {
 		const wchCats = async () => {

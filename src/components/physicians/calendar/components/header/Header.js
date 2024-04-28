@@ -2,8 +2,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Draggable, Dropcontainer } from '@mobiscroll/react';
 import { MiscContext } from '@/utils/context/physicians/MiscContext';
-import PropTypes from 'prop-types';
+import Image from 'next/image';
 import toast from 'react-hot-toast';
+import PropTypes from 'prop-types';
 
 import * as Realm from 'realm-web';
 const app = new Realm.App({ id: process.env.REALM_ID });
@@ -32,7 +33,7 @@ const Appointment = (props) => {
 		<div>
 			{!patient.hide && (
 				<div className='docs-appointment-task' ref={setDragElm}>
-					{patient.photo ? <img className='hdrImg mx-2' src={patient.photo} alt='img' /> : <div className='hdrInits mx-2'>{hdrInits}</div>}
+					{patient.photo ? <Image className='hdrImg mx-2' src={patient.photo} alt='img' /> : <div className='hdrInits mx-2'>{hdrInits}</div>}
 					<Draggable dragData={dragData} element={draggable} />
 				</div>
 			)}

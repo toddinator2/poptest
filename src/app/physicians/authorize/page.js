@@ -48,7 +48,7 @@ export default function Authorize() {
 		if (status === 'unauthenticated' || !svdUname) {
 			router.push('/physicians/login');
 		}
-	}, [status, svdUname]);
+	}, [status, svdUname, router]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LOAD DATA
@@ -125,7 +125,7 @@ export default function Authorize() {
 				}
 			}
 		}
-	}, [user, auth]);
+	}, [user, auth, lsDefLoc, svdLocId, setAuth, setMisc, router]);
 
 	return <>{loading && <Spinner />}</>;
 }

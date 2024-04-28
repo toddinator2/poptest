@@ -17,7 +17,7 @@ export default function PhySchedule() {
 		if (status === 'unauthenticated') {
 			router.push('/physicians/login');
 		}
-	}, [status]);
+	}, [status, router]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CHECK TO MAKE SURE AUTH CONTEXT IS SET (THIS IS MOSTLY FOR PAGE REFRESH)
@@ -26,7 +26,7 @@ export default function PhySchedule() {
 		if (Object.keys(auth.user).length === 0) {
 			router.push('/physicians/authorize');
 		}
-	}, [auth]);
+	}, [auth, router]);
 
 	return <>{Object.keys(auth.user).length !== 0 && <PageTemplate page='schedule'></PageTemplate>}</>;
 }
