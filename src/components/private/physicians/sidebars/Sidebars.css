@@ -16,7 +16,7 @@
 	color: #555;
 	border-radius: 10px;
 	border: 2px solid #555;
-	background: transparent url('../../../assets/images/icoSearch.png') right no-repeat;
+	background: transparent url('../../../../assets/images/icoSearch.png') right no-repeat;
 }
 .sbButton {
 	width: 94%;
