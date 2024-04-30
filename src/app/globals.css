@@ -152,6 +152,11 @@
 		margin-left: 4%;
 		margin-right: 4%;
 	}
+	.pbColSides.text {
+		width: 92% !important;
+		margin-left: 4%;
+		margin-right: 4%;
+	}
 	.pbColImg {
 		width: 70%;
 		text-align: center;
