@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import ResetCreds from '@/actions/login/ResetCreds';
-import PageTemplate from '@/components/physicians/pagetemplate/PageTemplate';
+import PageTemplate from '@/components/private/physicians/pagetemplate/PageTemplate';
 import Input from '@/components/global/forms/input/Input';
 import Button from '@/components/global/forms/buttons/Button';
 import Spinner from '@/components/global/spinner/Spinner';

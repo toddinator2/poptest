@@ -3,7 +3,7 @@ import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { AuthContext } from '@/utils/context/physicians/AuthContext';
-import PageTemplate from '@/components/physicians/pagetemplate/PageTemplate';
+import PageTemplate from '@/components/private/physicians/pagetemplate/PageTemplate';
 
 export default function Patient() {
 	const router = useRouter();
