@@ -66,11 +66,11 @@ export default function Header() {
 
 	return (
 		<>
-			{(screenWidth > 1366 || screenHeight > 950) && (
+			{screenWidth >= 1200 && (
 				<div className='hdrContainer'>
 					<div className='row py-3 d-flex align-items-center justify-content-around'>
 						<div className='col-12 col-lg-4 ps-lg-4'>
-							<div className='row mb-4 mb-lg-0 d-flex justify-content-around justify-content-lg-start'>
+							<div className='row mb-2 mb-lg-0 d-flex justify-content-center justify-content-lg-start'>
 								<div className='col-3 col-lg-auto d-flex justify-content-center'>
 									<div className='row'>
 										<Link className='icoText blu' href='/subscribers/login'>
@@ -83,7 +83,7 @@ export default function Header() {
 										</Link>
 									</div>
 								</div>
-								<div className='col-3 col-lg-auto mx-lg-4 d-flex justify-content-center'>
+								<div className='col-3 col-lg-auto mx-1 mx-xl-4 d-flex justify-content-center'>
 									<div className='row'>
 										<Link className='icoText red' href='/physicians/login'>
 											<div className='col-12 d-flex justify-content-center'>
@@ -187,7 +187,7 @@ export default function Header() {
 					</div>
 				</div>
 			)}
-			{screenWidth <= 1366 && screenHeight <= 950 && (
+			{screenWidth < 1200 && (
 				<div className='hdrContainer'>
 					<div className='col-10 mb-2 offset-1'>
 						<Link className='d-flex justify-content-center' href='/'>

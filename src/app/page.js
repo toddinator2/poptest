@@ -11,7 +11,7 @@ import icoMemberPts from '@/assets/images/hmpgIcoPts.png';
 import icoMemberPhy from '@/assets/images/hmpgIcoPhy.png';
 import icoMemberEmp from '@/assets/images/hmpgIcoEmp.png';
 import hmpgLogo from '@/assets/images/logoLgt.png';
-import hmpgTablet from '@/assets/images/hmpgTablet.png';
+import hmpgTablet from '@/assets/images/hmpgTablet.jpg';
 import hmpgPts from '@/assets/images/hmpgIcoPts.png';
 import hmpgPhy from '@/assets/images/hmpgIcoPhy.png';
 import hmpgEmp from '@/assets/images/hmpgIcoEmp.png';
@@ -31,24 +31,24 @@ export default function Home() {
 							<div className='pbpgHdng'>Reuniting American Healthcare&apos;s Original Stakeholders to Restore the System to its Former Glory</div>
 						</div>
 					</div>
-					<div className='row mb-4'>
-						<div className='pbColSides text'>
+					<div className='row mb-4 d-flex align-items-center'>
+						<div className='pbColSides mb-3 mb-xl-0'>
 							<div className='pbpgText'>
-								<p>
+								<div className='mb-3'>
 									Introducing SUPERNOVA3X &ndash; a revolutionary Healthcare Software solution for America&apos;s ailing healthcare system,
 									empowering patients, employers, and physicians to take back control once and for all.
-								</p>
-								<p className='mb-4'>
+								</div>
+								<div>
 									&quot;The rules have changed. We are bidding farewell to the low-value, high-cost, overregulated system and welcoming
 									accessible, affordable healthcare like never before. Come and explore the Professional Healthcare Membership Platform that
 									has been specifically designed for American Healthcare&apos;s Original Stakeholders.&quot;
-								</p>
+								</div>
 							</div>
 						</div>
-						<div className='pbColCenter d-none d-lg-block'></div>
+						<div className='pbColCenter d-none d-xl-block'></div>
 						<div className='pbColSides'>
 							<div className='row'>
-								<div className='col-12 d-flex justify-content-center justify-content-lg-start'>
+								<div className='col-12 d-flex justify-content-center justify-content-xl-start'>
 									<Image className='pbColImg' src={hmpgTablet} priority={true} alt='Sample Offices' />
 								</div>
 							</div>
@@ -82,12 +82,12 @@ export default function Home() {
 			</div>
 			<div className='pbpgSection py-4'>
 				<div className='row mb-4'>
-					<div className='col-12 px-3 px-lg-5'>
+					<div className='col-12 px-3 px-xl-5'>
 						<div className='pbpgHdng'>Returning Financial Control of Healthcare to the Original Stake Holders</div>
 					</div>
 				</div>
 				<div className='row mb-4 d-flex justify-content-evenly justify-content-xl-center'>
-					<div className='finDiv mb-3 mb-xl-0'>
+					<div className='finDiv mb-5 mb-xl-0'>
 						<div className='row'>
 							<div className='col-12 d-flex justify-content-center'>
 								<Image className='hmpgIcoControl mb-3' src={hmpgPts} alt='Subscribers' />
@@ -126,6 +126,7 @@ export default function Home() {
 											<li className='finText'>And More</li>
 										</ul>
 									</ul>
+									<br />
 								</div>
 							</div>
 							<div className='row mt-5'>
@@ -141,7 +142,7 @@ export default function Home() {
 							</div>
 						</div>
 					</div>
-					<div className='finDiv mb-3 mb-xl-0 mx-xl-5'>
+					<div className='finDiv mb-5 mb-xl-0 mx-xl-5'>
 						<div className='row'>
 							<div className='col-12 d-flex justify-content-center'>
 								<Image className='hmpgIcoControl mb-3' src={hmpgPhy} alt='Physicians' />
@@ -180,6 +181,7 @@ export default function Home() {
 											<li className='finText'>Employer Integration</li>
 										</ul>
 									</ul>
+									<br />
 								</div>
 							</div>
 							<div className='row mt-5'>
@@ -227,13 +229,14 @@ export default function Home() {
 										<li className='finText'>More:</li>
 										<ul>
 											<li className='finText'>Network Directory</li>
-											<li className='finText'>Network Directory</li>
+											<li className='finText'>Prescription Plans</li>
 											<li className='finText'>Transparency</li>
 											<li className='finText'>No Gimmicks or Surprises</li>
 											<li className='finText'>No Failed Expectations</li>
 											<li className='finText'>No Premiums to increase</li>
 										</ul>
 									</ul>
+									<br />
 								</div>
 							</div>
 							<div className='row mt-5'>
@@ -259,7 +262,7 @@ export default function Home() {
 						</div>
 					</div>
 					<div className='row mb-4'>
-						<div className='pbColSides text'>
+						<div className='pbColSides d-flex align-items-center'>
 							<div className='row d-flex justify-content-center'>
 								<div className='col-12 mb-4'>
 									<div className='pbpgText center'>
@@ -276,8 +279,8 @@ export default function Home() {
 						</div>
 						<div className='pbColCenter d-none d-md-block'></div>
 						<div className='pbColSides'>
-							<div className='row'>
-								<div className='col-12 d-flex justify-content-center justify-content-lg-start'>
+							<div className='row mt-4 mt-xl-0'>
+								<div className='col-12 d-flex justify-content-center justify-content-xl-start'>
 									<Image className='pbColImg' src={hmpgMap} alt='Sample Offices' />
 								</div>
 							</div>
@@ -307,16 +310,16 @@ export default function Home() {
 							<div className='pbpgHdng'>For Patients</div>
 						</div>
 					</div>
-					<div className='row'>
-						<div className='pbColSides mb-4 mb-lg-0'>
+					<div className='row d-flex align-items-center'>
+						<div className='pbColSides mb-4 mb-xl-0'>
 							<div className='row'>
-								<div className='col-12 d-flex justify-content-center justify-content-lg-end'>
+								<div className='col-12 d-flex justify-content-center justify-content-xl-end'>
 									<Image className='pbColImg' src={hmpgPatient} alt='Patients' />
 								</div>
 							</div>
 						</div>
 						<div className='pbColCenter d-none d-md-block'></div>
-						<div className='pbColSides text'>
+						<div className='pbColSides'>
 							<div className='pbpgText center'>
 								<p>
 									<strong>
@@ -353,8 +356,8 @@ export default function Home() {
 							<div className='pbpgHdng'>For Physicians</div>
 						</div>
 					</div>
-					<div className='row'>
-						<div className='pbColSides text mb-2 mb-md-0'>
+					<div className='row d-flex align-items-center'>
+						<div className='pbColSides mb-2 mb-md-0'>
 							<div className='pbpgText center'>
 								<p>
 									<strong>
@@ -378,8 +381,8 @@ export default function Home() {
 						</div>
 						<div className='pbColCenter d-none d-md-block'></div>
 						<div className='pbColSides'>
-							<div className='row'>
-								<div className='col-12 d-flex justify-content-center justify-content-lg-start'>
+							<div className='row mt-4 mt-xl-0'>
+								<div className='col-12 d-flex justify-content-center justify-content-xl-start'>
 									<Image className='pbColImg red' src={hmpgPhysician} alt='Physicians' />
 								</div>
 							</div>
@@ -399,16 +402,16 @@ export default function Home() {
 							<div className='pbpgHdng'>For Sponsors</div>
 						</div>
 					</div>
-					<div className='row'>
-						<div className='pbColSides mb-4 mb-lg-0'>
+					<div className='row d-flex align-items-center'>
+						<div className='pbColSides mb-4 mb-xl-0'>
 							<div className='row'>
-								<div className='col-12 d-flex justify-content-center justify-content-lg-end'>
+								<div className='col-12 d-flex justify-content-center justify-content-xl-end'>
 									<Image className='pbColImg ppl' src={hmpgEmployer} alt='Employers' />
 								</div>
 							</div>
 						</div>
 						<div className='pbColCenter d-none d-md-block'></div>
-						<div className='pbColSides text'>
+						<div className='pbColSides'>
 							<div className='pbpgText center'>
 								<p>
 									<strong>Register for FREE with SUPERNOVA3X and access America&apos;s only Professional Healthcare Marketplace.</strong>
@@ -435,7 +438,7 @@ export default function Home() {
 			<div className='pbpgSection py-4'>
 				<div className='pbpgContainer'>
 					<div className='row mb-4'>
-						<div className='col-12 col-lg-10 offset-lg-1 px-3'>
+						<div className='col-12 px-3 px-lg-5'>
 							<div className='pbpgHdng'>Join the Revolution to Restore American Healthcare!</div>
 						</div>
 					</div>

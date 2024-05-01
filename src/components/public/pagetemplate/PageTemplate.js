@@ -32,14 +32,14 @@ export default function PageTemplate({ children }) {
 			<Suspense>
 				<Header />
 			</Suspense>
-			{(screenWidth > 1366 || screenHeight > 950) && (
+			{screenWidth >= 1200 && (
 				<div className='pgLgContainer'>
 					<div className='row'>
 						<div className='col-12'>{children}</div>
 					</div>
 				</div>
 			)}
-			{screenWidth <= 1366 && screenHeight <= 950 && (
+			{screenWidth < 1200 && (
 				<div className='pgSmContainer'>
 					<div className='row'>
 						<div className='col-12'>{children}</div>
