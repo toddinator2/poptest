@@ -32,6 +32,16 @@
 	border: 1px solid #c9c9d9;
 	border-radius: 7px;
 }
+.fgtLinkText {
+	font-size: 15px;
+	font-weight: 500;
+	color: #9797a6;
+	text-decoration: none;
+}
+.fgtLinkText:hover {
+	cursor: pointer;
+	color: #fff;
+}
 
 /**************************/
 /*** PUBLIC PAGE SYTLES ***/
@@ -54,15 +64,24 @@
 	font-weight: 600;
 	text-align: center;
 }
+.pbpgSubHdng {
+	font-size: 25px;
+	font-weight: 600;
+	text-align: center;
+}
 .pbColSides {
 	width: 47% !important;
 	height: auto;
 }
 .pbpgText {
 	font-size: 17px;
+	font-weight: 500;
 }
 .pbpgText.center {
 	text-align: center;
+}
+.pbpgText.blu {
+	color: #3395ff;
 }
 .pbColCenter {
 	width: 6% !important;
@@ -77,16 +96,6 @@
 .icoSectionHdng {
 	width: auto;
 	max-height: 100px;
-}
-.fgtLinkText {
-	font-size: 17px;
-	font-weight: 600;
-	color: #9797a6;
-	text-decoration: none;
-}
-.fgtLinkText:hover {
-	cursor: pointer;
-	color: #fff;
 }
 .icoSmall {
 	width: auto;

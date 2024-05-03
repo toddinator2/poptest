@@ -4,7 +4,7 @@ import './globals.css';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Toaster } from 'react-hot-toast';
 import { SessionProvider } from 'next-auth/react';
-import { AuthProvider } from '@/utils/context/physicians/AuthContext';
+import { AuthProvider } from '@/utils/context/global/AuthContext';
 import { MenuProvider } from '@/utils/context/physicians/MenuContext';
 import { MiscProvider } from '@/utils/context/physicians/MiscContext';
 import { PatientPopupProvider } from '@/utils/context/physicians/PatientPopupContext';

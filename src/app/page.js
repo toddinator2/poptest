@@ -277,7 +277,7 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-						<div className='pbColCenter d-none d-md-block'></div>
+						<div className='pbColCenter d-none d-xl-block'></div>
 						<div className='pbColSides'>
 							<div className='row mt-4 mt-xl-0'>
 								<div className='col-12 d-flex justify-content-center justify-content-xl-start'>
@@ -318,14 +318,10 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-						<div className='pbColCenter d-none d-md-block'></div>
+						<div className='pbColCenter d-none d-xl-block'></div>
 						<div className='pbColSides'>
-							<div className='pbpgText center'>
-								<p>
-									<strong>
-										Experience high-quality Healthcare with SN3X Licensed Physicians at a local, friendly, safe medical facility.
-									</strong>
-								</p>
+							<div className='pbpgSubHdng'>
+								<p>Experience high-quality Healthcare with SN3X Licensed Physicians at a local, friendly, safe medical facility.</p>
 							</div>
 							<ul>
 								<li className='pbpgText'>Affordable healthcare and prescription programs</li>
@@ -358,12 +354,8 @@ export default function Home() {
 					</div>
 					<div className='row d-flex align-items-center'>
 						<div className='pbColSides mb-2 mb-md-0'>
-							<div className='pbpgText center'>
-								<p>
-									<strong>
-										Elevate your clinic to new heights with Professional Healthcare. Make it easy with SN3X Healthcare Technology.
-									</strong>
-								</p>
+							<div className='pbpgSubHdng'>
+								<p>Elevate your clinic to new heights with Professional Healthcare. Make it easy with SN3X Healthcare Technology.</p>
 							</div>
 							<ul>
 								<li className='pbpgText'>Electronic Medical Record</li>
@@ -379,7 +371,7 @@ export default function Home() {
 								</strong>
 							</div>
 						</div>
-						<div className='pbColCenter d-none d-md-block'></div>
+						<div className='pbColCenter d-none d-xl-block'></div>
 						<div className='pbColSides'>
 							<div className='row mt-4 mt-xl-0'>
 								<div className='col-12 d-flex justify-content-center justify-content-xl-start'>
@@ -410,12 +402,10 @@ export default function Home() {
 								</div>
 							</div>
 						</div>
-						<div className='pbColCenter d-none d-md-block'></div>
+						<div className='pbColCenter d-none d-xl-block'></div>
 						<div className='pbColSides'>
-							<div className='pbpgText center'>
-								<p>
-									<strong>Register for FREE with SUPERNOVA3X and access America&apos;s only Professional Healthcare Marketplace.</strong>
-								</p>
+							<div className='pbpgSubHdng'>
+								<p>Register for FREE with SUPERNOVA3X and access America&apos;s only Professional Healthcare Marketplace.</p>
 							</div>
 							<ul>
 								<li className='pbpgText'>Shop for affordable, high-value Healthcare in the SN3X Professional Healthcare Network Directory</li>

@@ -5,7 +5,7 @@ export default async function ResetCreds(encdData) {
 	const decryptedData = CryptoJS.AES.decrypt(encdData, cryptoKey);
 	const data = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
 
-	const res = await fetch(`${process.env.API_URL}/public/global/login/resetcreds`, {
+	const res = await fetch(`${process.env.API_URL_PUB}/login/resetcreds`, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',

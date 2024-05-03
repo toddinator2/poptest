@@ -124,6 +124,7 @@ const officeuserSchema = new Schema(
 			{
 				type: String,
 				trim: true,
+				required: true,
 			},
 		],
 		officeObjId: {

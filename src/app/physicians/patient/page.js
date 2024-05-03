@@ -2,7 +2,7 @@
 import React, { useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
-import { AuthContext } from '@/utils/context/physicians/AuthContext';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import PageTemplate from '@/components/private/physicians/pagetemplate/PageTemplate';
 
 export default function Patient() {

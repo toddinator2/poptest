@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './PatientSearch.css';
-import { AuthContext } from '@/utils/context/physicians/AuthContext';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { PatientSearchContext } from '@/utils/context/physicians/PatientSearchContext';
 import { PatientPopupContext } from '@/utils/context/physicians/PatientPopupContext';
 import { saveInLocalStorage } from '@/utils/helpers/lsSecure';

@@ -1,16 +1,16 @@
 import mongoose from 'mongoose';
 const { Schema } = mongoose;
 
-const defaultcategorySchema = new Schema({
-	category: {
+const defdoctypeSchema = new Schema({
+	name: {
 		type: String,
 		trim: true,
 		required: true,
 	},
-	color: {
-		type: String,
-		trim: true,
+	patientview: {
+		type: Boolean,
 		required: true,
+		default: false,
 	},
 	officetype: {
 		type: String,
@@ -19,4 +19,4 @@ const defaultcategorySchema = new Schema({
 	},
 });
 
-export default mongoose.models.Defaultcategory || mongoose.model('Defaultcategory', defaultcategorySchema);
+export default mongoose.models.Defdoctype || mongoose.model('Defdoctype', defdoctypeSchema);

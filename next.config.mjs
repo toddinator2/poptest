@@ -1,6 +1,7 @@
 import pkg from './config.mjs';
 const {
 	API_URL,
+	API_URL_PUB,
 	AUTH_TOKEN,
 	CRYPTO_KEY,
 	DATA_OFC,
@@ -42,6 +43,7 @@ const {
 const nextConfig = {
 	env: {
 		API_URL,
+		API_URL_PUB,
 		AUTH_TOKEN,
 		CRYPTO_KEY,
 		DATA_OFC,

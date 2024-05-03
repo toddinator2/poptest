@@ -4,7 +4,7 @@ const { ObjectId } = mongoose.Schema;
 
 const contactempSchema = new Schema(
 	{
-		companyname: {
+		company: {
 			type: String,
 			trim: true,
 			required: true,

@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import './NewPatient.css';
-import { AuthContext } from '@/utils/context/physicians/AuthContext';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { FixDob, FixPhone, FormatDob, FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/Functions';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
@@ -168,11 +168,13 @@ export default function NewPatient() {
 		const formattedPhoneNumber = FormatPhoneNumber(value);
 		setPhone(formattedPhoneNumber);
 	}
+
 	function handleDob(e) {
 		const value = e.target.value;
 		const chkDob = FormatDob(value);
 		setDob(chkDob);
 	}
+
 	const handleWeightLoss = (e) => {
 		const value = e.target.checked;
 		setWeightLoss(value);

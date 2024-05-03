@@ -21,7 +21,6 @@ export default function Header() {
 	const callbackUrl = searchParams.get('callbackUrl');
 	const [nav, setNav] = useState(false);
 	const [screenWidth, setScreenWidth] = useState(0);
-	const [screenHeight, setScreenHeight] = useState(0);
 
 	useEffect(() => {
 		if (callbackUrl) {
@@ -42,13 +41,11 @@ export default function Header() {
 
 	useEffect(() => {
 		setScreenWidth(window.innerWidth);
-		setScreenHeight(window.innerHeight);
 	}, []);
 
 	useEffect(() => {
 		function handleResize() {
 			setScreenWidth(window.innerWidth);
-			setScreenHeight(window.innerHeight);
 		}
 
 		// Attach the event listener to the window object
@@ -127,7 +124,7 @@ export default function Header() {
 										<Dropdown.Menu className='menuDropdown p-2'>
 											<div className='row mb-1'>
 												<div className='col-12'>
-													<Link className='navDDLink blu' href='/subscribers/register'>
+													<Link className='navDDLink blu' href='/subscribers/learnmore/#preRegister' scroll={true}>
 														Subscribers
 													</Link>
 												</div>
@@ -223,7 +220,7 @@ export default function Header() {
 								<div className='mobileMenuHdng mb-1'>Register</div>
 								<div className='row mb-4 d-flex align-items-center'>
 									<div className='col-12 ps-5 mb-1'>
-										<Link className='navDDLink blu' href='/subscribers/register'>
+										<Link className='navDDLink blu' href='/subscribers/learnmore/#preRegister' scroll={true}>
 											Subscribers
 										</Link>
 									</div>

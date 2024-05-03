@@ -19,8 +19,6 @@ const patientSchema = new Schema(
 		dob: {
 			type: String,
 			trim: true,
-			required: true,
-			index: true,
 		},
 		email: {
 			type: String,
@@ -94,12 +92,6 @@ const patientSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		visitreason: [
-			{
-				type: Object,
-				required: false,
-			},
-		],
 		pcpname: {
 			type: String,
 			trim: true,
@@ -199,7 +191,7 @@ const patientSchema = new Schema(
 			{
 				type: ObjectId,
 				ref: 'sponsors',
-				required: true,
+				required: false,
 			},
 		],
 	},

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import './SbHeader.css';
-import { AuthContext } from '@/utils/context/physicians/AuthContext';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { signOut } from 'next-auth/react';
 import Image from 'next/image';
 import Link from 'next/link';

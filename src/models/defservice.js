@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema;
 
-const defaultserviceSchema = new Schema({
+const defserviceSchema = new Schema({
 	name: {
 		type: String,
 		trim: true,
@@ -14,9 +14,9 @@ const defaultserviceSchema = new Schema({
 	},
 	catObjId: {
 		type: ObjectId,
-		ref: 'defaultcategories',
+		ref: 'defcategories',
 		required: true,
 	},
 });
 
-export default mongoose.models.Defaultservice || mongoose.model('Defaultservice', defaultserviceSchema);
+export default mongoose.models.Defservice || mongoose.model('Defservice', defserviceSchema);

@@ -81,7 +81,7 @@ const sponsoruserSchema = new Schema(
 			index: true,
 			lowercase: true,
 		},
-		sponsorlocationObjId: {
+		spnlocationObjId: {
 			type: ObjectId,
 			ref: 'sponsorlocations',
 		},

@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema;
 
-const sponsorlocationSchema = new Schema(
+const spnlocationSchema = new Schema(
 	{
 		name: {
 			type: String,
@@ -56,4 +56,4 @@ const sponsorlocationSchema = new Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.models.Sponsorlocation || mongoose.model('Sponsorlocation', sponsorlocationSchema);
+export default mongoose.models.Spnlocation || mongoose.model('Spnlocation', spnlocationSchema);
