@@ -30,6 +30,10 @@ const medicationSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
+		notes: {
+			type: String,
+			trim: true,
+		},
 		patientObjId: {
 			type: ObjectId,
 			ref: 'patients',

@@ -4,35 +4,35 @@ const { ObjectId } = mongoose.Schema;
 
 const pharmacySchema = new Schema(
 	{
-		lclpharmacy: {
+		lclpharm: {
 			type: String,
 			trim: true,
 		},
-		lclpharmacyphone: {
+		lclpharmphone: {
 			type: String,
 			trim: true,
 		},
-		lclpharmacyfax: {
+		lclpharmfax: {
 			type: String,
 			trim: true,
 		},
-		lclpharmacyaddress: {
+		lclpharmaddress: {
 			type: String,
 			trim: true,
 		},
-		onlpharmacy: {
+		onlpharm: {
 			type: String,
 			trim: true,
 		},
-		onlpharmacyphone: {
+		onlpharmphone: {
 			type: String,
 			trim: true,
 		},
-		onlpharmacyfax: {
+		onlpharmfax: {
 			type: String,
 			trim: true,
 		},
-		onlpharmacyaddress: {
+		onlpharmaddress: {
 			type: String,
 			trim: true,
 		},

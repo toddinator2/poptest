@@ -141,6 +141,16 @@ export function FormatDate(date) {
 	return `${year}-${newMonth}-${newDay}T${newHour}:${newMinutes}`;
 }
 
+export function FormatZip(value) {
+	if (!value) return value;
+	let newZip = value.replace(/[^\d]/g, '');
+	if (newZip.length <= 5) {
+		return newZip;
+	} else {
+		return newZip.slice(0, 5);
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FIX VALUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

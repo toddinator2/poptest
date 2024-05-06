@@ -16,6 +16,7 @@ import icoMemberPts from '@/assets/images/hmpgIcoPts.png';
 export default function Login() {
 	const lsUname = process.env.UNAME_SUB;
 	const lsRem = process.env.REM_SUB;
+	const lsData = process.env.DATA_SUB;
 	const router = useRouter();
 	const [uname, setUname] = useState('');
 	const [pword, setPword] = useState('');
@@ -53,13 +54,13 @@ export default function Login() {
 			if (result?.error) {
 				toast.error('Invalid username, password, email not verified, or user is inactive');
 			} else {
+				removeFromLocalStorage(lsUname);
+				removeFromLocalStorage(lsRem);
+				removeFromLocalStorage(lsData);
 				//set username and remember in localstorage
 				if (remember) {
 					saveInLocalStorage(lsUname, uname.toLowerCase());
 					saveInLocalStorage(lsRem, remember);
-				} else {
-					removeFromLocalStorage(lsUname);
-					removeFromLocalStorage(lsRem);
 				}
 				router.push('/subscribers/authorize');
 			}

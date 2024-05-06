@@ -24,6 +24,15 @@ const contactempSchema = new Schema(
 			trim: true,
 			lowercase: true,
 		},
+		address: {
+			type: String,
+			trim: true,
+			required: true,
+		},
+		address2: {
+			type: String,
+			trim: true,
+		},
 		city: {
 			type: String,
 			trim: true,

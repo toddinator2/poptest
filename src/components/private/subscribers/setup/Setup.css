@@ -1,0 +1,65 @@
+.suDiv {
+	width: 25%;
+	height: auto;
+	min-height: 75vh;
+	padding: 0px;
+	border-radius: 20px;
+}
+.suDiv.red {
+	border: 3px solid #ff0000;
+}
+.suDiv.blu {
+	border: 3px solid #0000ff;
+}
+.suDiv.ppl {
+	border: 3px solid #8000ff;
+}
+.suHdrDiv {
+	width: 100% !important;
+	padding: 10px 0px;
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+.suHdrDiv.red {
+	border-bottom: 3px solid #ff0000;
+}
+.suHdrDiv.blu {
+	border-bottom: 3px solid #0000ff;
+}
+.suHdrDiv.ppl {
+	border-bottom: 3px solid #8000ff;
+}
+.suHdng {
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+.suText {
+	font-size: 15px;
+	font-weight: 500;
+}
+.chkListHdng {
+	font-size: 18px;
+	font-weight: 600;
+	color: #73b9ff;
+}
+
+@media screen and (max-width: 1400px) {
+	.suDiv {
+		width: 30%;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	.suDiv {
+		width: 90%;
+	}
+	.suHdrDiv {
+		padding: 7px 0px;
+		font-size: 15px;
+	}
+	.suHdng {
+		font-size: 15px;
+	}
+}

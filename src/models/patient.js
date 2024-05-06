@@ -162,16 +162,35 @@ const patientSchema = new Schema(
 			required: true,
 			default: false,
 		},
-		intakeprogress: [
+		setupprogress: [
 			{
 				type: Object,
 				required: false,
 			},
 		],
-		intakedone: {
+		historyprogress: [
+			{
+				type: Object,
+				required: false,
+			},
+		],
+		historydone: {
 			type: Boolean,
 			required: true,
 			default: false,
+		},
+		setupdone: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
+		latitude: {
+			type: String,
+			trim: true,
+		},
+		longitude: {
+			type: String,
+			trim: true,
 		},
 		weightloss: {
 			type: Boolean,
