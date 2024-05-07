@@ -96,8 +96,8 @@ export default function Profile({ user }) {
 	}
 
 	return (
-		<div className='row mt-5 d-flex justify-content-center'>
-			<div className='suDiv red'>
+		<div className='row mt-3 mt-xl-5 d-flex justify-content-center'>
+			<div className='suDiv red order-last order-xl-first'>
 				<div className='suHdrDiv red'>COMPLETE YOUR PROFILE</div>
 				<form onSubmit={handleSubmit}>
 					<div className='row mt-3'>
@@ -267,7 +267,7 @@ export default function Profile({ user }) {
 					</div>
 				</form>
 			</div>
-			<div className='suDiv blu mx-4'>
+			<div className='suDiv blu mx-4 mb-3 mb-xl-0 order-2'>
 				<div className='suHdrDiv blu'>DETAILS</div>
 				<div className='row mt-3 mb-4'>
 					<div className='col-12'>
@@ -283,7 +283,7 @@ export default function Profile({ user }) {
 					</p>
 				</div>
 			</div>
-			<div className='suDiv ppl'>
+			<div className='suDiv ppl mb-3 mb-xl-0 order-first order-xl-last'>
 				<div className='suHdrDiv ppl'>SETUP CHECKLIST</div>
 				<Checklist progress={user.setupprogress} />
 			</div>
