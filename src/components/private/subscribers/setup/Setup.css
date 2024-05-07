@@ -57,7 +57,7 @@
 
 @media screen and (max-width: 1200px) {
 	.suDiv {
-		width: 90%;
+		width: 70%;
 	}
 	.suHdrDiv {
 		padding: 7px 0px;
@@ -65,5 +65,11 @@
 	}
 	.suHdng {
 		font-size: 15px;
+	}
+}
+
+@media screen and (max-width: 768px) {
+	.suDiv {
+		width: 90%;
 	}
 }
