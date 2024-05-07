@@ -1,5 +1,4 @@
 'use client';
-import CheckBox from '@/components/global/forms/checkbox/Checkbox';
 import React, { useEffect, useState } from 'react';
 
 export default function Checklist({ progress }) {
@@ -35,25 +34,25 @@ export default function Checklist({ progress }) {
 					<div className='chkListHdng'>Profile &amp; Contact Forms</div>
 				</div>
 				<div className='col-10 offset-1 ps-4'>
-					<div className='row mt-2'>
+					<div className='row mt-2 mb-1 d-flex align-items-center'>
 						<div className='col-2 d-flex justify-content-end'>
-							<CheckBox check={profile} />
+							<input className='chkBox' type='checkbox' checked={profile} readOnly />
 						</div>
 						<div className='col ps-1'>
 							<div className='fs-6'>Subscriber Profile</div>
 						</div>
 					</div>
-					<div className='row mt-1'>
+					<div className='row mb-1 d-flex align-items-center'>
 						<div className='col-2 d-flex justify-content-end'>
-							<CheckBox check={docForm} />
+							<input className='chkBox' type='checkbox' checked={docForm} readOnly />
 						</div>
 						<div className='col ps-1'>
 							<div className='fs-6'>My Physician Form</div>
 						</div>
 					</div>
-					<div className='row mt-1'>
+					<div className='row d-flex align-items-center'>
 						<div className='col-2 d-flex justify-content-end'>
-							<CheckBox check={empForm} />
+							<input className='chkBox' type='checkbox' checked={empForm} readOnly />
 						</div>
 						<div className='col ps-1'>
 							<div className='fs-6'>My Employer Form</div>
@@ -66,9 +65,9 @@ export default function Checklist({ progress }) {
 					<div className='chkListHdng'>Comprehensive Medical History</div>
 				</div>
 				<div className='col-10 offset-1 ps-4'>
-					<div className='row mt-2'>
+					<div className='row mt-2 d-flex align-items-center'>
 						<div className='col-2 d-flex justify-content-end'>
-							<CheckBox check={history} />
+							<input className='chkBox' type='checkbox' checked={history} readOnly />
 						</div>
 						<div className='col ps-1'>
 							<div className='fs-6'>Medical History</div>

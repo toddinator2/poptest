@@ -45,7 +45,7 @@ export default function Authorize() {
 		} finally {
 			setLoading(false);
 		}
-	}, [svdUname]);
+	}, [svdUser, svdUname]);
 
 	useEffect(() => {
 		//check status to make sure user is authenticated
@@ -98,7 +98,7 @@ export default function Authorize() {
 				}
 			}
 		}
-	}, [svdUname, user, auth, setAuth, router]);
+	}, [svdUname, user, auth, setAuth, lsUserData, router]);
 
 	return <>{loading && <Spinner />}</>;
 }

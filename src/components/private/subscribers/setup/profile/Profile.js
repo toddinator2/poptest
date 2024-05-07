@@ -260,7 +260,7 @@ export default function Profile({ user }) {
 							</label>
 						</div>
 					</div>
-					<div className='mt-4 d-flex justify-content-center'>
+					<div className='my-4 d-flex justify-content-center'>
 						<Button type='submit' border='555555' disabled={!add || !city || !state || !zip || !dob || !sex}>
 							Save Changes
 						</Button>

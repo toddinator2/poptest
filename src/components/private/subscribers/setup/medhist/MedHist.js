@@ -8,6 +8,8 @@ import Pharmacy from './pharmacy/Pharmacy';
 import Medications from './medications/Medications';
 import Immunizations from './immunizations/Immunizations';
 import MedicalHistory from './medicalhistory/MedicalHistory';
+import Procedures from './procedures/Procedures';
+import Social from './social/Social';
 
 export default function MedHist({ user }) {
 	//Edit Divs
@@ -309,6 +311,8 @@ export default function MedHist({ user }) {
 			setShwMeds(false);
 			setShwImmunizations(false);
 			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
 		}
 		if (value === 'emergency') {
 			setShwGeneral(false);
@@ -317,6 +321,8 @@ export default function MedHist({ user }) {
 			setShwMeds(false);
 			setShwImmunizations(false);
 			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
 		}
 		if (value === 'pharmacy') {
 			setShwGeneral(false);
@@ -325,6 +331,8 @@ export default function MedHist({ user }) {
 			setShwMeds(false);
 			setShwImmunizations(false);
 			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
 		}
 		if (value === 'meds') {
 			setShwGeneral(false);
@@ -333,6 +341,8 @@ export default function MedHist({ user }) {
 			setShwMeds(!shwMeds);
 			setShwImmunizations(false);
 			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
 		}
 		if (value === 'immune') {
 			setShwGeneral(false);
@@ -341,6 +351,8 @@ export default function MedHist({ user }) {
 			setShwMeds(false);
 			setShwImmunizations(!shwImmunizations);
 			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
 		}
 		if (value === 'medical') {
 			setShwGeneral(false);
@@ -349,6 +361,28 @@ export default function MedHist({ user }) {
 			setShwMeds(false);
 			setShwImmunizations(false);
 			setShwMedical(!shwMedical);
+			setShwProcedures(false);
+			setShwSocial(false);
+		}
+		if (value === 'procedures') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(!shwProcedures);
+			setShwSocial(false);
+		}
+		if (value === 'social') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(!shwSocial);
 		}
 	};
 
@@ -496,6 +530,54 @@ export default function MedHist({ user }) {
 								<div className='row mb-4'>
 									<div className='histBox col-10 offset-1 p-3'>
 										<MedicalHistory userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneProcedures ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Past Medical Procedures</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('procedures')}>
+										Past Medical Procedures
+									</div>
+								</div>
+							</div>
+							{shwProcedures && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Procedures userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneSocial ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Social History</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('social')}>
+										Social History
+									</div>
+								</div>
+							</div>
+							{shwSocial && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Social userId={user._id} />
 									</div>
 								</div>
 							)}
