@@ -37,7 +37,7 @@ export default function OfficeData() {
 		} catch (err) {
 			toast.error(err);
 		}
-	}, [misc]);
+	}, [misc, loadPhysician]);
 
 	const loadPhysician = useCallback(
 		async (loc) => {
@@ -80,7 +80,7 @@ export default function OfficeData() {
 				toast.error(err);
 			}
 		},
-		[location, auth, misc]
+		[auth, misc]
 	);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////

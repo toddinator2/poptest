@@ -29,7 +29,7 @@ export default function SetOffice() {
 			setLocName(offices[0].name);
 			setMisc({ defLocId: offices[0].id, defLocName: offices[0].name, editId: '' });
 		}
-	}, [offices]);
+	}, [offices, setMisc]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FORM FUNCTIONS

@@ -270,7 +270,7 @@ export default function Fitness({ userId }) {
 					<select className='inpBorder form-control' value={explan} onChange={(e) => setExplan(e.target.value)}>
 						<option value=''>Select One...</option>
 						<option value='y'>Yes</option>
-						<option value='yb'>Yes, but don't always use</option>
+						<option value='yb'>Yes, but don&apos;t always use</option>
 						<option value='n'>No</option>
 						<option value='go'>I just go for it</option>
 					</select>
@@ -327,7 +327,7 @@ export default function Fitness({ userId }) {
 					<select className='inpBorder form-control' value={yoga} onChange={(e) => setYoga(e.target.value)}>
 						<option value=''>Select One...</option>
 						<option value='y'>Yes</option>
-						<option value='yi'>Yes, I'm an instructor</option>
+						<option value='yi'>Yes, I&apos;m an instructor</option>
 						<option value='n'>No</option>
 						<option value='p'>I did in the past</option>
 					</select>
@@ -341,7 +341,7 @@ export default function Fitness({ userId }) {
 					<select className='inpBorder form-control' value={pil} onChange={(e) => setPil(e.target.value)}>
 						<option value=''>Select One...</option>
 						<option value='y'>Yes</option>
-						<option value='yi'>Yes, I'm an instructor</option>
+						<option value='yi'>Yes, I&apos;m an instructor</option>
 						<option value='n'>No</option>
 						<option value='p'>I did in the past</option>
 					</select>

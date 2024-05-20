@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './PhysicianSearch.css';
 import { MiscContext } from '@/utils/context/global/MiscContext';
 import Image from 'next/image';
@@ -13,7 +13,7 @@ export default function OfficeComponent() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DATA LOAD FUNCTIONS
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	const loadLocation = async () => {
+	const loadLocation = useCallback(async () => {
 		try {
 			const response = await fetch(`${process.env.API_URL}/physicians/office/locations/get/byid?locid=${misc.props.locId}`, {
 				method: 'GET',
@@ -28,9 +28,9 @@ export default function OfficeComponent() {
 		} catch (err) {
 			toast.error('Network Error: Please try again');
 		}
-	};
+	}, [misc]);
 
-	const loadPhysician = async () => {
+	const loadPhysician = useCallback(async () => {
 		try {
 			const response = await fetch(`${process.env.API_URL}/physicians/office/users/get/byid?id=${misc.props.phyId}`, {
 				method: 'GET',
@@ -45,7 +45,7 @@ export default function OfficeComponent() {
 		} catch (err) {
 			toast.error('Network Error: Please try again');
 		}
-	};
+	}, [misc]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LOAD FUNCTIONS

@@ -14,13 +14,13 @@ export default function SubSphere() {
 		if (status === 'unauthorized') {
 			router.push('/subscribers/login');
 		}
-	}, [status]);
+	}, [status, router]);
 
 	useEffect(() => {
 		if (Object.keys(auth.user).length === 0) {
 			router.push('/subscribers/authorize');
 		}
-	}, [auth]);
+	}, [auth, router]);
 
 	return <>{Object.keys(auth.user).length !== 0 && status === 'authenticated' && <PageTemplate />}</>;
 }

@@ -115,7 +115,7 @@ export default function Videos() {
 								)}
 							</div>
 							<div className='col-2 d-flex justify-content-end'>
-								<Image src={close} onClick={() => handleClose()} />
+								<Image src={close} alt='Close' onClick={() => handleClose()} />
 							</div>
 						</div>
 						<div className='row' style={{ width: '100%' }}>
@@ -130,7 +130,7 @@ export default function Videos() {
 					</div>
 					<div className='col-10 col-xl-6 offset-1 ps-2 offset-xl-0'>
 						{remoteUsers.map((user) => (
-							<RemoteUser user={user} />
+							<RemoteUser user={user} key={user.id} />
 						))}
 					</div>
 				</div>

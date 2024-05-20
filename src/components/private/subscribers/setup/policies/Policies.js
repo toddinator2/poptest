@@ -58,7 +58,7 @@ export default function Policies({ user }) {
 		if (doneFin) {
 			policyDone();
 		}
-	}, [doneFin]);
+	}, [doneFin, policyDone]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// HANDLE SHOW EDIT DIV FUNCTIONS
