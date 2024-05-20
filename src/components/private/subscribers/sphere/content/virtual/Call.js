@@ -61,7 +61,7 @@ function Videos({ channelName, AppID }) {
 			>
 				<LocalVideoTrack track={localCameraTrack} play={true} className='w-full h-full' />
 				{remoteUsers.map((user) => (
-					<RemoteUser user={user} />
+					<RemoteUser user={user} key={user.uid} />
 				))}
 			</div>
 		</div>
