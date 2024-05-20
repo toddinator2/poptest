@@ -29,13 +29,20 @@
 .inpBorder {
 	color: #c9c9d9;
 	background-color: transparent;
-	border: 1px solid #c9c9d9;
+	border: 1px solid #cacad9;
+	border-radius: 7px;
+}
+.inpMonth {
+	width: 100%;
+	padding: 8px 12px;
+	background-color: transparent;
+	border: 1px solid #cacad9;
 	border-radius: 7px;
 }
 .fgtLinkText {
 	font-size: 15px;
 	font-weight: 500;
-	color: #9797a6;
+	color: #cacad9;
 	text-decoration: none;
 }
 .fgtLinkText:hover {
@@ -68,6 +75,18 @@
 	font-size: 25px;
 	font-weight: 600;
 	text-align: center;
+}
+.pbpgSubHdng.start {
+	text-align: start;
+}
+.pbpgSubHdng.blu {
+	color: #3395ff;
+}
+.pbpgSubHdng.red {
+	color: #ff8f8f;
+}
+.pbpgSubHdng.ppl {
+	color: #c175ff;
 }
 .pbColSides {
 	width: 47% !important;

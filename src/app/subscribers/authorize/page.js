@@ -11,7 +11,6 @@ export default function Authorize() {
 	const lsUname = process.env.UNAME_SUB;
 	const lsUserData = process.env.DATA_SUB;
 	const svdUname = getFromLocalStorage(lsUname);
-	const svdUser = getFromLocalStorage(lsUserData);
 	const router = useRouter();
 	const { status } = useSession();
 	const [auth, setAuth] = useContext(AuthContext);
@@ -25,27 +24,23 @@ export default function Authorize() {
 		try {
 			setLoading(true);
 			//try getting saved data first
-			if (svdUser) {
-				setUser(svdUser);
-			} else {
-				const response = await fetch(`${process.env.API_URL}/subscribers/get/byusername?uname=${svdUname}`, {
-					method: 'GET',
-				});
-				const data = await response.json();
+			const response = await fetch(`${process.env.API_URL}/subscribers/get/byusername?uname=${svdUname}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
 
-				if (data.status === 200) {
-					setUser(data.patient);
-				} else {
-					setUser({});
-					toast.error(data.msg);
-				}
+			if (data.status === 200) {
+				setUser(data.patient);
+			} else {
+				setUser({});
+				toast.error(data.msg);
 			}
 		} catch (err) {
 			toast.error(err);
 		} finally {
 			setLoading(false);
 		}
-	}, [svdUser, svdUname]);
+	}, [svdUname]);
 
 	useEffect(() => {
 		//check status to make sure user is authenticated

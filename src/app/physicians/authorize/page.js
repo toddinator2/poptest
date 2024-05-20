@@ -3,7 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { MiscContext } from '@/utils/context/global/MiscContext';
 import { getFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/lsSecure';
 import toast from 'react-hot-toast';
 import Spinner from '@/components/global/spinner/Spinner';

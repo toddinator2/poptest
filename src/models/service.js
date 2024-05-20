@@ -14,6 +14,10 @@ const serviceSchema = new Schema(
 			trim: true,
 			required: true,
 		},
+		description: {
+			type: String,
+			trim: true,
+		},
 		catObjId: {
 			type: ObjectId,
 			ref: 'categories',

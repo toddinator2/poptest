@@ -8,15 +8,7 @@ const womenhrtSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		cur: {
-			type: Boolean,
-			default: false,
-		},
 		wct: {
-			type: Boolean,
-			default: false,
-		},
-		wkm: {
 			type: Boolean,
 			default: false,
 		},
@@ -25,6 +17,10 @@ const womenhrtSchema = new Schema(
 			default: false,
 		},
 		int: {
+			type: Boolean,
+			default: false,
+		},
+		cur: {
 			type: Boolean,
 			default: false,
 		},

@@ -174,6 +174,12 @@ const patientSchema = new Schema(
 				required: false,
 			},
 		],
+		policyprogress: [
+			{
+				type: Object,
+				required: false,
+			},
+		],
 		historydone: {
 			type: Boolean,
 			required: true,
@@ -198,8 +204,7 @@ const patientSchema = new Schema(
 		},
 		offices: [
 			{
-				type: String,
-				trim: true,
+				type: Object,
 			},
 		],
 		mainproviderObjId: {

@@ -2,7 +2,7 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import './SetLocation.css';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { MiscContext } from '@/utils/context/global/MiscContext';
 import { saveInLocalStorage } from '@/utils/helpers/lsSecure';
 import Image from 'next/image';
 import toast from 'react-hot-toast';

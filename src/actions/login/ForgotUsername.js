@@ -13,7 +13,7 @@ export default async function ForgotUsername(encdData) {
 		const res = await axios.get(`${process.env.API_URL_PUB}/login/forgotusername${string}`);
 
 		const resObj = {
-			users: res.data.unames,
+			unames: res.data.unames,
 		};
 
 		const resData = CryptoJS.AES.encrypt(JSON.stringify(resObj), cryptoKey).toString();

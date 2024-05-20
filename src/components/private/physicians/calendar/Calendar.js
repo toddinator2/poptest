@@ -14,7 +14,7 @@ import {
 	Select,
 	setOptions,
 } from '@mobiscroll/react';
-import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { MiscContext } from '@/utils/context/global/MiscContext';
 import { PatientPopupContext } from '@/utils/context/physicians/PatientPopupContext';
 import { FormatDate } from '@/components/global/functions/Functions';
 import { EarliestStart, LatestEnd, SetColorOptions, SetInvalidTimes } from './functions/CalFunctions';

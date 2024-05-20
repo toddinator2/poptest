@@ -124,8 +124,8 @@ export default function EmpForm({ user }) {
 
 	return (
 		<>
-			<div className='row mt-5 d-flex justify-content-center'>
-				<div className='suDiv red'>
+			<div className='row mt-3 mt-xl-5 d-flex justify-content-center'>
+				<div className='suDiv red order-last order-xl-first'>
 					<div className='suHdrDiv red'>MY EMPLOYER FORM</div>
 					<form onSubmit={handleSubmit}>
 						<div className='row mt-3 d-flex align-items-center'>
@@ -260,7 +260,7 @@ export default function EmpForm({ user }) {
 						</div>
 					</form>
 				</div>
-				<div className='suDiv blu mx-4'>
+				<div className='suDiv blu mx-4 mb-3 mb-xl-0 order-2'>
 					<div className='suHdrDiv blu'>DETAILS</div>
 					<div className='row mt-3 mb-4'>
 						<div className='col-12'>
@@ -281,12 +281,12 @@ export default function EmpForm({ user }) {
 						</p>
 					</div>
 				</div>
-				<div className='suDiv ppl'>
+				<div className='suDiv ppl mb-3 mb-xl-0 order-first order-xl-last'>
 					<div className='suHdrDiv ppl'>SETUP CHECKLIST</div>
 					<Checklist progress={user.setupprogress} />
 				</div>
 			</div>
-			<div className='row mt-4'>
+			<div className='row my-4'>
 				<div className='col-12 d-flex justify-content-center'>
 					<Button type='button' border='555555' onClick={(e) => handleSkip(e)}>
 						Skip

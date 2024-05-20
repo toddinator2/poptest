@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React from 'react';
 import './PageTemplate.css';
 import { useSession } from 'next-auth/react';
 import Header from '../header/Header';

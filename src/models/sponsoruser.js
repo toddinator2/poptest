@@ -39,6 +39,11 @@ const sponsoruserSchema = new Schema(
 		phone: {
 			type: String,
 			trim: true,
+			required: true,
+		},
+		phoneext: {
+			type: String,
+			trim: true,
 		},
 		photo: {
 			type: String,

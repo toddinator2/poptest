@@ -79,7 +79,7 @@ export default function Pharmacy({ userId }) {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Local Pharmacy Name</div>
 				</div>
 				<div className='col-12'>
@@ -87,7 +87,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Local Pharmacy Phone</div>
 				</div>
 				<div className='col-12'>
@@ -95,7 +95,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Local Pharmacy Fax</div>
 				</div>
 				<div className='col-12'>
@@ -103,7 +103,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Local Pharmacy Address</div>
 				</div>
 				<div className='col-12'>
@@ -111,7 +111,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Online Pharmacy Name</div>
 				</div>
 				<div className='col-12'>
@@ -119,7 +119,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Online Pharmacy Phone</div>
 				</div>
 				<div className='col-12'>
@@ -127,7 +127,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Online Pharmacy Fax</div>
 				</div>
 				<div className='col-12'>
@@ -135,7 +135,7 @@ export default function Pharmacy({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Online Pharmacy Address</div>
 				</div>
 				<div className='col-12'>

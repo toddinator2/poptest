@@ -151,6 +151,22 @@ export function FormatZip(value) {
 	}
 }
 
+export function FormatCurrency(value) {
+	if (!value) return value;
+	let strValue = value.toString();
+	let tmpPrice = strValue.replace(/[^\d]/g, '');
+	const tmpPriceLength = tmpPrice.length;
+
+	if (tmpPriceLength < 3) return tmpPrice;
+
+	if (tmpPriceLength >= 3) {
+		let convertPrice = tmpPrice.toString();
+		let cents = convertPrice.slice(-2);
+		let dollars = convertPrice.slice(0, -2);
+		return `${dollars}.${cents}`;
+	}
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FIX VALUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -206,6 +222,18 @@ export function CalculateAge(date) {
 	const year = age_dt.getUTCFullYear();
 	const age = Math.abs(year - 1970);
 	return age;
+}
+
+export function cosineDistanceBetweenPoints(lat1, lon1, lat2, lon2) {
+	const R = 6371e3;
+	const p1 = (lat1 * Math.PI) / 180;
+	const p2 = (lat2 * Math.PI) / 180;
+	const deltaP = p2 - p1;
+	const deltaLon = lon2 - lon1;
+	const deltaLambda = (deltaLon * Math.PI) / 180;
+	const a = Math.sin(deltaP / 2) * Math.sin(deltaP / 2) + Math.cos(p1) * Math.cos(p2) * Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+	const d = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)) * R;
+	return d / 1609;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

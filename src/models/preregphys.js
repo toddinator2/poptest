@@ -25,6 +25,17 @@ const preregphysSchema = new Schema(
 			trim: true,
 			required: true,
 		},
+		username: {
+			type: String,
+			trim: true,
+			required: true,
+			lowercase: true,
+		},
+		password: {
+			type: String,
+			trim: true,
+			required: true,
+		},
 		active: {
 			type: Boolean,
 			required: true,

@@ -1,6 +1,7 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './MedHist.css';
+import toast from 'react-hot-toast';
 import Checklist from '../checklist/Checklist';
 import General from './general/General';
 import Emergency from './emergency/Emergency';
@@ -10,6 +11,30 @@ import Immunizations from './immunizations/Immunizations';
 import MedicalHistory from './medicalhistory/MedicalHistory';
 import Procedures from './procedures/Procedures';
 import Social from './social/Social';
+import FamilyHistory from './familyhistory/FamilyHistory';
+import Last30 from './last30/Last30';
+import Women from './women/health/Women';
+import Obgyn from './women/obgyn/Obgyn';
+import WmnPrevent from './women/prevent/WmnPrevent';
+import WmnSexual from './women/sexual/WmnSexual';
+import Menopause from './women/menopause/Menopause';
+import Hormone from './women/hormone/Hormone';
+import Men from './men/health/Men';
+import MenPrevent from './men/prevent/MenPrevent';
+import MenUrinary from './men/urinary/MenUrinary';
+import MenSexual from './men/sexual/MenSexual';
+import Testosterone from './men/testosterone/Testosterone';
+import Fitness from './physicalfitness/Fitness';
+import AlgMeds from './allergies/medications/AlgMeds';
+import AlgFood from './allergies/food/AlgFood';
+import AlgEnv from './allergies/environment/AlgEnv';
+import AlgSymptoms from './allergies/symptoms/AlgSymptoms';
+import AlgCurMeds from './allergies/curmeds/AlgCurMeds';
+import Behavioral from './behavioral/Behavioral';
+import Chiropractic from './chiropractic/Chiropractic';
+import Massage from './massage/Massage';
+import PhysicalTherapy from './physicaltherapy/PhysicalTherapy';
+import Important from './important/Important';
 
 export default function MedHist({ user }) {
 	//Edit Divs
@@ -35,8 +60,6 @@ export default function MedHist({ user }) {
 	const [shwMenSexual, setShwMenSexual] = useState(false);
 	const [shwMenTrt, setShwMenTrt] = useState(false);
 	const [shwFitness, setShwFitness] = useState(false);
-	const [shwCompMed, setShwCompMed] = useState(false);
-	const [shwAllergy, setShwAllergy] = useState(false);
 	const [shwAlgMeds, setShwAlgMeds] = useState(false);
 	const [shwAlgFood, setShwAlgFood] = useState(false);
 	const [shwAlgEnv, setShwAlgEnv] = useState(false);
@@ -46,15 +69,6 @@ export default function MedHist({ user }) {
 	const [shwChiropractic, setShwChiropractic] = useState(false);
 	const [shwMassage, setShwMassage] = useState(false);
 	const [shwPhysicalTherapy, setShwPhysicalTherapy] = useState(false);
-	const [shwPolReg, setShwPolReg] = useState(false);
-	const [shwPolMed, setShwPolMed] = useState(false);
-	const [shwPolPro, setShwPolPro] = useState(false);
-	const [shwPolPrv, setShwPolPrv] = useState(false);
-	const [shwPolSph, setShwPolSph] = useState(false);
-	const [shwPolPer, setShwPolPer] = useState(false);
-	const [shwPolSec, setShwPolSec] = useState(false);
-	const [shwPolFin, setShwPolFin] = useState(false);
-	const [shwPolChg, setShwPolChg] = useState(false);
 	const [shwImportant, setShwImportant] = useState(false);
 	//Done Data
 	const [doneGeneral, setDoneGeneral] = useState(false);
@@ -79,8 +93,6 @@ export default function MedHist({ user }) {
 	const [doneMenSex, setDoneMenSex] = useState(false);
 	const [doneMenTrt, setDoneMenTrt] = useState(false);
 	const [doneFitness, setDoneFitness] = useState(false);
-	const [doneCompMed, setDoneCompMed] = useState(false);
-	const [doneAllergy, setDoneAllergy] = useState(false);
 	const [doneAlgMeds, setDoneAlgMeds] = useState(false);
 	const [doneAlgFood, setDoneAlgFood] = useState(false);
 	const [doneAlgEnv, setDoneAlgEnv] = useState(false);
@@ -90,18 +102,28 @@ export default function MedHist({ user }) {
 	const [doneChiropractic, setDoneChiropractic] = useState(false);
 	const [doneMassage, setDoneMassage] = useState(false);
 	const [donePhysicalTherapy, setDonePhysicalTherapy] = useState(false);
-	const [donePolReg, setDonePolReg] = useState(false);
-	const [donePolMed, setDonePolMed] = useState(false);
-	const [donePolPro, setDonePolPro] = useState(false);
-	const [donePolPrv, setDonePolPrv] = useState(false);
-	const [donePolSph, setDonePolSph] = useState(false);
-	const [donePolPer, setDonePolPer] = useState(false);
-	const [donePolSec, setDonePolSec] = useState(false);
-	const [donePolFin, setDonePolFin] = useState(false);
-	const [donePolChg, setDonePolChg] = useState(false);
-	const [doneConsent, setDoneConsent] = useState(false);
 	const [doneImportant, setDoneImportant] = useState(false);
-	const [finished, setFinished] = useState(false);
+
+	const historyDone = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL_PUB}/subscribers/setup/medhistdone`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					ptId: user._id,
+				}),
+			});
+			const data = await response.json();
+
+			if (data.status === '200') {
+				toast.success(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [user]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SET PROGRESS
@@ -110,7 +132,7 @@ export default function MedHist({ user }) {
 		if (user !== undefined) {
 			if (Object.keys(user).length !== 0) {
 				if (user.historyprogress.length === 0 || user.historyprogress === undefined) {
-					setFinished(false);
+					setDoneGeneral(false);
 				} else {
 					for (let i = 0; i < user.historyprogress.length; i++) {
 						const hist = user.historyprogress[i];
@@ -180,12 +202,6 @@ export default function MedHist({ user }) {
 						if (hist === 'fitness') {
 							setDoneFitness(true);
 						}
-						if (hist === 'compmed') {
-							setDoneCompMed(true);
-						}
-						if (hist === 'allergy') {
-							setDoneAllergy(true);
-						}
 						if (hist === 'algmeds') {
 							setDoneAlgMeds(true);
 						}
@@ -238,8 +254,6 @@ export default function MedHist({ user }) {
 			doneFamily &&
 			doneLast30 &&
 			doneFitness &&
-			doneCompMed &&
-			doneAllergy &&
 			doneAlgMeds &&
 			doneAlgFood &&
 			doneAlgEnv &&
@@ -253,12 +267,12 @@ export default function MedHist({ user }) {
 		) {
 			if (user.sex === 'f') {
 				if (doneWomen && doneObgyn && doneWmnPrevent && doneWmnSex && doneWmnMen && doneWmnHrt) {
-					//need to set patient historydone true in database
+					historyDone();
 				}
 			}
 			if (user.sex === 'm') {
 				if (doneMen && doneMenPrevent && doneMenUrinary && doneMenSex && doneMenTrt) {
-					//need to set patient historydone true in database
+					historyDone();
 				}
 			}
 		}
@@ -286,8 +300,6 @@ export default function MedHist({ user }) {
 		doneMenSex,
 		doneMenTrt,
 		doneFitness,
-		doneCompMed,
-		doneAllergy,
 		doneAlgMeds,
 		doneAlgFood,
 		doneAlgEnv,
@@ -313,6 +325,30 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(false);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'emergency') {
 			setShwGeneral(false);
@@ -323,6 +359,30 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(false);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'pharmacy') {
 			setShwGeneral(false);
@@ -333,6 +393,30 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(false);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'meds') {
 			setShwGeneral(false);
@@ -343,6 +427,30 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(false);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'immune') {
 			setShwGeneral(false);
@@ -353,6 +461,30 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(false);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'medical') {
 			setShwGeneral(false);
@@ -363,6 +495,30 @@ export default function MedHist({ user }) {
 			setShwMedical(!shwMedical);
 			setShwProcedures(false);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'procedures') {
 			setShwGeneral(false);
@@ -373,6 +529,30 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(!shwProcedures);
 			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
 		}
 		if (value === 'social') {
 			setShwGeneral(false);
@@ -383,13 +563,853 @@ export default function MedHist({ user }) {
 			setShwMedical(false);
 			setShwProcedures(false);
 			setShwSocial(!shwSocial);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'family') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(!shwFamily);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'last30') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(!shwLast30);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'women') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(!shwWomen);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'obgyn') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(!shwObgyn);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'wmnprevent') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(!shwWmnPrevent);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'wmnsex') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(!shwWmnSex);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'wmnmen') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(!shwWmnMen);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'wmnhrt') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(!shwWmnHrt);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'men') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(!shwMen);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'menprevent') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(!shwMenPrevent);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'menurinary') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(!shwMenUrinary);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'mensex') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(!shwMenSexual);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'mentrt') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(!shwMenTrt);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'fitness') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(!shwFitness);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'algmeds') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(!shwAlgMeds);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'algfood') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(!shwAlgFood);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'algenv') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(!shwAlgEnv);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'algsym') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(!shwAlgSym);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'algcurmed') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(!shwAlgCurMed);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'behavioral') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(!shwBehavioral);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'chiropractic') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(!shwChiropractic);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'massage') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(!shwMassage);
+			setShwPhysicalTherapy(false);
+			setShwImportant(false);
+		}
+		if (value === 'physicaltherapy') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(!shwPhysicalTherapy);
+			setShwImportant(false);
+		}
+		if (value === 'important') {
+			setShwGeneral(false);
+			setShwEmergency(false);
+			setShwPharmacy(false);
+			setShwMeds(false);
+			setShwImmunizations(false);
+			setShwMedical(false);
+			setShwProcedures(false);
+			setShwSocial(false);
+			setShwFamily(false);
+			setShwLast30(false);
+			setShwWomen(false);
+			setShwObgyn(false);
+			setShwWmnPrevent(false);
+			setShwWmnSex(false);
+			setShwWmnMen(false);
+			setShwWmnHrt(false);
+			setShwMen(false);
+			setShwMenPrevent(false);
+			setShwMenUrinary(false);
+			setShwMenSexual(false);
+			setShwMenTrt(false);
+			setShwFitness(false);
+			setShwAlgMeds(false);
+			setShwAlgFood(false);
+			setShwAlgEnv(false);
+			setShwAlgSym(false);
+			setShwAlgCurMed(false);
+			setShwBehavioral(false);
+			setShwChiropractic(false);
+			setShwMassage(false);
+			setShwPhysicalTherapy(false);
+			setShwImportant(!shwImportant);
 		}
 	};
 
 	return (
 		<>
-			<div className='row mt-5 mb-3 mb-xl-0 d-flex justify-content-center'>
-				<div className='suDiv red'>
+			<div className='row mt-3 mt-xl-5 d-flex justify-content-center'>
+				<div className='suDiv red order-last order-xl-first'>
 					<div className='suHdrDiv red'>MEDICAL HISTORY</div>
 					{doneGeneral ? (
 						<div className='row mt-3 mb-2 ps-3'>
@@ -583,8 +1603,591 @@ export default function MedHist({ user }) {
 							)}
 						</>
 					)}
+					{doneFamily ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Family History</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('family')}>
+										Family History
+									</div>
+								</div>
+							</div>
+							{shwFamily && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<FamilyHistory userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneLast30 ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Last 30 Days</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('last30')}>
+										Last 30 Days
+									</div>
+								</div>
+							</div>
+							{shwLast30 && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Last30 userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{user.sex === 'f' ? (
+						<>
+							{doneWomen ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Women&apos;s Health</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('women')}>
+												Women&apos;s Health
+											</div>
+										</div>
+									</div>
+									{shwWomen && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<Women userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneObgyn ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Gynecologic History</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('obgyn')}>
+												Gynecologic History
+											</div>
+										</div>
+									</div>
+									{shwObgyn && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<Obgyn userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneWmnPrevent ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Preventative Care</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('wmnprevent')}>
+												Preventative Care
+											</div>
+										</div>
+									</div>
+									{shwWmnPrevent && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<WmnPrevent userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneWmnSex ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Sexual Function</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('wmnsex')}>
+												Sexual Function
+											</div>
+										</div>
+									</div>
+									{shwWmnSex && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<WmnSexual userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneWmnMen ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Menopause</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('wmnmen')}>
+												Menopause
+											</div>
+										</div>
+									</div>
+									{shwWmnMen && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<Menopause userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneWmnHrt ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Hormone Replacement Therapy</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('wmnhrt')}>
+												Hormone Replacement Therapy
+											</div>
+										</div>
+									</div>
+									{shwWmnHrt && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<Hormone userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+						</>
+					) : (
+						<>
+							{doneMen ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Men&apos;s Health</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('men')}>
+												Men&apos;s Health
+											</div>
+										</div>
+									</div>
+									{shwMen && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<Men userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneMenPrevent ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Preventative Care</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('menprevent')}>
+												Preventative Care
+											</div>
+										</div>
+									</div>
+									{shwMenPrevent && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<MenPrevent userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneMenUrinary ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Urinary Function</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('menurinary')}>
+												Urinary Function
+											</div>
+										</div>
+									</div>
+									{shwMenUrinary && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<MenUrinary userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneMenSex ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Sexual Function</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('mensex')}>
+												Sexual Function
+											</div>
+										</div>
+									</div>
+									{shwMenSexual && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<MenSexual userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+							{doneMenTrt ? (
+								<div className='row mb-2 ps-3'>
+									<div className='col-12'>
+										<div className='histHdng'>Testosterone Replacement Therapy</div>
+									</div>
+								</div>
+							) : (
+								<>
+									<div className='row mb-2 ps-3'>
+										<div className='col-12'>
+											<div className='histHdng wht' onClick={() => handleEditDiv('mentrt')}>
+												Testosterone Replacement Therapy
+											</div>
+										</div>
+									</div>
+									{shwMenTrt && (
+										<div className='row mb-4'>
+											<div className='histBox col-10 offset-1 p-3'>
+												<Testosterone userId={user._id} />
+											</div>
+										</div>
+									)}
+								</>
+							)}
+						</>
+					)}
+					{doneFitness ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Physical Fitness</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('fitness')}>
+										Physical Fitness
+									</div>
+								</div>
+							</div>
+							{shwFitness && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Fitness userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneAlgMeds ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Allergies &ndash; Medications</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('algmeds')}>
+										Allergies &ndash; Medications
+									</div>
+								</div>
+							</div>
+							{shwAlgMeds && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<AlgMeds userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneAlgFood ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Allergies &ndash; Food</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('algfood')}>
+										Allergies &ndash; Food
+									</div>
+								</div>
+							</div>
+							{shwAlgFood && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<AlgFood userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneAlgEnv ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Allergies &ndash; Environment</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('algenv')}>
+										Allergies &ndash; Environment
+									</div>
+								</div>
+							</div>
+							{shwAlgEnv && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<AlgEnv userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneAlgSym ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Allergies &ndash; Current Symptoms</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('algsym')}>
+										Allergies &ndash; Current Symptoms
+									</div>
+								</div>
+							</div>
+							{shwAlgSym && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<AlgSymptoms userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneAlgCurMed ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Allergies &ndash; Current Medications</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('algcurmed')}>
+										Allergies &ndash; Current Medications
+									</div>
+								</div>
+							</div>
+							{shwAlgCurMed && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<AlgCurMeds userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneBehavioral ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Behavioral Therapy</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('behavioral')}>
+										Behavioral Therapy
+									</div>
+								</div>
+							</div>
+							{shwBehavioral && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Behavioral userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneChiropractic ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Chiropractic Therapy</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('chiropractic')}>
+										Chiropractic Therapy
+									</div>
+								</div>
+							</div>
+							{shwChiropractic && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Chiropractic userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneMassage ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Massage Therapy</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('massage')}>
+										Massage Therapy
+									</div>
+								</div>
+							</div>
+							{shwMassage && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Massage userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{donePhysicalTherapy ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Physical Therapy</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('physicaltherapy')}>
+										Physical Therapy
+									</div>
+								</div>
+							</div>
+							{shwPhysicalTherapy && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<PhysicalTherapy userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
+					{doneImportant ? (
+						<div className='row mb-2 ps-3'>
+							<div className='col-12'>
+								<div className='histHdng'>Important To You</div>
+							</div>
+						</div>
+					) : (
+						<>
+							<div className='row mb-2 ps-3'>
+								<div className='col-12'>
+									<div className='histHdng wht' onClick={() => handleEditDiv('important')}>
+										Important To You
+									</div>
+								</div>
+							</div>
+							{shwImportant && (
+								<div className='row mb-4'>
+									<div className='histBox col-10 offset-1 p-3'>
+										<Important userId={user._id} />
+									</div>
+								</div>
+							)}
+						</>
+					)}
 				</div>
-				<div className='suDiv blu mx-4'>
+				<div className='suDiv blu mx-4 mb-3 mb-xl-0 order-2'>
 					<div className='suHdrDiv blu'>DETAILS</div>
 					<div className='row mt-3 mb-4'>
 						<div className='col-12'>
@@ -606,7 +2209,7 @@ export default function MedHist({ user }) {
 						</p>
 					</div>
 				</div>
-				<div className='suDiv ppl'>
+				<div className='suDiv ppl mb-3 mb-xl-0 order-first order-xl-last'>
 					<div className='suHdrDiv ppl'>SETUP CHECKLIST</div>
 					<Checklist progress={user.setupprogress} />
 				</div>

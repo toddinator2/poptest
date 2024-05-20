@@ -7,6 +7,7 @@ const MiscProvider = ({ children }) => {
 		defLocId: '',
 		defLocName: '',
 		editId: '',
+		props: {},
 	});
 
 	return <MiscContext.Provider value={[misc, setMisc]}>{children}</MiscContext.Provider>;

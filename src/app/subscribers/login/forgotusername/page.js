@@ -33,20 +33,20 @@ export default function SubFU() {
 		//Decrypt returned data
 		const decryptedData = CryptoJS.AES.decrypt(encdData, cryptoKey);
 		const data = JSON.parse(decryptedData.toString(CryptoJS.enc.Utf8));
-		const patients = data.users;
+		const unames = data.unames;
 
-		if (patients.length >= 1) {
+		if (unames.length >= 1) {
 			let uNames = '';
 			const domain = process.env.DOMAIN;
 			const emlService = process.env.EMAILJS_SERVICE;
 			const emlUser = process.env.EMAILJS_USER;
 			const tempFU = 'forgotUsername';
 
-			patients.forEach((pt) => {
+			unames.forEach((uname) => {
 				if (!uNames) {
-					uNames = pt;
+					uNames = uname;
 				} else {
-					uNames = uNames + ', ' + pt;
+					uNames = uNames + ', ' + uname;
 				}
 			});
 

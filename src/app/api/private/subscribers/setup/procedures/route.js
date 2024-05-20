@@ -20,7 +20,7 @@ export const POST = async (req) => {
 		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
 	}
 
-	//add to immunizations table
+	//add to procedures table
 	try {
 		const newProc = await new Procedure({
 			app,

@@ -5,7 +5,8 @@ export default function Checklist({ progress }) {
 	const [profile, setProfile] = useState(false);
 	const [docForm, setDocForm] = useState(false);
 	const [empForm, setEmpForm] = useState(false);
-	const [history, setHistory] = useState(false);
+	const [medHist, setMedHist] = useState(false);
+	const [policy, setPolicy] = useState(false);
 
 	useEffect(() => {
 		if (progress.length !== 0) {
@@ -20,8 +21,11 @@ export default function Checklist({ progress }) {
 				if (name === 'empform') {
 					setEmpForm(true);
 				}
-				if (name === 'history') {
-					setHistory(true);
+				if (name === 'medhist') {
+					setMedHist(true);
+				}
+				if (name === 'policies') {
+					setPolicy(true);
 				}
 			}
 		}
@@ -67,10 +71,25 @@ export default function Checklist({ progress }) {
 				<div className='col-10 offset-1 ps-4'>
 					<div className='row mt-2 d-flex align-items-center'>
 						<div className='col-2 d-flex justify-content-end'>
-							<input className='chkBox' type='checkbox' checked={history} readOnly />
+							<input className='chkBox' type='checkbox' checked={medHist} readOnly />
 						</div>
 						<div className='col ps-1'>
 							<div className='fs-6'>Medical History</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div className='row mb-4'>
+				<div className='col-10 offset-1'>
+					<div className='chkListHdng'>Acknowledge &amp; Consent</div>
+				</div>
+				<div className='col-10 offset-1 ps-4'>
+					<div className='row mb-1 d-flex align-items-center'>
+						<div className='col-2 d-flex justify-content-end'>
+							<input className='chkBox' type='checkbox' checked={policy} readOnly />
+						</div>
+						<div className='col ps-1'>
+							<div className='fs-6'>Acknowledge &amp; Consent</div>
 						</div>
 					</div>
 				</div>

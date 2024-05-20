@@ -14,7 +14,7 @@ import Spinner from '@/components/global/spinner/Spinner';
 import icoMemberPts from '@/assets/images/hmpgIcoPts.png';
 import couple from '@/assets/images/lmPtsCouple.png';
 
-export default function SubscriberLearnMorePage() {
+export default function SubLearnMore() {
 	const CryptoJS = require('crypto-js');
 	const cryptoKey = process.env.CRYPTO_KEY;
 	const token = process.env.AUTH_TOKEN;

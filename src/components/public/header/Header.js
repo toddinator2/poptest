@@ -131,7 +131,7 @@ export default function Header() {
 											</div>
 											<div className='row mb-1'>
 												<div className='col-12'>
-													<Link className='navDDLink red' href='/physicians/prescreen'>
+													<Link className='navDDLink red' href='/physicians/register'>
 														Physicians
 													</Link>
 												</div>
@@ -159,7 +159,7 @@ export default function Header() {
 											</div>
 											<div className='row mb-1'>
 												<div className='col-12'>
-													<Link className='navDDLink red' href='/physicians/prescreen'>
+													<Link className='navDDLink red' href='/physicians/learnmore'>
 														Physicians
 													</Link>
 												</div>
@@ -225,7 +225,7 @@ export default function Header() {
 										</Link>
 									</div>
 									<div className='col-12 ps-5 mb-1'>
-										<Link className='navDDLink red' href='/physicians/prescreen'>
+										<Link className='navDDLink red' href='/physicians/register'>
 											Physicians
 										</Link>
 									</div>
@@ -243,7 +243,7 @@ export default function Header() {
 										</Link>
 									</div>
 									<div className='col-12 ps-5 mb-1'>
-										<Link className='navDDLink red' href='/physicians/prescreen'>
+										<Link className='navDDLink red' href='/physicians/learnmore'>
 											Physicians
 										</Link>
 									</div>

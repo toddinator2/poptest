@@ -4,6 +4,7 @@ import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
 import Preregpat from '@/models/preregpat';
 import Patient from '@/models/patient';
+import Preregspn from '@/models/preregspn';
 import Sponsor from '@/models/sponsor';
 import Sponsoruser from '@/models/sponsoruser';
 import Preregphys from '@/models/preregphys';
@@ -129,12 +130,78 @@ export const POST = async (req) => {
 				}
 			}
 			if (type === 'sponsor') {
-				const user = await Sponsoruser.findOne({ verifycode: verifycode });
-				if (user) {
-					await Sponsoruser.findOneAndUpdate({ verifycode: verifycode }, { verifycode: '', emailconfirmed: true }, { new: true });
-					return NextResponse.json({ status: 200 });
+				//move from pre-registration to sponsors and sponsorusers
+				const preSpn = await Preregspn.findOne({ verifycode: verifycode });
+				if (preSpn) {
+					//sponsors first
+					let newSpn;
+					let newSpnUser;
+					let spnId = '';
+
+					//Create a Sponsor ID and check if already exists
+					for (let i = 0; i <= 1000000; i++) {
+						const newSpnId = CreateSponsorId(9);
+						const idExists = await Sponsor.findOne({ sponsorid: newSpnId.toLowerCase() });
+						if (!idExists || idExists === null) {
+							spnId = newSpnId.toLowerCase();
+							break;
+						}
+					}
+
+					//Hash password for storage
+					const hashedPassword = await bcrypt.hash(preSpn.password, 10);
+
+					//Create a reset creds code
+					const resetcode = RandomStringMake(32);
+
+					newSpn = new Sponsor({
+						type: preSpn.type.toLowerCase(),
+						sponsorid: spnId,
+						company: preSpn.company,
+						fname: preSpn.fname,
+						lname: preSpn.lname,
+						email: preSpn.email.toLowerCase(),
+						phone: preSpn.phone,
+						phoneext: preSpn.phoneext,
+						active: true,
+						website: preSpn.website,
+					});
+					const svdSpn = await newSpn.save();
+					const newSpnId = svdSpn._id;
+
+					if (newSpnId) {
+						//save to sponsorusers
+						newSpnUser = new Sponsoruser({
+							fname: preSpn.fname,
+							lname: preSpn.lname,
+							email: preSpn.email.toLowerCase(),
+							username: preSpn.username.toLowerCase(),
+							password: hashedPassword,
+							phone: preSpn.phone,
+							phoneext: preSpn.phoneext,
+							permission: 'sponsor',
+							role: 'sponsor',
+							resetcreds: true,
+							resetcode: resetcode,
+							verifycode: '',
+							emailconfirmed: true,
+							sponsorid: spnId,
+							sponsorObjId: newSpnId,
+						});
+						const svdUser = await newSpnUser.save();
+						const newUserId = svdUser._id;
+
+						if (newUserId) {
+							await Preregspn.findOneAndDelete({ verifycode: verifycode });
+							return NextResponse.json({ status: 200 });
+						} else {
+							return NextResponse.json({ status: 400 });
+						}
+					} else {
+						return NextResponse.json({ status: 400 });
+					}
 				} else {
-					return NextResponse.json({ status: 400 });
+					return NextResponse.json({ status: 500 });
 				}
 			}
 			if (type === 'physicianprereg') {

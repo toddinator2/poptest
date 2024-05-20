@@ -74,7 +74,7 @@ export default function Medications({ userId }) {
 			</div>
 			<form onSubmit={handleSubmit}>
 				<div className='row mb-2'>
-					<div className='col-12'>
+					<div className='col-12 mb-1'>
 						<div className='frmLabel'>Medication Type</div>
 					</div>
 					<div className='col-12'>
@@ -89,7 +89,7 @@ export default function Medications({ userId }) {
 					</div>
 				</div>
 				<div className='row mb-2'>
-					<div className='col-12'>
+					<div className='col-12 mb-1'>
 						<div className='frmLabel'>Name</div>
 					</div>
 					<div className='col-12'>
@@ -99,7 +99,7 @@ export default function Medications({ userId }) {
 				{medType === 'pre' && (
 					<>
 						<div className='row mb-2'>
-							<div className='col-12'>
+							<div className='col-12 mb-1'>
 								<div className='frmLabel'>Dosage</div>
 							</div>
 							<div className='col-12'>
@@ -107,7 +107,7 @@ export default function Medications({ userId }) {
 							</div>
 						</div>
 						<div className='row mb-2'>
-							<div className='col-12'>
+							<div className='col-12 mb-1'>
 								<div className='frmLabel'>Frequency</div>
 							</div>
 							<div className='col-12'>
@@ -118,7 +118,7 @@ export default function Medications({ userId }) {
 				)}
 				{medType !== 'pre' && medType !== '' && medType !== 'nun' && (
 					<div className='row mb-2'>
-						<div className='col-12'>
+						<div className='col-12 mb-1'>
 							<div className='frmLabel'>Reason</div>
 						</div>
 						<div className='col-12'>

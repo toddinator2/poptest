@@ -4,7 +4,7 @@ const { ObjectId } = mongoose.Schema;
 
 const behavioralSchema = new Schema(
 	{
-		cur: {
+		not: {
 			type: Boolean,
 			default: false,
 		},
@@ -24,11 +24,7 @@ const behavioralSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		knw: {
-			type: Boolean,
-			default: false,
-		},
-		not: {
+		cur: {
 			type: Boolean,
 			default: false,
 		},

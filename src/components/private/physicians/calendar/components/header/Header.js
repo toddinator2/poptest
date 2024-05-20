@@ -1,7 +1,7 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { Draggable, Dropcontainer } from '@mobiscroll/react';
-import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { MiscContext } from '@/utils/context/global/MiscContext';
 import Image from 'next/image';
 import toast from 'react-hot-toast';
 import PropTypes from 'prop-types';

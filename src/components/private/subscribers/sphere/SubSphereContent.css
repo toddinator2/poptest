@@ -1,0 +1,102 @@
+.sphContainer {
+	width: 25%;
+	height: auto;
+	min-height: 75vh;
+	padding: 0px;
+	padding-bottom: 25px;
+	border-radius: 20px;
+}
+.sphContainer.red {
+	border: 3px solid #ff0000;
+}
+.sphContainer.blu {
+	border: 3px solid #0000ff;
+}
+.sphContainer.ppl {
+	border: 3px solid #8000ff;
+}
+.sphSubContainer {
+	width: 96%;
+	margin-left: auto;
+	margin-right: auto;
+	padding-top: 7px;
+}
+.sphContHdrDiv {
+	width: 100% !important;
+	padding: 10px 0px;
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+.sphContHdrDiv.red {
+	border-bottom: 3px solid #ff0000;
+}
+.sphContHdrDiv.blu {
+	border-bottom: 3px solid #0000ff;
+}
+.sphContHdrDiv.ppl {
+	border-bottom: 3px solid #8000ff;
+}
+.sphContHdng {
+	font-size: 20px;
+	font-weight: 600;
+	text-align: center;
+}
+.sphContText {
+	font-size: 15px;
+	font-weight: 500;
+}
+.chkListHdng {
+	font-size: 18px;
+	font-weight: 600;
+	color: #73b9ff;
+}
+.chkBox {
+	width: 18px;
+	height: 18px;
+}
+.sphIcon {
+	width: 20px;
+	height: 20px;
+}
+.sphIcon:hover {
+	cursor: pointer;
+}
+.sphPhoto {
+	border-radius: 50%;
+}
+.sphTextLink {
+	font-size: 15px;
+	font-weight: 500;
+	color: #73b9ff;
+}
+.sphTextLink:hover {
+	color: #ff8f8f;
+	cursor: pointer;
+}
+
+@media screen and (max-width: 1400px) {
+	.sphContainer {
+		width: 30%;
+	}
+}
+
+@media screen and (max-width: 1200px) {
+	.sphContainer {
+		width: 60%;
+		min-height: 10vh;
+	}
+	.sphContHdrDiv {
+		padding: 7px 0px;
+		font-size: 15px;
+	}
+	.sphContHdng {
+		font-size: 15px;
+	}
+}
+
+@media screen and (max-width: 767px) {
+	.sphContainer {
+		width: 90%;
+	}
+}

@@ -7,7 +7,7 @@ export const config = {
 		'/physicians/schedule',
 		'/physicians/sphere',
 		'/physicians/patientprofile',
-		'/subscribers/setup',
-		'/subscribers/sphere',
+		'/subscribers/setup/:path*',
+		'/subscribers/sphere/:path*',
 	],
 };

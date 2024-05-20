@@ -272,7 +272,7 @@ export default function Procedures({ userId }) {
 			{oth && (
 				<div className='row'>
 					<div className='col-2'></div>
-					<div className='col-9'>
+					<div className='col-9 mb-1'>
 						<div className='frmLabel'>Please Specify:</div>
 					</div>
 					<div className='col-2'></div>

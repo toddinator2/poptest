@@ -1,6 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { MiscContext } from '@/utils/context/physicians/MiscContext';
+import { MiscContext } from '@/utils/context/global/MiscContext';
 import { PatientSearchContext } from '@/utils/context/physicians/PatientSearchContext';
 import { saveInLocalStorage } from '@/utils/helpers/lsSecure';
 import Link from 'next/link';

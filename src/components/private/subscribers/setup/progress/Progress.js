@@ -7,6 +7,7 @@ import Profile from '../profile/Profile';
 import DocForm from '../docform/DocForm';
 import EmpForm from '../empform/EmpForm';
 import MedHist from '../medhist/MedHist';
+import Policies from '../policies/Policies';
 
 import * as Realm from 'realm-web';
 const app = new Realm.App({ id: process.env.REALM_ID });
@@ -65,6 +66,9 @@ export default function Progress() {
 						if (pg === 'empform') {
 							setPage('medhist');
 						}
+						if (pg === 'medhist') {
+							setPage('policy');
+						}
 					}
 				}
 			}
@@ -97,6 +101,7 @@ export default function Progress() {
 			{page === 'docform' && <DocForm user={user} />}
 			{page === 'empform' && <EmpForm user={user} />}
 			{page === 'medhist' && <MedHist user={user} />}
+			{page === 'policy' && <Policies user={user} />}
 		</>
 	);
 }

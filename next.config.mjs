@@ -1,5 +1,7 @@
 import pkg from './config.mjs';
 const {
+	AGORA_APP_ID,
+	AGORA_APP_CERTIFICATE,
 	API_URL,
 	API_URL_PUB,
 	AUTH_TOKEN,
@@ -42,6 +44,8 @@ const {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
 	env: {
+		AGORA_APP_ID,
+		AGORA_APP_CERTIFICATE,
 		API_URL,
 		API_URL_PUB,
 		AUTH_TOKEN,

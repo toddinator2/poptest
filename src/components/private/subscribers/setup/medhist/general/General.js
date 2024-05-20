@@ -66,7 +66,7 @@ export default function General({ userId }) {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>How did you hear about us?</div>
 				</div>
 				<div className='col-12'>
@@ -81,7 +81,7 @@ export default function General({ userId }) {
 			</div>
 			{(hear === 'Medical Referral' || hear === 'Friend Referral' || hear === 'Other') && (
 				<div className='row mb-2'>
-					<div className='col-12'>
+					<div className='col-12 mb-1'>
 						<div className='frmLabel'>Please Specify:</div>
 					</div>
 					<div className='col-12'>
@@ -90,7 +90,7 @@ export default function General({ userId }) {
 				</div>
 			)}
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Marital Status</div>
 				</div>
 				<div className='col-12'>
@@ -105,7 +105,7 @@ export default function General({ userId }) {
 			</div>
 			<div className='py-1'>The following information is for physician use only, not for SN3X representatives to contact them.</div>
 			<div className='row my-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Current PCP Name</div>
 				</div>
 				<div className='col-12'>
@@ -113,7 +113,7 @@ export default function General({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Current PCP Phone</div>
 				</div>
 				<div className='col-12'>
@@ -121,7 +121,7 @@ export default function General({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Employer</div>
 				</div>
 				<div className='col-12'>
@@ -129,7 +129,7 @@ export default function General({ userId }) {
 				</div>
 			</div>
 			<div className='row'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Employer Phone</div>
 				</div>
 				<div className='col-12'>

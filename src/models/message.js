@@ -19,6 +19,7 @@ const messageSchema = new Schema(
 		subject: {
 			type: String,
 			trim: true,
+			required: true,
 		},
 		patientObjId: {
 			type: ObjectId,
@@ -36,14 +37,17 @@ const messageSchema = new Schema(
 		message: {
 			type: String,
 			trim: true,
+			required: true,
 		},
 		datesent: {
 			type: String,
 			trim: true,
+			required: true,
 		},
 		timesent: {
 			type: String,
 			trim: true,
+			required: true,
 		},
 		unixtimesent: {
 			type: Number,

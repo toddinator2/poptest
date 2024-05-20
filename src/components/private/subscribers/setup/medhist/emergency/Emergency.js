@@ -51,7 +51,7 @@ export default function Emergency({ userId }) {
 	return (
 		<form onSubmit={handleSubmit}>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Contact Name</div>
 				</div>
 				<div className='col-12'>
@@ -59,7 +59,7 @@ export default function Emergency({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Contact Phone</div>
 				</div>
 				<div className='col-12'>
@@ -67,7 +67,7 @@ export default function Emergency({ userId }) {
 				</div>
 			</div>
 			<div className='row mb-2'>
-				<div className='col-12'>
+				<div className='col-12 mb-1'>
 					<div className='frmLabel'>Relation</div>
 				</div>
 				<div className='col-12'>
