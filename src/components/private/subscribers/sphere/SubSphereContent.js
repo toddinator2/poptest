@@ -7,7 +7,9 @@ import PhysicianSearch from './content/physiciansearch/PhysicianSearch';
 import OfficeComponent from './content/physiciansearch/OfficeComponent';
 import OfficeDetails from './content/physiciansearch/OfficeDetails';
 //Telemed
+/*
 import AgoraRTC, { AgoraRTCProvider, useRTCClient } from 'agora-rtc-react';
+*/
 import JoinCall from './content/virtual/JoinCall';
 import Videos from './content/virtual/Videos';
 //Messages
@@ -15,14 +17,14 @@ import Messages from './content/messaging/Messages';
 
 export default function SubSphereContent() {
 	const [menu] = useContext(MenuContext);
-	const client = useRTCClient(AgoraRTC.createClient({ codec: 'vp9', mode: 'rtc' }));
+	//const client = useRTCClient(AgoraRTC.createClient({ codec: 'vp9', mode: 'rtc' }));
 
 	return (
 		<div className='row d-flex justify-content-center'>
-			<AgoraRTCProvider client={client}>
-				{menu.dets === 'joinCall' && <JoinCall />}
-				{menu.vids && <Videos />}
-			</AgoraRTCProvider>
+			{/*<AgoraRTCProvider client={client}>*/}
+			{menu.dets === 'joinCall' && <JoinCall />}
+			{menu.vids && <Videos />}
+			{/*</AgoraRTCProvider>*/}
 			<div className='sphContainer red'>
 				{menu.type === 'phySearch' && <PhysicianSearch />}
 				{menu.type === 'messages' && <Messages />}
