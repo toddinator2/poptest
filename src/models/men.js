@@ -41,4 +41,4 @@ const menSchema = new Schema(
 	{ timestamps: true }
 );
 
-export default mongoose.models.Men || mongoose.model('Men', Men);
+export default mongoose.models.Men || mongoose.model('Men', menSchema);
