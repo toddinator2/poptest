@@ -32,7 +32,7 @@ function Call({ appId, channelName }) {
 }
 
 function Videos({ channelName, AppID }) {
-	const { AppID, channelName } = props;
+	//const { AppID, channelName } = props;
 	const { isLoading: isLoadingMic, localMicrophoneTrack } = useLocalMicrophoneTrack();
 	const { isLoading: isLoadingCam, localCameraTrack } = useLocalCameraTrack();
 	const remoteUsers = useRemoteUsers();
