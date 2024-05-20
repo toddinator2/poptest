@@ -6,26 +6,19 @@ import { MenuContext } from '@/utils/context/global/MenuContext';
 import PhysicianSearch from './content/physiciansearch/PhysicianSearch';
 import OfficeComponent from './content/physiciansearch/OfficeComponent';
 import OfficeDetails from './content/physiciansearch/OfficeDetails';
-//Telemed
-import { AgoraRTCProvider } from 'agora-rtc-react';
 //Messages
 import Messages from './content/messaging/Messages';
+//Telemed
+import Call from './content/virtual/Call';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 
 export default function SubSphereContent() {
-	let client;
 	const [menu] = useContext(MenuContext);
-
-	useEffect(() => {
-		const initSdk = async () => {
-			const AgoraRTC = (await import('agora-rtc-react')).default;
-			client = AgoraRTC.createClient({ codec: 'vp9', mode: 'rtc' });
-		};
-		initSdk();
-	}, []);
+	const [auth] = useContext(AuthContext);
 
 	return (
 		<div className='row d-flex justify-content-center'>
-			<AgoraRTCProvider client={client}></AgoraRTCProvider>
+			<Call appId={process.env.AGORA_APP_ID} channelName={auth.user._id} />
 			<div className='sphContainer red'>
 				{menu.type === 'phySearch' && <PhysicianSearch />}
 				{menu.type === 'messages' && <Messages />}
