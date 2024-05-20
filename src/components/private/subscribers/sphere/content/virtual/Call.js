@@ -11,7 +11,7 @@ import AgoraRTC, {
 	useRTCClient,
 	useRemoteAudioTracks,
 	useRemoteUsers,
-} from 'agora-rtc-react';
+} from 'agora-rtc-sdk-ng';
 
 function Call({ appId, channelName }) {
 	const client = useRTCClient(AgoraRTC.createClient({ codec: 'vp8', mode: 'rtc' }));
