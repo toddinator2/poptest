@@ -1,7 +1,7 @@
 'use client';
 
 import '@livekit/components-styles';
-import { LiveKitRoom, VideoConference, GridLayout, ParticipantTile, useTracks } from '@livekit/components-react';
+import { ControlBar, GridLayout, LiveKitRoom, ParticipantTile, RoomAudioRenderer, useTracks } from '@livekit/components-react';
 import { useEffect, useState } from 'react';
 import { Track } from 'livekit-client';
 
@@ -65,9 +65,4 @@ function MyVideoConference() {
 			<ParticipantTile />
 		</GridLayout>
 	);
-}
-
-function RoomAudioRenderer() {}
-function ControlBar() {
-	<div>Controls Go Here</div>;
 }
