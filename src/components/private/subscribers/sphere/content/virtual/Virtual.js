@@ -66,3 +66,8 @@ function MyVideoConference() {
 		</GridLayout>
 	);
 }
+
+function RoomAudioRenderer() {}
+function ControlBar() {
+	<div>Controls Go Here</div>;
+}
