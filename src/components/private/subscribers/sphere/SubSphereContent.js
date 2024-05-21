@@ -9,16 +9,14 @@ import OfficeDetails from './content/physiciansearch/OfficeDetails';
 //Messages
 import Messages from './content/messaging/Messages';
 //Telemed
-import Call from './content/virtual/Call';
-import { AuthContext } from '@/utils/context/global/AuthContext';
+import Virtual from './content/virtual/Virtual';
 
 export default function SubSphereContent() {
 	const [menu] = useContext(MenuContext);
-	const [auth] = useContext(AuthContext);
 
 	return (
 		<div className='row d-flex justify-content-center'>
-			<Call appId={process.env.AGORA_APP_ID} channelName={auth.user._id} />
+			{menu.vids && <Virtual />}
 			<div className='sphContainer red'>
 				{menu.type === 'phySearch' && <PhysicianSearch />}
 				{menu.type === 'messages' && <Messages />}
