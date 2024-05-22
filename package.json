@@ -21,6 +21,7 @@
     "crypto-js": "^4.2.0",
     "date-and-time": "^3.1.1",
     "firebase": "^10.11.0",
+    "livekit-client": "^2.1.5",
     "livekit-server-sdk": "^2.3.0",
     "mongoose": "^8.3.2",
     "mongoose-unique-validator": "^5.0.0",
