@@ -1,15 +1,15 @@
 'use client';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import './SubSphereContent.css';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 //Physician Search
 import PhysicianSearch from './content/physiciansearch/PhysicianSearch';
 import OfficeComponent from './content/physiciansearch/OfficeComponent';
 import OfficeDetails from './content/physiciansearch/OfficeDetails';
-//Messages
-import Messages from './content/messaging/Messages';
 //Telemed
 import Virtual from './content/virtual/Virtual';
+//Messages
+import Messages from './content/messaging/Messages';
 
 export default function SubSphereContent() {
 	const [menu] = useContext(MenuContext);
