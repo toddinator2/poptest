@@ -3,7 +3,6 @@ import './page.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import PageTemplate from '@/components/public/pagetemplate/PageTemplate';
-import Button from '@/components/global/forms/buttons/Button';
 import btnSx3 from '@/assets/images/hmpgBtnSx3.png';
 import btnGoogle from '@/assets/images/hmpgBtnGoogle.png';
 import btnApple from '@/assets/images/hmpgBtnApple.png';
