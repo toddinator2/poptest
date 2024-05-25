@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 * {
 	box-sizing: border-box;
 	padding: 0;
@@ -7,7 +11,7 @@
 	width: 100%;
 	height: auto;
 	min-height: 100vh;
-	font-size: 14px;
+	font-size: 17px;
 	font-weight: 500;
 	color: #cacad9;
 	background-color: #000;
@@ -17,177 +21,8 @@
 	font-size: 14px;
 	color: #ff0000;
 }
-
-/******************************************/
-/*** FORM STYLES ***/
-/******************************************/
-.frmLabel {
-	font-size: 14px;
-	font-weight: 500;
-	color: #73b9ff;
-}
-.inpBorder {
-	color: #c9c9d9;
-	background-color: transparent;
-	border: 1px solid #cacad9;
-	border-radius: 7px;
-}
-.inpMonth {
-	width: 100%;
-	padding: 8px 12px;
-	background-color: transparent;
-	border: 1px solid #cacad9;
-	border-radius: 7px;
-}
-.fgtLinkText {
-	font-size: 15px;
-	font-weight: 500;
-	color: #cacad9;
-	text-decoration: none;
-}
-.fgtLinkText:hover {
-	cursor: pointer;
-	color: #fff;
-}
-
-/**************************/
-/*** PUBLIC PAGE SYTLES ***/
-/**************************/
-.pbpgSection {
-	width: 100%;
-	padding: 0px 16px;
-	border-bottom: 2px dotted #555;
-}
-.pbpgSection.noBorder {
-	border-bottom: none;
-}
-.pbpgContainer {
-	width: 60%;
-	margin-left: auto;
-	margin-right: auto;
-}
-.pbpgHdng {
-	font-size: 30px;
-	font-weight: 600;
-	text-align: center;
-}
-.pbpgSubHdng {
-	font-size: 25px;
-	font-weight: 600;
-	text-align: center;
-}
-.pbpgSubHdng.start {
-	text-align: start;
-}
-.pbpgSubHdng.blu {
-	color: #3395ff;
-}
-.pbpgSubHdng.red {
-	color: #ff8f8f;
-}
-.pbpgSubHdng.ppl {
-	color: #c175ff;
-}
-.pbColSides {
-	width: 47% !important;
-	height: auto;
-}
-.pbpgText {
-	font-size: 17px;
-	font-weight: 500;
-}
-.pbpgText.center {
-	text-align: center;
-}
-.pbpgText.blu {
-	color: #3395ff;
-}
-.pbColCenter {
-	width: 6% !important;
-	height: auto;
-}
-.pbColImg {
-	width: 100% !important;
-	height: auto;
-	border: 5px solid #555;
-	border-radius: 40px;
-}
-.icoSectionHdng {
-	width: auto;
-	max-height: 100px;
-}
-.icoSmall {
-	width: auto;
-	height: auto;
-	max-height: 25px;
-}
-.icoSmall:hover {
-	cursor: pointer;
-}
-.verifyLogo {
-	width: auto;
-	max-width: 100%;
-	max-height: 200px;
-}
-
-/******************************************/
-/*** PRIVATE PAGE STYLES ***/
-/******************************************/
-
-/******************************************/
-/*** RESPONSIVE SYTLES ***/
-/******************************************/
-@media screen and (max-width: 1800px) {
-	.pbpgContainer {
-		width: 80%;
-	}
-}
-
-@media screen and (max-width: 1400px) {
-	.pbpgContainer {
-		width: 90%;
-	}
-}
-
-@media screen and (max-width: 1200px) {
-	.pbpgContainer {
-		width: 100%;
-	}
-	.pbColSides {
-		width: 92% !important;
-		margin-left: 4%;
-		margin-right: 4%;
-	}
-	.pbpgHdng {
-		font-size: 27px;
-		line-height: 35px;
-	}
-	.pbpgText {
-		font-size: 17px;
-	}
-	.pbColImg {
-		width: 70% !important;
-	}
-}
-
-@media screen and (max-width: 992px) {
-}
-
-@media screen and (max-width: 768px) {
-	.pbpgHdng {
-		font-size: 25px;
-		line-height: 33px;
-	}
-	.pbpgText {
-		font-size: 15px;
-	}
-	.pbColImg {
-		width: 80% !important;
-	}
-}
-
-@media screen and (max-width: 576px) {
-	.pbColImg {
-		width: 100% !important;
+@layer utilities {
+	.text-balance {
+		text-wrap: balance;
 	}
 }

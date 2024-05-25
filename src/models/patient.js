@@ -33,6 +33,7 @@ const patientSchema = new Schema(
 			required: true,
 			unique: true,
 			lowercase: true,
+			index: true,
 		},
 		password: {
 			type: String,
