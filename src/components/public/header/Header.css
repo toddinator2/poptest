@@ -1,0 +1,30 @@
+.dropdown {
+	float: left;
+	overflow: hidden;
+}
+.dropdown-content {
+	display: none;
+	position: absolute;
+	background-color: #0f1416;
+	min-width: 160px;
+	border-radius: 15px;
+	z-index: 10;
+}
+.dropdown:hover .dropdown-content {
+	display: block;
+}
+
+.menu {
+	animation-duration: 1.2s;
+	animation-name: slidedown;
+}
+@keyframes slidedown {
+	0% {
+		transform: translateY(-220px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0px);
+		opacity: 1;
+	}
+}

@@ -1,5 +1,4 @@
 import React from 'react';
-import './page.css';
 import Image from 'next/image';
 import Link from 'next/link';
 import PageTemplate from '@/components/public/pagetemplate/PageTemplate';
@@ -22,15 +21,14 @@ import america from '@/assets/images/america.png';
 
 export default function Home() {
 	return (
-		<>
-			{/*<PageTemplate>*/}
+		<PageTemplate>
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='text-2xl lg:text-3xl xl:text-4xl mb-7 text-center'>
 						Reuniting American Healthcare&apos;s Original Stakeholders to Restore the System to its Former Glory
 					</div>
 					<div className='mb-5 w-full flex-auto lg:flex'>
-						<div className='w-full lg:w-1/2 text-left text-sm lg:text-base lg:pe-7'>
+						<div className='w-full lg:w-1/2 text-left text-sm lg:text-base lg:pe-7 2xl:ps-9'>
 							<div className='mb-5'>
 								Introducing SUPERNOVA3X &ndash; a revolutionary Healthcare Software solution for America&apos;s ailing healthcare system,
 								empowering patients, employers, and physicians to take back control once and for all.
@@ -42,7 +40,12 @@ export default function Home() {
 							</div>
 						</div>
 						<div className='w-full lg:w-1/2 lg:ps-7'>
-							<Image className='w-full h-auto rounded-3xl border-4 border-drkgry' src={hmpgTablet} priority={true} alt='Sample Offices' />
+							<Image
+								className='w-full 2xl:w-4/5 h-auto rounded-3xl border-4 border-drkgry'
+								src={hmpgTablet}
+								priority={true}
+								alt='Sample Offices'
+							/>
 						</div>
 					</div>
 					<div className='mb-5 text-sm lg:text-base text-center'>Available online at www.supernova3x.com</div>
@@ -205,7 +208,7 @@ export default function Home() {
 						Regrouping the Original Stakeholders in the SN3X Professional Healthcare Directory
 					</div>
 					<div className='mb-5 w-full flex-auto lg:flex'>
-						<div className='w-full lg:w-1/2 text-left text-sm lg:text-base lg:pe-7'>
+						<div className='w-full lg:w-1/2 text-left text-sm lg:text-base lg:pe-7 2xl:ps-9'>
 							<div className='w-full mb-5 text-center text-sm lg:text-base'>
 								The SN3X Network Directory connects patients and employers to premium Physician supervised medical services.
 							</div>
@@ -217,7 +220,7 @@ export default function Home() {
 							</div>
 						</div>
 						<div className='w-full lg:w-1/2 lg:ps-7'>
-							<Image className='w-full h-auto rounded-3xl border-4 border-drkgry' src={hmpgMap} priority={true} alt='Sample Offices' />
+							<Image className='w-full 2xl:w-4/5 h-auto rounded-3xl border-4 border-drkgry' src={hmpgMap} priority={true} alt='Sample Offices' />
 							<div className='w-full flex justify-center'>
 								<div className='mt-1 text-xs'>For demonstration purposes only</div>
 							</div>
@@ -231,11 +234,11 @@ export default function Home() {
 						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPts} alt='Subscribers' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Patients</div>
-					<div className='w-full flex-auto lg:flex'>
-						<div className='w-full mb-5 lg:mb-0 lg:w-1/2 lg:pe-7'>
-							<Image className='w-full h-auto rounded-3xl border-4 border-drkgry' src={hmpgPatient} priority={true} alt='Patients' />
+					<div className='w-full flex-auto lg:flex '>
+						<div className='w-full mb-5 lg:mb-0 lg:w-1/2 lg:pe-7 2xl:flex 2xl:justify-end'>
+							<Image className='w-full 2xl:w-4/5 h-auto rounded-3xl border-4 border-drkgry' src={hmpgPatient} priority={true} alt='Patients' />
 						</div>
-						<div className='w-full mb-5 lg:w-1/2 lg:ps-7'>
+						<div className='w-full mb-5 lg:w-1/2 lg:ps-7 2xl:pe-9'>
 							<div className='mb-3 text-xl lg:text-2xl text-center text-txtblu'>
 								Experience high-quality Healthcare with SN3X Licensed Physicians at a local, friendly, safe medical facility
 							</div>
@@ -263,7 +266,7 @@ export default function Home() {
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Physicians</div>
 					<div className='w-full flex-auto lg:flex'>
-						<div className='w-full mb-5 lg:mb-0 lg:w-1/2 lg:pe-7'>
+						<div className='w-full mb-5 lg:mb-0 lg:w-1/2 lg:pe-7 2xl:ps-9'>
 							<div className='mb-3 text-xl lg:text-2xl text-center text-lgtred'>
 								Elevate your clinic to new heights with Professional Healthcare. Make it easy with SN3X Healthcare Technology
 							</div>
@@ -282,7 +285,12 @@ export default function Home() {
 							</div>
 						</div>
 						<div className='w-full lg:w-1/2 lg:ps-7'>
-							<Image className='w-full h-auto rounded-3xl border-4 border-drkgry' src={hmpgPhysician} priority={true} alt='Physicians' />
+							<Image
+								className='w-full 2xl:w-4/5 h-auto rounded-3xl border-4 border-drkgry'
+								src={hmpgPhysician}
+								priority={true}
+								alt='Physicians'
+							/>
 						</div>
 					</div>
 				</div>
@@ -294,10 +302,10 @@ export default function Home() {
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Sponsors</div>
 					<div className='w-full flex-auto lg:flex'>
-						<div className='w-full mb-5 lg:mb-0 lg:w-1/2 lg:pe-7'>
-							<Image className='w-full h-auto rounded-3xl border-4 border-drkgry' src={hmpgEmployer} priority={true} alt='Employers' />
+						<div className='w-full mb-5 lg:mb-0 lg:w-1/2 lg:pe-7 2xl:flex 2xl:justify-end'>
+							<Image className='w-full 2xl:w-4/5 h-auto rounded-3xl border-4 border-drkgry' src={hmpgEmployer} priority={true} alt='Employers' />
 						</div>
-						<div className='w-full mb-5 lg:w-1/2 lg:ps-7'>
+						<div className='w-full mb-5 lg:w-1/2 lg:ps-7 2xl:pe-9'>
 							<div className='mb-3 text-xl lg:text-2xl text-center text-lgtppl'>
 								Register for FREE with SUPERNOVA3X and access America&apos;s only Professional Healthcare Marketplace
 							</div>
@@ -317,7 +325,7 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
+			<div className='w-full pt-7 pb-10'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='text-2xl lg:text-3xl xl:text-4xl mb-7 text-center'>Join the Revolution to Restore American Healthcare!</div>
 					<div className='lg:ps-0 lg:w-1/2 lg:mx-auto'>
@@ -335,7 +343,7 @@ export default function Home() {
 							</ul>
 						</div>
 					</div>
-					<div className='mb-7 text-sm lg:text-base'>
+					<div className='w-4/5 mx-auto mb-7 text-sm lg:text-base'>
 						SN3X is here to assist physicians thrive in Professional Healthcare&apos;s free market, help patients find a SN3X Licensed Physician,
 						and aid sponsors in finding high-value healthcare benefits for their employees. Experience the difference of Professional Healthcare
 						today!
@@ -371,7 +379,6 @@ export default function Home() {
 					</div>
 				</div>
 			</div>
-			{/*</PageTemplate>*/}
-		</>
+		</PageTemplate>
 	);
 }

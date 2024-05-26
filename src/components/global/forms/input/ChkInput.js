@@ -1,5 +1,4 @@
 import React from 'react';
-import './Input.css';
 
 export default function ChkInput({ name, label, type, placeholder, id, required, value, readonly, max, setValue, funcCall }) {
 	return (

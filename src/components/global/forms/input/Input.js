@@ -1,16 +1,15 @@
 import React from 'react';
-import './Input.css';
 
 export default function Input({ name, label, type, placeholder, id, required, value, readonly, max, setValue, funcCall }) {
 	return (
 		<>
 			{label && setValue && (
-				<div className='mb-2'>
+				<div className='mb-1.5'>
 					<label className='frmLabel' htmlFor={id}>
 						{label}
 					</label>
 					<input
-						className='form-control'
+						className='inpBorder form-control'
 						type={type}
 						placeholder={placeholder}
 						name={name}
@@ -20,14 +19,13 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						required={required}
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
-						style={{ backgroundColor: 'transparent', border: '1px solid #c9c9c9', borderRadius: '7px' }}
 					/>
 				</div>
 			)}
 			{!label && setValue && (
-				<div className='mb-2'>
+				<div className='mb-1.5'>
 					<input
-						className='form-control'
+						className='inpBorder form-control'
 						type={type}
 						placeholder={placeholder}
 						name={name}
@@ -37,17 +35,16 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						required={required}
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
-						style={{ backgroundColor: 'transparent', border: '1px solid #c9c9c9', borderRadius: '7px' }}
 					/>
 				</div>
 			)}
 			{label && funcCall && (
-				<div className='mb-2'>
+				<div className='mb-1.5'>
 					<label className='frmLabel' htmlFor={id}>
 						{label}
 					</label>
 					<input
-						className='form-control'
+						className='inpBorder form-control'
 						type={type}
 						placeholder={placeholder}
 						name={name}
@@ -57,14 +54,13 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						required={required}
 						value={value}
 						onChange={(e) => funcCall(e)}
-						style={{ backgroundColor: 'transparent', border: '1px solid #c9c9c9', borderRadius: '7px' }}
 					/>
 				</div>
 			)}
 			{!label && funcCall && (
-				<div className='mb-2'>
+				<div className='mb-1.5'>
 					<input
-						className='form-control'
+						className='inpBorder form-control'
 						type={type}
 						placeholder={placeholder}
 						name={name}
@@ -74,17 +70,16 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						required={required}
 						value={value}
 						onChange={(e) => funcCall(e)}
-						style={{ backgroundColor: 'transparent', border: '1px solid #c9c9c9', borderRadius: '7px' }}
 					/>
 				</div>
 			)}
 			{!setValue && !funcCall && (
-				<div className='mb-2'>
+				<div className='mb-1.5'>
 					<label className='frmLabel' htmlFor={id}>
 						{label}
 					</label>
 					<input
-						className='form-control'
+						className='inpBorder form-control'
 						type={type}
 						placeholder={placeholder}
 						name={name}
@@ -93,7 +88,6 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						maxLength={max}
 						required={required}
 						value={value}
-						style={{ backgroundColor: 'transparent', border: '1px solid #c9c9c9', borderRadius: '7px' }}
 					/>
 				</div>
 			)}
