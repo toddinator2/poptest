@@ -14,7 +14,7 @@ export default function Authorize() {
 	const svdUname = getFromLocalStorage(lsUname);
 	const svdLocId = getFromLocalStorage(lsDefLoc);
 	const router = useRouter();
-	const { status } = useSession();
+	const status = useSession();
 	const [auth, setAuth] = useContext(AuthContext);
 	const [_misc, setMisc] = useContext(MiscContext);
 	const [user, setUser] = useState({});

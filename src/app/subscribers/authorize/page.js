@@ -12,7 +12,7 @@ export default function Authorize() {
 	const lsUserData = process.env.DATA_SUB;
 	const svdUname = getFromLocalStorage(lsUname);
 	const router = useRouter();
-	const { status } = useSession();
+	const status = useSession();
 	const [auth, setAuth] = useContext(AuthContext);
 	const [user, setUser] = useState({});
 	const [loading, setLoading] = useState(false);
