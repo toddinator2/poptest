@@ -88,14 +88,12 @@ export default function SpnRP() {
 						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberEmp} alt='Sponsors' />
 					</div>
 					<div className='w-full mb-7 flex-auto'>
-						<div className='w-5/6 md:w-4/5 2xl:w-2/3 mb-7 mx-auto'>
-							<div className='w-full'>
-								<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Reset Password</div>
-							</div>
+						<div className='w-full'>
+							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Reset Password</div>
 						</div>
 					</div>
 					<form onSubmit={handleSubmit}>
-						<div className='w-3/5 lg:w-1/3 mx-auto flex-auto'>
+						<div className='w-4/5 sm:w-3/4 lg:w-1/2 2xl:w-1/3 mx-auto flex-auto'>
 							<Input label='Reset Code' type='text' id='code' required={true} value={code} setValue={setCode} />
 							<Input label='New Password' type='password' id='newPword' required={true} value={newPword} setValue={setNewPword} />
 							<Input label='Confirm Password' type='password' id='cnfPword' required={true} value={cnfPword} setValue={setCnfPword} />

@@ -97,14 +97,12 @@ export default function Contact() {
 			<div className='w-full py-7'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='w-full mb-7 flex-auto'>
-						<div className='w-5/6 md:w-4/5 2xl:w-2/3 mb-7 mx-auto'>
-							<div className='w-full'>
-								<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Contact Us</div>
-							</div>
+						<div className='w-full'>
+							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Contact Us</div>
 						</div>
 					</div>
 					<form onSubmit={handleSubmit}>
-						<div className='w-3/5 lg:w-1/3 mx-auto flex-auto'>
+						<div className='w-4/5 sm:w-3/4 lg:w-1/2 2xl:w-1/3 mx-auto flex-auto'>
 							<Input label='First Name' type='text' required={true} value={fname} setValue={setFname} />
 							<Input label='Last Name' type='text' required={true} value={lname} setValue={setLname} />
 							<Input label='Email' type='email' id='email' required={true} value={email} setValue={setEmail} />

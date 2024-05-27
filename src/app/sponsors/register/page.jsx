@@ -177,15 +177,11 @@ export default function EmpRegister() {
 						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberSpn} alt='Sponsors' />
 					</div>
 					<div className='w-full mb-7 flex-auto'>
-						<div className='w-5/6 md:w-4/5 2xl:w-2/3 mb-7 mx-auto'>
-							<div className='w-full'>
-								<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Free Sponsor Registration Form</div>
-							</div>
+						<div className='w-full'>
+							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Free Sponsor Registration Form</div>
 						</div>
-						<div className='w-5/6 md:w-4/5 2xl:w-2/3 mb-5 mx-auto'>
-							<div className='w-full'>
-								<div className='mb-5 text-xl lg:text-2xl 2xl:text-3xl text-center'>What Type Of Sponsor Are You?</div>
-							</div>
+						<div className='w-full'>
+							<div className='mb-5 text-xl lg:text-2xl 2xl:text-3xl text-center'>What Type Of Sponsor Are You?</div>
 						</div>
 						<div className='w-full flex-auto lg:flex lg:justify-center lg:gap-3'>
 							<div className='w-full lg:w-auto mb-3 lg:mb-0 flex justify-center'>
@@ -230,7 +226,7 @@ export default function EmpRegister() {
 						</div>
 					</div>
 					<form onSubmit={handleSubmit}>
-						<div className='w-1/2 sm:w-1/3 lg:w-1/4 2xl:w-1/5 mx-auto flex-auto'>
+						<div className='w-4/5 sm:w-3/4 lg:w-1/2 2xl:w-1/3 mx-auto flex-auto'>
 							<Input label='Contact First Name' type='text' id='fname' required={true} value={fname} setValue={setFname} />
 							<Input label='Contact Last Name' type='text' id='lname' required={true} value={lname} setValue={setLname} />
 							<Input label='Company Name' type='text' required={true} value={company} setValue={setCompany} />
