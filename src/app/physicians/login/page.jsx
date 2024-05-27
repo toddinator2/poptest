@@ -62,7 +62,7 @@ export default function Login() {
 					saveInLocalStorage(lsUname, uname.toLowerCase());
 					saveInLocalStorage(lsRem, remember);
 				}
-				router.push('/physicians/authorize');
+				//router.push('/physicians/authorize');
 			}
 		} catch (error) {
 			toast.error('Network Error: Please try again');
