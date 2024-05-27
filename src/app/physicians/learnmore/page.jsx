@@ -33,7 +33,7 @@ export default function PhyLearnMore() {
 								</div>
 							</div>
 						</div>
-						<div className='w-3/5 lg:1/5 mx-auto'>
+						<div className='w-full sm:w-2/3 lg:w-1/3 xl:w-1/5 mx-auto'>
 							<div className='w-full flex-auto'>
 								<div className='w-full mb-5 py-3 border-4 flex-auto border-drkred rounded-3xl'>
 									<div className='w-full mb-4 text-center font-semibold text-3xl'>up to</div>
@@ -182,7 +182,7 @@ export default function PhyLearnMore() {
 							</div>
 						</div>
 						<div className='w-full lg:w-1/2 lg:ps-7'>
-							<div className='w-full mx-auto px-7 py-5 flex-auto rounded-3xl border-4 border-drkgry'>
+							<div className='w-full mx-auto sm:px-7 py-5 flex-auto rounded-3xl border-4 border-drkgry'>
 								<div className='w-full mb-4 text-center font-semibold text-xl'>Special Offer &ndash; Early Adopter</div>
 								<div className='w-full mb-4 text-center font-semibold text-3xl'>Get Licensed for</div>
 								<div className='w-full text-center font-semibold text-7xl'>
