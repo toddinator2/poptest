@@ -203,7 +203,7 @@ export default function Header() {
 							</div>
 							<div className='w-1/3 flex justify-end items-center gap-3'>
 								<div className='dropdown'>
-									<button className='text-sm text-lgtwht hover:text-drkwht'>
+									<button className='text-sm text-drkwht hover:text-lgtwht'>
 										<div className='w-auto flex flex-row gap-1 items-center'>
 											Register
 											<ArrowDown />
@@ -211,20 +211,20 @@ export default function Header() {
 									</button>
 									<div className='dropdown-content'>
 										<div className='px-5 py-2 flex flex-col'>
-											<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/subscribers/learnmore/#preRegister'>
+											<Link className='mb-1.5 text-sm text-drkwht hover:text-lgtwht' href='/subscribers/learnmore/#preRegister'>
 												Subscribers
 											</Link>
-											<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/physicians/register'>
+											<Link className='mb-1.5 text-sm text-drkwht hover:text-lgtwht' href='/physicians/register'>
 												Physicians
 											</Link>
-											<Link className='text-sm text-lgtwht hover:text-drkwht' href='/sponsors/register'>
+											<Link className='text-sm text-drkwht hover:text-lgtwht' href='/sponsors/register'>
 												Sponsors
 											</Link>
 										</div>
 									</div>
 								</div>
 								<div className='dropdown'>
-									<button className='text-sm text-lgtwht hover:text-drkwht'>
+									<button className='text-sm text-drkwht hover:text-lgtwht'>
 										<div className='w-auto flex flex-row gap-1 items-center'>
 											Learn More
 											<ArrowDown />
@@ -232,19 +232,19 @@ export default function Header() {
 									</button>
 									<div className='dropdown-content'>
 										<div className='px-5 py-2 flex flex-col'>
-											<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/subscribers/learnmore'>
+											<Link className='mb-1.5 text-sm text-drkwht hover:text-lgtwht' href='/subscribers/learnmore'>
 												Subscribers
 											</Link>
-											<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/physicians/learnmore'>
+											<Link className='mb-1.5 text-sm text-drkwht hover:text-lgtwht' href='/physicians/learnmore'>
 												Physicians
 											</Link>
-											<Link className='text-sm text-lgtwht hover:text-drkwht' href='/sponsors/learnmore'>
+											<Link className='text-sm text-drkwht hover:text-lgtwht' href='/sponsors/learnmore'>
 												Sponsors
 											</Link>
 										</div>
 									</div>
 								</div>
-								<Link className='text-sm text-lgtwht hover:text-drkwht' href='/contact'>
+								<Link className='text-sm text-drkwht hover:text-lgtwht' href='/contact'>
 									Contact Us
 								</Link>
 							</div>

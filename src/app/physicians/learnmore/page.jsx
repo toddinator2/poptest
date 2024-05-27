@@ -4,6 +4,7 @@ import './page.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import PageTemplate from '@/components/public/pagetemplate/PageTemplate';
+import Button from '@/components/global/forms/buttons/Button';
 import icoMemberPhy from '@/assets/images/hmpgIcoPhy.png';
 import start from '@/assets/images/lmPhyStart.png';
 import logo from '@/assets/images/logoCircle.png';
@@ -202,24 +203,7 @@ export default function PhyLearnMore() {
 					</div>
 					<div className='w-full mt-4 flex justify-center'>
 						<Link href='/physicians/register'>
-							<button
-								className='
-                                py-2
-                                px-4
-                                bg-transparent
-                                text-lg
-                                font-semibold
-                                text-drkwht
-                                hover:text-lgtwht
-                                border-2
-                                border-drkwht
-                                hover:border-lgtwht
-                                rounded-xl
-                                '
-								type='button'
-							>
-								Register Now
-							</button>
+							<Button type='button'>Register Now</Button>
 						</Link>
 					</div>
 				</div>

@@ -43,14 +43,24 @@
 	font-weight: 500;
 	color: #c9c9d9;
 	background-color: transparent;
-	border: 1px solid #3395ff;
+	border: 2px solid #222222;
+	border-radius: 7px;
+}
+.inpTa {
+	width: 100%;
+	padding-left: 5px;
+	font-size: 14px;
+	font-weight: 500;
+	color: #c9c9d9;
+	background-color: transparent;
+	border: 2px solid #222222;
 	border-radius: 7px;
 }
 .inpMonth {
 	width: 100%;
 	padding: 8px 12px;
 	background-color: transparent;
-	border: 1px solid #cacad9;
+	border: 2px solid #222222;
 	border-radius: 7px;
 }
 .chkInput {
@@ -67,4 +77,18 @@ input::placeholder {
 input::-ms-input-placeholder {
 	/* Edge 12 -18 */
 	color: #73b9ff !important;
+}
+.chkBox {
+	width: 18px;
+	height: 18px;
+}
+.fgtLinkText {
+	font-size: 15px;
+	font-weight: 500;
+	color: #adb5bd;
+	text-decoration: none;
+}
+.fgtLinkText:hover {
+	cursor: pointer;
+	color: #dee2e6;
 }

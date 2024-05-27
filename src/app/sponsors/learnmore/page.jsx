@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import PageTemplate from '@/components/public/pagetemplate/PageTemplate';
+import Button from '@/components/global/forms/buttons/Button';
 import icoMemberSpn from '@/assets/images/hmpgIcoEmp.png';
 import doctors from '@/assets/images/lmEmpDoctors.png';
 import reports from '@/assets/images/lmEmpReports.png';
@@ -158,24 +159,7 @@ export default function SpnLearnMore() {
 					</div>
 					<div className='w-full mt-4 flex justify-center'>
 						<Link href='/sponsors/register'>
-							<button
-								className='
-                                py-2
-                                px-4
-                                bg-transparent
-                                text-lg
-                                font-semibold
-                                text-drkwht
-                                hover:text-lgtwht
-                                border-2
-                                border-drkwht
-                                hover:border-lgtwht
-                                rounded-xl
-                                '
-								type='button'
-							>
-								Register Now
-							</button>
+							<Button type='button'>Register Now</Button>
 						</Link>
 					</div>
 				</div>

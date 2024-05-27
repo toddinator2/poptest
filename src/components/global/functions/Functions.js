@@ -418,3 +418,93 @@ export function CreateSponsorId(count) {
 	}
 	return randomString;
 }
+
+export function CreateOfficeId(count) {
+	const curYear = new Date().getFullYear();
+	let letter = '';
+	if (curYear === 2024 || curYear === 2050 || curYear === 2076) {
+		letter = 'A';
+	}
+	if (curYear === 2025 || curYear === 2051 || curYear === 2077) {
+		letter = 'B';
+	}
+	if (curYear === 2026 || curYear === 2052 || curYear === 2078) {
+		letter = 'C';
+	}
+	if (curYear === 2027 || curYear === 2053 || curYear === 2079) {
+		letter = 'D';
+	}
+	if (curYear === 2028 || curYear === 2054 || curYear === 2080) {
+		letter = 'E';
+	}
+	if (curYear === 2029 || curYear === 2055 || curYear === 2081) {
+		letter = 'F';
+	}
+	if (curYear === 2030 || curYear === 2056 || curYear === 2082) {
+		letter = 'G';
+	}
+	if (curYear === 2031 || curYear === 2057 || curYear === 2083) {
+		letter = 'H';
+	}
+	if (curYear === 2032 || curYear === 2058 || curYear === 2084) {
+		letter = 'I';
+	}
+	if (curYear === 2033 || curYear === 2059 || curYear === 2085) {
+		letter = 'J';
+	}
+	if (curYear === 2034 || curYear === 2060 || curYear === 2086) {
+		letter = 'K';
+	}
+	if (curYear === 2035 || curYear === 2061 || curYear === 2087) {
+		letter = 'L';
+	}
+	if (curYear === 2036 || curYear === 2062 || curYear === 2088) {
+		letter = 'M';
+	}
+	if (curYear === 2037 || curYear === 2063 || curYear === 2089) {
+		letter = 'N';
+	}
+	if (curYear === 2038 || curYear === 2064 || curYear === 2090) {
+		letter = 'O';
+	}
+	if (curYear === 2039 || curYear === 2065 || curYear === 2091) {
+		letter = 'P';
+	}
+	if (curYear === 2040 || curYear === 2066 || curYear === 2092) {
+		letter = 'Q';
+	}
+	if (curYear === 2041 || curYear === 2067 || curYear === 2093) {
+		letter = 'R';
+	}
+	if (curYear === 2042 || curYear === 2068 || curYear === 2094) {
+		letter = 'S';
+	}
+	if (curYear === 2043 || curYear === 2069 || curYear === 2095) {
+		letter = 'T';
+	}
+	if (curYear === 2044 || curYear === 2070 || curYear === 2096) {
+		letter = 'U';
+	}
+	if (curYear === 2045 || curYear === 2071 || curYear === 2097) {
+		letter = 'V';
+	}
+	if (curYear === 2046 || curYear === 2072 || curYear === 2098) {
+		letter = 'W';
+	}
+	if (curYear === 2047 || curYear === 2073 || curYear === 2099) {
+		letter = 'X';
+	}
+	if (curYear === 2048 || curYear === 2074 || curYear === 2100) {
+		letter = 'Y';
+	}
+	if (curYear === 2049 || curYear === 2075 || curYear === 2101) {
+		letter = 'Z';
+	}
+	const string = '012345678901234567890123456789012345678901234567890123456789';
+	let randomString = letter;
+	for (let i = 0; i < count; i++) {
+		const randomStringNumber = Math.floor(1 + Math.random() * (string.length - 1));
+		randomString = randomString + string.substring(randomStringNumber, randomStringNumber + 1);
+	}
+	return randomString;
+}

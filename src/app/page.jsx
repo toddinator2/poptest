@@ -2,6 +2,7 @@ import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
 import PageTemplate from '@/components/public/pagetemplate/PageTemplate';
+import Button from '@/components/global/forms/buttons/Button';
 import btnSx3 from '@/assets/images/hmpgBtnSx3.png';
 import btnGoogle from '@/assets/images/hmpgBtnGoogle.png';
 import btnApple from '@/assets/images/hmpgBtnApple.png';
@@ -348,32 +349,29 @@ export default function Home() {
 						and aid sponsors in finding high-value healthcare benefits for their employees. Experience the difference of Professional Healthcare
 						today!
 					</div>
-					<div className='flex gap-3 justify-center'>
-						<div>
+					<div className='w-full flex-auto lg:flex lg:justify-center lg:gap-3'>
+						<div className='w-full lg:w-auto mb-3 lg:mb-0 flex justify-center'>
 							<Link href='/subscribers/learnmore'>
-								<button className='bg-transparent text-sm text-drkgry font-semibold hover:text-lgtblu py-2 px-4 border-2 border-drkgry hover:border-lgtblu rounded-xl'>
-									Patients
-									<br />
-									Learn More
-								</button>
+								<Button type='button'>
+									<div className='w-full text-lg text-center'>Patients</div>
+									<div className='w-full text-sm text-center'>Learn More</div>
+								</Button>
 							</Link>
 						</div>
-						<div>
+						<div className='w-full lg:w-auto mb-3 lg:mb-0 flex justify-center'>
 							<Link href='/physicians/prescreen'>
-								<button className='bg-transparent text-sm text-drkgry font-semibold hover:text-lgtred py-2 px-4 border-2 border-drkgry hover:border-lgtred rounded-xl'>
-									Physicians
-									<br />
-									Learn More
-								</button>
+								<Button type='button'>
+									<div className='w-full text-lg text-center'>Physicians</div>
+									<div className='w-full text-sm text-center'>Learn More</div>
+								</Button>
 							</Link>
 						</div>
-						<div>
+						<div className='w-full lg:w-auto mb-3 lg:mb-0 flex justify-center'>
 							<Link href='/sponsors/learnmore'>
-								<button className='bg-transparent text-sm text-drkgry font-semibold hover:text-lgtppl py-2 px-4 border-2 border-drkgry hover:border-lgtppl rounded-xl'>
-									Sponsors
-									<br />
-									Learn More
-								</button>
+								<Button type='button'>
+									<div className='w-full text-lg text-center'>Sponsors</div>
+									<div className='w-full text-sm text-center'>Learn More</div>
+								</Button>
 							</Link>
 						</div>
 					</div>

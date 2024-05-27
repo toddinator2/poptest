@@ -32,7 +32,7 @@ const officeSchema = new Schema(
 		medcompanyObjId: {
 			type: ObjectId,
 			ref: 'medcompanies',
-			required: false,
+			required: true,
 		},
 	},
 	{ timestamps: true }

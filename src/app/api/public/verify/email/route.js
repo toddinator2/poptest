@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { CreateS3xId, CreateSponsorId, RandomStringMake } from '@/components/global/functions/Functions';
+import { CreateOfficeId, CreateS3xId, CreateSponsorId, RandomStringMake } from '@/components/global/functions/Functions';
 import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
 import Preregpat from '@/models/preregpat';
@@ -8,6 +8,9 @@ import Preregspn from '@/models/preregspn';
 import Sponsor from '@/models/sponsor';
 import Sponsoruser from '@/models/sponsoruser';
 import Preregphys from '@/models/preregphys';
+import Medcompany from '@/models/medcompany';
+import Office from '@/models/office';
+import Officelocation from '@/models/officelocation';
 import Officeuser from '@/models/officeuser';
 import S3xuser from '@/models/s3xuser';
 
@@ -204,18 +207,75 @@ export const POST = async (req) => {
 					return NextResponse.json({ status: 500 });
 				}
 			}
-			if (type === 'physicianprereg') {
-				const physician = await Preregphys.findOne({ verifycode: verifycode });
-				if (physician) {
-					await Preregphys.findOneAndUpdate({ verifycode: verifycode }, { emailconfirmed: true }, { new: true });
-					return NextResponse.json({ status: 200 });
-				}
-			}
 			if (type === 'physician') {
-				const user = await Officeuser.findOne({ verifycode: verifycode });
-				if (user) {
-					await Officeuser.findOneAndUpdate({ verifycode: verifycode }, { verifycode: '', emailconfirmed: true }, { new: true });
-					return NextResponse.json({ status: 200 });
+				//move from pre-registration to offices, officelocations, and officeusers
+				const prePhy = await Preregphys.findOne({ verifycode: verifycode });
+				if (prePhy) {
+					let ofcId = '';
+
+					//create office ID
+					for (let i = 0; i <= 1000000; i++) {
+						const newOfcId = CreateOfficeId(9);
+						const idExists = await Office.findOne({ officeid: newOfcId.toLowerCase() });
+						if (!idExists || idExists === null) {
+							ofcId = newOfcId.toLowerCase();
+							break;
+						}
+					}
+
+					//create medcompany first
+					const newComp = new Medcompany({ name: prePhy.fname + ' ' + prePhy.lname });
+					const svdComp = await newComp.save();
+					const newCompObjId = svdComp._id;
+
+					//create new office
+					const newOfc = new Office({
+						name: 'Headquarters',
+						officeid: ofcId,
+						mainphone: prePhy.phone,
+						medcompanyObjId: newCompObjId,
+					});
+					const svdOfc = await newOfc.save();
+					const newOfcObjId = svdOfc._id;
+
+					//create new office location
+					const newLoc = new Officelocation({
+						name: 'Headquarters',
+						state: prePhy.state,
+						phone: prePhy.phone,
+						officeObjId: newOfcObjId,
+					});
+					const svdLoc = await newLoc.save();
+					const newLocObjId = svdLoc._id;
+
+					//create new office user
+					const newPhy = new Officeuser({
+						fname: prePhy.fname,
+						lname: prePhy.lname,
+						email: prePhy.email,
+						username: prePhy.username,
+						password: prePhy.password,
+						phone: prePhy.phone,
+						phone: prePhy.phone,
+						permission: 'physician',
+						role: 'admin',
+						paid: false,
+						license: prePhy.license,
+						npi: prePhy.npi,
+						specialty: prePhy.specialty,
+						resetcreds: false,
+						emailconfirmed: true,
+						officeid: ofcId,
+						locationObjId: newLocObjId,
+						officeObjId: newLocObjId,
+					});
+					const svdPhy = await newPhy.save();
+					const newPhyId = svdPhy._id;
+
+					if (newPhyId) {
+						await Preregphys.findOneAndDelete({ verifycode: verifycode });
+						return NextResponse.json({ status: 200 });
+					}
 				} else {
 					return NextResponse.json({ status: 400 });
 				}

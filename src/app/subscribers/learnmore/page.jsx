@@ -9,6 +9,7 @@ import GetPtUname from '@/actions/get/getptuname/GetPtUname';
 import PageTemplate from '@/components/public/pagetemplate/PageTemplate';
 import Input from '@/components/global/forms/input/Input';
 import ChkInput from '@/components/global/forms/input/ChkInput';
+import Button from '@/components/global/forms/buttons/Button';
 import Spinner from '@/components/global/spinner/Spinner';
 import icoMemberPts from '@/assets/images/hmpgIcoPts.png';
 import couple from '@/assets/images/lmPtsCouple.png';
@@ -238,7 +239,7 @@ export default function SubLearnMore() {
 					</div>
 				</div>
 			</div>
-			<div className='w-full py-7'>
+			<div className='w-full py-7' id='preRegister'>
 				<div className='w-5/6 md:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='w-full'>
 						<div className='mb-2 text-2xl lg:text-3xl 2xl:text-4xl text-center'>Get started today!</div>
@@ -253,25 +254,9 @@ export default function SubLearnMore() {
 						<Input label='Email' type='email' id='email' required={true} value={email} setValue={setEmail} />
 						<Input label='Mobile Phone' type='tel' id='phone' required={true} value={phone} funcCall={handlePhone} />
 						<div className='w-full mt-4 flex justify-center'>
-							<button
-								className='
-                                py-2
-                                px-4
-                                bg-transparent
-                                text-sm
-                                font-semibold
-                                text-drkwht
-                                hover:text-lgtwht
-                                border-2
-                                border-drkwht
-                                hover:border-lgtwht
-                                rounded-xl
-                                disabled:opacity-0'
-								type='submit'
-								disabled={!fname || !lname || !email || !phone}
-							>
+							<Button type='submit' disabled={!fname || !lname || !email || !phone}>
 								Register
-							</button>
+							</Button>
 						</div>
 					</div>
 				</form>

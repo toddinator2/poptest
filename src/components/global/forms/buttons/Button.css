@@ -1,0 +1,5 @@
+.button:disabled {
+	color: #0f1416;
+	border: 4px solid #0f1416;
+	cursor: default;
+}
