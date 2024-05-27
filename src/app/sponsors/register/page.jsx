@@ -176,8 +176,8 @@ export default function EmpRegister() {
 					<div className='flex justify-center'>
 						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberSpn} alt='Sponsors' />
 					</div>
-					<div className='w-full mb-7 flex-auto'>
-						<div className='w-full'>
+					<div className='w-full flex-auto'>
+						<div className='w-full mb-7'>
 							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Free Sponsor Registration Form</div>
 						</div>
 						<div className='w-full'>
