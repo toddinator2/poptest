@@ -1,6 +1,9 @@
 import React, { useContext } from 'react';
 import { FormatPhoneNumber, IsNumber } from '@/components/global/functions/Functions';
 import { AuthContext } from '@/utils/context/global/AuthContext';
+import Input from '@/components/global/forms/input/Input';
+import Button from '@/components/global/forms/buttons/Button';
+import Checklist from '../checklist/Checklist';
 
 export default function Company() {
 	const [auth] = useContext(AuthContext);

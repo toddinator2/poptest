@@ -13,7 +13,7 @@ export default function PhySphere() {
 		if (Object.keys(auth.user).length === 0) {
 			router.push('/physicians/authorize');
 		}
-	}, [auth]);
+	}, [auth, router]);
 
 	return (
 		<>

@@ -45,7 +45,7 @@ export default function Profile() {
 				setPhone(data.phy.phone);
 				setSpecialty(data.phy.specialty);
 				setLicense(data.phy.license);
-				setLicenseState(licensestate);
+				setLicenseState(data.phy.licensestate);
 				setNpi(data.phy.npi);
 			} else {
 				toast.error(data.msg);

@@ -176,7 +176,7 @@ export default function PhysicianSearch() {
 				{currentRecords.length !== 0 ? (
 					<>
 						{currentRecords.map((phy) => (
-							<PhysicianSearchCard phy={phy} />
+							<PhysicianSearchCard phy={phy} key={phy._id} />
 						))}
 						{nPages >= 2 && (
 							<div className='mt-4'>
