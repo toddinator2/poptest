@@ -95,7 +95,7 @@ export default function Header() {
 						<>
 							<div className='w-full mb-2 flex justify-center'>
 								<Link href='/'>
-									<Image className='w-auto h-10 max-w-full' src={inlLogo} alt='Supernova3x' />
+									<Image className='w-auto h-10 max-w-full' src={inlLogo} priority={true} alt='Supernova3x' />
 								</Link>
 							</div>
 							<div className='w-full flex justify-end'>
@@ -110,7 +110,7 @@ export default function Header() {
 							<div className='w-full flex items-center'>
 								<div className='w-4/5'>
 									<Link href='/'>
-										<Image className='w-auto h-10 max-w-full' src={inlLogo} alt='Supernova3x' />
+										<Image className='w-auto h-10 max-w-full' src={inlLogo} priority={true} alt='Supernova3x' />
 									</Link>
 								</div>
 								<div className='w-1/5 flex justify-end'>
@@ -125,7 +125,7 @@ export default function Header() {
 						<div className='w-full flex flex-col'>
 							<div className='w-full mb-2 flex justify-center'>
 								<Link href='/'>
-									<Image className='w-auto h-10 max-w-full' src={inlLogo} alt='Supernova3x' />
+									<Image className='w-auto h-10 max-w-full' src={inlLogo} priority={true} alt='Supernova3x' />
 								</Link>
 							</div>
 							<div className='w-full flex items-center'>
@@ -134,7 +134,7 @@ export default function Header() {
 										<Link className='w-28 h-auto text-lgtblu hover:text-drkblu' href='/subscribers/login'>
 											<div className='w-full'>
 												<div className='w-full flex justify-center'>
-													<Image className='w-auto h-10 xl:h-16' src={icoPts} alt='Subscribers' />
+													<Image className='w-auto h-10 xl:h-16' src={icoPts} priority={true} alt='Subscribers' />
 												</div>
 												<div className='text-sm xl:text-base text-center'>Subscribers</div>
 											</div>
@@ -142,7 +142,7 @@ export default function Header() {
 										<Link className='w-28 h-auto text-lgtred hover:text-drkred' href='/physicians/login'>
 											<div className='w-full'>
 												<div className='w-full flex justify-center'>
-													<Image className='w-auto h-10 xl:h-16' src={icoPhy} alt='Physicians' />
+													<Image className='w-auto h-10 xl:h-16' src={icoPhy} priority={true} alt='Physicians' />
 												</div>
 												<div className='text-sm xl:text-base text-center'>Physicians</div>
 											</div>
@@ -150,7 +150,7 @@ export default function Header() {
 										<Link className='w-28 h-auto text-lgtppl hover:text-drkppl' href='/sponsors/login'>
 											<div className='w-full'>
 												<div className='w-full flex justify-center'>
-													<Image className='w-auto h-10 xl:h-16' src={icoEmp} alt='Sponsors' />
+													<Image className='w-auto h-10 xl:h-16' src={icoEmp} priority={true} alt='Sponsors' />
 												</div>
 												<div className='text-sm xl:text-base text-center'>Sponsors</div>
 											</div>
@@ -171,7 +171,7 @@ export default function Header() {
 								<Link className='w-28 h-auto text-lgtblu hover:text-drkblu' href='/subscribers/login'>
 									<div className='w-full'>
 										<div className='w-full flex justify-center'>
-											<Image className='w-auto h-10 xl:h-16' src={icoPts} alt='Subscribers' />
+											<Image className='w-auto h-10 xl:h-16' src={icoPts} priority={true} alt='Subscribers' />
 										</div>
 										<div className='text-sm xl:text-base text-center'>Subscribers</div>
 									</div>
@@ -179,7 +179,7 @@ export default function Header() {
 								<Link className='w-28 h-auto text-lgtred hover:text-drkred' href='/physicians/login'>
 									<div className='w-full'>
 										<div className='w-full flex justify-center'>
-											<Image className='w-auto h-10 xl:h-16' src={icoPhy} alt='Physicians' />
+											<Image className='w-auto h-10 xl:h-16' src={icoPhy} priority={true} alt='Physicians' />
 										</div>
 										<div className='text-sm xl:text-base text-center'>Physicians</div>
 									</div>
@@ -187,7 +187,7 @@ export default function Header() {
 								<Link className='w-28 h-auto text-lgtppl hover:text-drkppl' href='/sponsors/login'>
 									<div className='w-full'>
 										<div className='w-full flex justify-center'>
-											<Image className='w-auto h-10 xl:h-16' src={icoEmp} alt='Sponsors' />
+											<Image className='w-auto h-10 xl:h-16' src={icoEmp} priority={true} alt='Sponsors' />
 										</div>
 										<div className='text-sm xl:text-base text-center'>Sponsors</div>
 									</div>
@@ -356,162 +356,4 @@ export default function Header() {
 			)}
 		</>
 	);
-}
-
-{
-	/*}
-
-			<div className='w-full xl:w-2/5 mb-3 xl:mb-0 flex justify-between xl:justify-start'>
-				<Link className='w-1/3 xl:w-1/4 text-lgtblu hover:text-drkblu' href='/subscribers/login'>
-					<div className='w-full'>
-						<div className='w-full flex justify-center'>
-							<Image className='w-auto h-10 xl:h-16' src={icoPts} alt='Subscribers' />
-						</div>
-						<div className='text-sm xl:text-base text-center'>Subscribers</div>
-					</div>
-				</Link>
-				<Link className='w-1/3 xl:w-1/4 text-lgtred hover:text-drkred' href='/physicians/login'>
-					<div className='w-full'>
-						<div className='w-full flex justify-center'>
-							<Image className='w-auto h-10 xl:h-16' src={icoPhy} alt='Physicians' />
-						</div>
-						<div className='text-sm xl:text-base text-center'>Physicians</div>
-					</div>
-				</Link>
-				<Link className='w-1/3 xl:w-1/4 text-lgtppl hover:text-drkppl' href='/sponsors/login'>
-					<div className='w-full'>
-						<div className='w-full flex justify-center'>
-							<Image className='w-auto h-10 xl:h-16' src={icoEmp} alt='Sponsors' />
-						</div>
-						<div className='text-sm xl:text-base text-center'>Sponsors</div>
-					</div>
-				</Link>
-			</div>
-			<div className='w-full xl:w-3/5 flex items-center'>
-				<div className='w-1/3 xl:w-1/3 mb-2 xl:mb-0'>
-					<div className='w-full flex justify-center md:justify-start'>
-						<div className='w-auto flex flex-col items-center'>
-							<Image className='w-auto h-20 xl:h-auto xl:max-h-52 mb-1' src={hdrLogo} priority={true} alt='Supernova3x' />
-							<div className='text-xs xl:text-xl'>Healthcare Restored</div>
-						</div>
-					</div>
-				</div>
-				<div className='w-2/3 pe-2 mb-2 xl:mb-0 flex justify-end'>
-					{screenWidth < 1280 ? (
-						<>
-							{nav ? (
-								<div className='w-auto cursor-pointer' onClick={() => shwMobileMenu()}>
-									<svg className='size-8 stroke-txtclr' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={2}>
-										<path strokeLinecap='round' strokeLinejoin='round' d='M6 18 18 6M6 6l12 12' />
-									</svg>
-								</div>
-							) : (
-								<div className='w-auto cursor-pointer' onClick={() => shwMobileMenu()}>
-									<svg className='size-8 stroke-txtclr' xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' strokeWidth={2}>
-										<path
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											d='M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5'
-											onClick={() => shwMobileMenu()}
-										/>
-									</svg>
-								</div>
-							)}
-						</>
-					) : (
-						<div className='flex gap-3'>
-							<div className='dropdown'>
-								<button className='text-sm text-lgtwht hover:text-drkwht'>
-									<div className='w-auto flex flex-row gap-1 items-center'>
-										Register
-										<ArrowDown />
-									</div>
-								</button>
-								<div className='dropdown-content'>
-									<div className='px-5 py-2 flex flex-col'>
-										<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/subscribers/learnmore/#preRegister'>
-											Subscribers
-										</Link>
-										<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/physicians/register'>
-											Physicians
-										</Link>
-										<Link className='text-sm text-lgtwht hover:text-drkwht' href='/sponsors/register'>
-											Sponsors
-										</Link>
-									</div>
-								</div>
-							</div>
-							<div className='dropdown'>
-								<button className='text-sm text-lgtwht hover:text-drkwht'>
-									<div className='w-auto flex flex-row gap-1 items-center'>
-										Learn More
-										<ArrowDown />
-									</div>
-								</button>
-								<div className='dropdown-content'>
-									<div className='px-5 py-2 flex flex-col'>
-										<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/subscribers/learnmore'>
-											Subscribers
-										</Link>
-										<Link className='mb-1.5 text-sm text-lgtwht hover:text-drkwht' href='/physicians/learnmore'>
-											Physicians
-										</Link>
-										<Link className='text-sm text-lgtwht hover:text-drkwht' href='/sponsors/learnmore'>
-											Sponsors
-										</Link>
-									</div>
-								</div>
-							</div>
-							<Link className='text-sm text-lgtwht hover:text-drkwht' href='/contact'>
-								Contact Us
-							</Link>
-						</div>
-					)}
-				</div>
-			</div>
-			{nav && (
-				<div className='menu'>
-					<div className='bg-menubg px-3 pt-3 pb-10 border-4 border-drkppl rounded-2xl flex-auto'>
-						<div className='text-base underline'>Register</div>
-						<div className='ps-10'>
-							<Link className='text-sm text-lgtblu hover:text-drkblu' href='/subscribers/learnmore/#preRegister' scroll={true}>
-								Subscribers
-							</Link>
-						</div>
-						<div className='ps-10'>
-							<Link className='text-sm text-lgtred hover:text-drkred' href='/physicians/register'>
-								Physicians
-							</Link>
-						</div>
-						<div className='mb-5 ps-10'>
-							<Link className='text-sm text-lgtppl hover:text-drkppl' href='/sponsors/register'>
-								Sponsors
-							</Link>
-						</div>
-						<div className='text-base underline'>Learn More</div>
-						<div className='ps-10'>
-							<Link className='text-sm text-lgtblu hover:text-drkblu' href='/subscribers/learnmore'>
-								Subscribers
-							</Link>
-						</div>
-						<div className='ps-10'>
-							<Link className='text-sm text-lgtred hover:text-drkred' href='/physicians/learnmore'>
-								Physicians
-							</Link>
-						</div>
-						<div className='mb-5 ps-10'>
-							<Link className='text-sm text-lgtppl hover:text-drkppl' href='/sponsors/learnmore'>
-								Sponsors
-							</Link>
-						</div>
-						<div>
-							<Link className='text-base text-lgtwht hover:text-drkwht' href='/contact'>
-								Contact Us
-							</Link>
-						</div>
-					</div>
-				</div>
-			)}
-		</div>
-		{*/
 }

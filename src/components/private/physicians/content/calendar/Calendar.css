@@ -1,0 +1,73 @@
+/*** CHANGES TO MBSC CSS STYLES ***/
+.mbsc-ios-dark.mbsc-calendar-button.mbsc-button {
+	color: #73b9ff;
+}
+.mbsc-ios-dark.mbsc-schedule-time-indicator-time {
+	color: #73b9ff;
+}
+.mbsc-ios-dark.mbsc-schedule-time-indicator {
+	color: #73b9ff;
+	border-color: #73b9ff;
+}
+.mbsc-ios-dark.mbsc-button-flat {
+	color: #73b9ff;
+}
+.mbsc-ios-dark.mbsc-button-flat:hover {
+	color: #3395ff;
+}
+.mbsc-popup-arrow-wrapper {
+	display: none;
+}
+/*popup*/
+/*
+.mbsc-ios.mbsc-popup-pointer .mbsc-popup-body-round {
+	width: 550px;
+	width: 100%;
+	min-width: 250px;
+	max-width: 450px;
+	margin-left: auto;
+	margin-right: auto;
+}
+.mbsc-flex-col .mbsc-popup .mbsc-popup-anchored .mbsc-ios-dark .mbsc-ios .mbsc-popup-anchored-bottom {
+	overflow-x: unset !important;
+}
+.mbsc-ios-dark.mbsc-popup .mbsc-ios-dark.mbsc-textfield-wrapper-underline {
+	width: 80%;
+	border-radius: 7px;
+}
+.mbsc-ios-dark.mbsc-schedule-header-day.mbsc-selected {
+	background-color: #73b9ff;
+}
+
+/*
+.mbsc-ios.mbsc-eventcalendar .mbsc-calendar-header {
+	background-color: #eaf7fd;
+}
+.mbsc-eventcalendar-schedule .mbsc-schedule-header {
+	background-color: #eaf7fd;
+}
+.mbsc-ios.mbsc-segmented {
+	background: #eaf7fd;
+}
+.mbsc-segmented-item:hover {
+	background: #ffeded;
+}
+*/
+
+/* RESOURCE HEADING STYLES */
+.resource-template-content {
+	position: relative;
+	padding-left: 80px;
+	text-align: left;
+}
+.resource-avatar {
+	position: absolute;
+	top: 50%;
+	-webkit-transform: translate(-50%, -50%);
+	transform: translate(-50%, -50%);
+	left: 40px;
+	border-radius: 50%;
+}
+.resource-name {
+	font-size: 18px;
+}

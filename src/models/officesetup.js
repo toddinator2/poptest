@@ -4,23 +4,55 @@ const { ObjectId } = mongoose.Schema;
 
 const officesetupSchema = new Schema(
 	{
-		basic: {
+		profile: {
 			type: Boolean,
 			default: false,
 		},
-		locations: {
+		company: {
 			type: Boolean,
 			default: false,
 		},
-		users: {
+		location: {
 			type: Boolean,
 			default: false,
 		},
-		calcols: {
+		licensing: {
 			type: Boolean,
 			default: false,
 		},
-		complete: {
+		payment: {
+			type: Boolean,
+			default: false,
+		},
+		sponsor: {
+			type: Boolean,
+			default: false,
+		},
+		directory: {
+			type: Boolean,
+			default: false,
+		},
+		procenter: {
+			type: Boolean,
+			default: false,
+		},
+		agora: {
+			type: Boolean,
+			default: false,
+		},
+		merchant: {
+			type: Boolean,
+			default: false,
+		},
+		terms: {
+			type: Boolean,
+			default: false,
+		},
+		privacy: {
+			type: Boolean,
+			default: false,
+		},
+		comm: {
 			type: Boolean,
 			default: false,
 		},

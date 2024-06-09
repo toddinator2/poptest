@@ -4,7 +4,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 	return (
 		<>
 			{label && setValue && (
-				<div className='mb-1.5'>
+				<div className='mb-2'>
 					<label className='frmLabel' htmlFor={id}>
 						{label}
 					</label>
@@ -23,7 +23,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 				</div>
 			)}
 			{!label && setValue && (
-				<div className='mb-1.5'>
+				<div className='mb-2'>
 					<input
 						className='inpBorder form-control'
 						type={type}
@@ -39,7 +39,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 				</div>
 			)}
 			{label && funcCall && (
-				<div className='mb-1.5'>
+				<div className='mb-2'>
 					<label className='frmLabel' htmlFor={id}>
 						{label}
 					</label>
@@ -58,7 +58,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 				</div>
 			)}
 			{!label && funcCall && (
-				<div className='mb-1.5'>
+				<div className='mb-2'>
 					<input
 						className='inpBorder form-control'
 						type={type}
@@ -74,7 +74,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 				</div>
 			)}
 			{!setValue && !funcCall && (
-				<div className='mb-1.5'>
+				<div className='mb-2'>
 					<label className='frmLabel' htmlFor={id}>
 						{label}
 					</label>

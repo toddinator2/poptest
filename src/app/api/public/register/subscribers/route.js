@@ -9,7 +9,7 @@ export const POST = async (req) => {
 	const authToken = process.env.AUTH_TOKEN;
 	const reqData = await req.json();
 	const body = reqData.data;
-	const { fname, lname, email, phone, password, verifycode, token } = body;
+	const { fname, lname, dob, email, phone, password, verifycode, token } = body;
 	let uname = '';
 	let newPtId = '';
 	let lwrEmail = '';
@@ -33,6 +33,7 @@ export const POST = async (req) => {
 		const newPt = new Preregpat({
 			fname: fname,
 			lname: lname,
+			dob: dob,
 			email: lwrEmail,
 			phone: phone,
 			username: uname,

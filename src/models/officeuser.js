@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const uniqueValidator = require('mongoose-unique-validator');
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema;
 
@@ -47,6 +48,26 @@ const officeuserSchema = new Schema(
 			type: String,
 			trim: true,
 		},
+		address: {
+			type: String,
+			trim: true,
+		},
+		address2: {
+			type: String,
+			trim: true,
+		},
+		city: {
+			type: String,
+			trim: true,
+		},
+		state: {
+			type: String,
+			trim: true,
+		},
+		zip: {
+			type: String,
+			trim: true,
+		},
 		permission: {
 			type: String,
 			required: true,
@@ -86,7 +107,15 @@ const officeuserSchema = new Schema(
 			type: String,
 			trim: true,
 		},
+		licensestate: {
+			type: String,
+			trim: true,
+		},
 		npi: {
+			type: String,
+			trim: true,
+		},
+		gnpi: {
 			type: String,
 			trim: true,
 		},
@@ -136,5 +165,7 @@ const officeuserSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+
+officeuserSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Officeuser || mongoose.model('Officeuser', officeuserSchema);

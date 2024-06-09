@@ -11,7 +11,7 @@
 	width: 100%;
 	height: auto;
 	min-height: 100vh;
-	font-size: 17px;
+	font-size: 15px;
 	font-weight: 500;
 	color: #cacad9;
 	background-color: #000;
@@ -59,9 +59,9 @@
 .inpMonth {
 	width: 100%;
 	padding: 8px 12px;
-	background-color: transparent;
 	border: 2px solid #222222;
 	border-radius: 7px;
+	background: transparent url('../assets/images/icoCalendar.png') right no-repeat;
 }
 .chkInput {
 	display: none;
@@ -92,3 +92,40 @@ input::-ms-input-placeholder {
 	cursor: pointer;
 	color: #dee2e6;
 }
+
+/******************************************/
+/*** SIDEBAR STYLES ***/
+/******************************************/
+.sbButton {
+	width: 100%;
+	margin-left: auto;
+	margin-right: auto;
+	padding: 5px 10px;
+	font-size: 17px;
+	font-weight: 700;
+	text-align: center;
+	color: #555;
+	border-radius: 10px;
+	border: 4px solid #555;
+}
+.sbButton:hover,
+.sbButton.active {
+	color: #cacad9;
+	cursor: pointer;
+	border: 4px solid #cacad9;
+}
+.sbBox {
+	border-radius: 20px;
+	border: 2px solid #555;
+}
+.sbIcoSearch:hover {
+	cursor: pointer;
+}
+/*
+@media screen and (max-width: 640px) {
+	.sbButton {
+		font-size: 14px;
+		font-weight: 500;
+	}
+}
+*/

@@ -167,23 +167,22 @@ export default function EmpRegister() {
 			setType('philanthropic');
 		}
 	};
-	console.log('type:', type);
 
 	return (
 		<PageTemplate>
 			<div className='w-full py-7'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberSpn} alt='Sponsors' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberSpn} priority={true} alt='Sponsors' />
 					</div>
 					<div className='w-full flex-auto'>
 						<div className='w-full mb-7'>
 							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Free Sponsor Registration Form</div>
 						</div>
 						<div className='w-full'>
-							<div className='mb-5 text-xl lg:text-2xl 2xl:text-3xl text-center'>What Type Of Sponsor Are You?</div>
+							<div className='mb-3 text-xl lg:text-2xl 2xl:text-3xl text-center'>What Type Of Sponsor Are You?</div>
 						</div>
-						<div className='w-full flex-auto lg:flex lg:justify-center lg:gap-3'>
+						<div className='w-full mb-5 flex-auto lg:flex lg:justify-center lg:gap-3'>
 							<div className='w-full lg:w-auto mb-3 lg:mb-0 flex justify-center'>
 								{type === 'private' ? (
 									<Button type='button' on={true}>

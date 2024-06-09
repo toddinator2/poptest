@@ -1,27 +1,61 @@
 import mongoose from 'mongoose';
+const uniqueValidator = require('mongoose-unique-validator');
 const { Schema } = mongoose;
-const { ObjectId } = mongoose.Schema;
 
 const officeSchema = new Schema(
 	{
-		name: {
+		legalname: {
+			type: String,
+			trim: true,
+			required: true,
+		},
+		dba: {
 			type: String,
 			trim: true,
 		},
-		officeid: {
+		ein: {
+			type: String,
+			trim: true,
+		},
+		email: {
 			type: String,
 			trim: true,
 			required: true,
 			unique: true,
 			lowercase: true,
 		},
+		phone: {
+			type: String,
+			trim: true,
+			required: true,
+		},
 		active: {
 			type: Boolean,
 			default: true,
 		},
-		mainphone: {
+		numphysicians: {
 			type: String,
 			trim: true,
+		},
+		numnpps: {
+			type: String,
+			trim: true,
+		},
+		numstaff: {
+			type: String,
+			trim: true,
+		},
+		numnonmedstaff: {
+			type: String,
+			trim: true,
+		},
+		currentehr: {
+			type: String,
+			trim: true,
+		},
+		setupcomplete: {
+			type: Boolean,
+			default: false,
 		},
 		patients: [
 			{
@@ -29,13 +63,17 @@ const officeSchema = new Schema(
 				trim: true,
 			},
 		],
-		medcompanyObjId: {
-			type: ObjectId,
-			ref: 'medcompanies',
+		officeid: {
+			type: String,
+			trim: true,
 			required: true,
+			unique: true,
+			lowercase: true,
 		},
 	},
 	{ timestamps: true }
 );
+
+officeSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Office || mongoose.model('Office', officeSchema);

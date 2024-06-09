@@ -29,7 +29,7 @@ export const POST = async (req) => {
 			//Check if email already exists in preReg or officeusers
 			const preUserExists = await Preregphys.findOne({ email: lwrEmail });
 			if (preUserExists) {
-				return NextResponse.json(400);
+				return NextResponse.json({ status: 400 });
 			}
 			const userExists = await Officeuser.findOne({ email: lwrEmail });
 			if (userExists) {
@@ -54,13 +54,19 @@ export const POST = async (req) => {
 				username: lwrUname,
 				password: hashedPassword,
 				license,
-				state,
+				licensestate: state,
 				npi,
 				specialty,
 				isphysician,
 				verifycode,
 			}).save();
-			return NextResponse.json({ status: 200 });
+
+			const newPhy = await Preregphys.findOne({ verifycode: verifycode });
+			if (newPhy) {
+				return NextResponse.json({ status: 200 });
+			} else {
+				return NextResponse.json({ status: 500 });
+			}
 		} catch (err) {
 			return NextResponse.json({ status: 500 });
 		}

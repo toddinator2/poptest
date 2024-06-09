@@ -16,7 +16,7 @@ export default function SpnLearnMore() {
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberSpn} alt='Sponsors' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberSpn} priority={true} alt='Sponsors' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Sponsors</div>
 					<div className='mb-7 text-2xl lg:text-3xl 2xl:text-4xl text-center'>Welcome to the Future of Employee Healthcare Benefits!</div>
@@ -60,7 +60,7 @@ export default function SpnLearnMore() {
 						</div>
 						<div className='w-full lg:1/5'>
 							<div className='w-full flex justify-center'>
-								<Image className='w-52 max-w-full h-auto' src={logo} alt='Supernova3x' />
+								<Image className='w-52 max-w-full h-auto' src={logo} priority={true} alt='Supernova3x' />
 							</div>
 						</div>
 						<div className='w-full lg:2/5 lg:ps-7'>

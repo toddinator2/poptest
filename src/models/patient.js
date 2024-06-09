@@ -19,6 +19,7 @@ const patientSchema = new Schema(
 		dob: {
 			type: String,
 			trim: true,
+			required: true,
 		},
 		email: {
 			type: String,

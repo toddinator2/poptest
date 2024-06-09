@@ -14,6 +14,11 @@ const preregpatSchema = new Schema(
 			trim: true,
 			required: true,
 		},
+		dob: {
+			type: String,
+			trim: true,
+			required: true,
+		},
 		email: {
 			type: String,
 			trim: true,

@@ -18,6 +18,8 @@ module.exports = {
 			menubg: '#0f1416',
 			drkwht: '#adb5bd',
 			lgtwht: '#dee2e6',
+			txtbox: '#222222',
+			drkbrd: '#1e272c',
 		},
 		listStyleType: {
 			none: 'none',

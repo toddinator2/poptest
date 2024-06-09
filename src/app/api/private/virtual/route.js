@@ -14,6 +14,5 @@ export const GET = async (request) => {
 
 	// Build token with uid
 	const tokenA = RtcTokenBuilder.buildTokenWithUid(appId, appCertificate, channelName, uid, role, privilegeExpiredTs);
-	console.log('tokenA:', tokenA);
 	return NextResponse.json({ token: tokenA, exp: privilegeExpiredTs, status: 200 });
 };

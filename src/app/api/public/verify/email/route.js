@@ -8,10 +8,12 @@ import Preregspn from '@/models/preregspn';
 import Sponsor from '@/models/sponsor';
 import Sponsoruser from '@/models/sponsoruser';
 import Preregphys from '@/models/preregphys';
-import Medcompany from '@/models/medcompany';
 import Office from '@/models/office';
 import Officelocation from '@/models/officelocation';
+import Officesetup from '@/models/officesetup';
 import Officeuser from '@/models/officeuser';
+import Owner from '@/models/owner';
+import Policyphy from '@/models/policyphy';
 import S3xuser from '@/models/s3xuser';
 
 const createSponsor = async (props) => {
@@ -69,6 +71,13 @@ export const POST = async (req) => {
 
 	if (token === authToken) {
 		try {
+			if (type === 'newpatient') {
+				//patient was added from an office or sponsor, so went directly into patient table
+				//just need to update the data in both patient and sponsoruser
+				await Sponsoruser.findOneAndUpdate({ verifycode: verifycode }, { emailconfirmed: true, verifycode: '' }, { new: true });
+				await Patient.findOneAndUpdate({ verifycode: verifycode }, { emailconfirmed: true, verifycode: '' }, { new: true });
+				return NextResponse.json({ status: 200 });
+			}
 			if (type === 'patient') {
 				//move from pre-registration to patients
 				const pt = await Preregpat.findOne({ verifycode: verifycode });
@@ -109,6 +118,7 @@ export const POST = async (req) => {
 					const newPt = new Patient({
 						fname: pt.fname,
 						lname: pt.lname,
+						dob: pt.dob,
 						email: pt.email,
 						username: pt.username,
 						password: hashedPassword,
@@ -208,7 +218,7 @@ export const POST = async (req) => {
 				}
 			}
 			if (type === 'physician') {
-				//move from pre-registration to offices, officelocations, and officeusers
+				//move from pre-registration to offices, officelocations, officeusers, and create officesetup
 				const prePhy = await Preregphys.findOne({ verifycode: verifycode });
 				if (prePhy) {
 					let ofcId = '';
@@ -223,20 +233,25 @@ export const POST = async (req) => {
 						}
 					}
 
-					//create medcompany first
-					const newComp = new Medcompany({ name: prePhy.fname + ' ' + prePhy.lname });
-					const svdComp = await newComp.save();
-					const newCompObjId = svdComp._id;
-
 					//create new office
 					const newOfc = new Office({
-						name: 'Headquarters',
+						legalname: 'Headquarters',
+						dba: 'HQ',
+						email: prePhy.email,
+						phone: prePhy.phone,
 						officeid: ofcId,
-						mainphone: prePhy.phone,
-						medcompanyObjId: newCompObjId,
 					});
 					const svdOfc = await newOfc.save();
 					const newOfcObjId = svdOfc._id;
+
+					//create the initial owner
+					await new Owner({
+						fname: prePhy.fname,
+						lname: prePhy.lname,
+						email: prePhy.email,
+						phone: prePhy.phone,
+						officeObjId: newOfcObjId,
+					}).save();
 
 					//create new office location
 					const newLoc = new Officelocation({
@@ -256,21 +271,32 @@ export const POST = async (req) => {
 						username: prePhy.username,
 						password: prePhy.password,
 						phone: prePhy.phone,
-						phone: prePhy.phone,
 						permission: 'physician',
 						role: 'admin',
 						paid: false,
 						license: prePhy.license,
+						licensestate: prePhy.licensestate,
 						npi: prePhy.npi,
 						specialty: prePhy.specialty,
 						resetcreds: false,
 						emailconfirmed: true,
 						officeid: ofcId,
 						locationObjId: newLocObjId,
-						officeObjId: newLocObjId,
+						officeObjId: newOfcObjId,
 					});
 					const svdPhy = await newPhy.save();
 					const newPhyId = svdPhy._id;
+
+					//create new office setup
+					await new Officesetup({
+						officeObjId: newOfcObjId,
+					}).save();
+
+					//create new office policy agreements
+					await new Policyphy({
+						officeuserObjId: newPhyId,
+						officeObjId: newOfcObjId,
+					}).save();
 
 					if (newPhyId) {
 						await Preregphys.findOneAndDelete({ verifycode: verifycode });

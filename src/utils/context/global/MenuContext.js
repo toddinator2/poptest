@@ -8,6 +8,7 @@ const MenuProvider = ({ children }) => {
 		func: '',
 		dets: '',
 		vids: false,
+		page: '',
 	});
 
 	return <MenuContext.Provider value={[menu, setMenu]}>{children}</MenuContext.Provider>;

@@ -1,0 +1,14 @@
+.menu {
+	animation-duration: 1.2s;
+	animation-name: slidedown;
+}
+@keyframes slidedown {
+	0% {
+		transform: translateY(-220px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0px);
+		opacity: 1;
+	}
+}

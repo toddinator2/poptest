@@ -71,7 +71,7 @@ export default function SpnFU() {
 			<div className='w-full py-7'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberEmp} alt='Sponsors' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberEmp} priority={true} alt='Sponsors' />
 					</div>
 					<div className='w-full mb-7 flex-auto'>
 						<div className='w-full'>

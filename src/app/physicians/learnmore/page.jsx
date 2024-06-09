@@ -15,7 +15,7 @@ export default function PhyLearnMore() {
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPhy} alt='Physicians' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPhy} priority={true} alt='Physicians' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Physicians</div>
 					<div className='w-full flex-auto lg:flex'>
@@ -132,7 +132,7 @@ export default function PhyLearnMore() {
 						</div>
 						<div className='w-full lg:1/5'>
 							<div className='w-full flex justify-center'>
-								<Image className='w-52 max-w-full h-auto' src={logo} alt='Supernova3x' />
+								<Image className='w-52 max-w-full h-auto' src={logo} priority={true} alt='Supernova3x' />
 							</div>
 						</div>
 						<div className='w-full lg:2/5 lg:ps-7'>
@@ -162,13 +162,13 @@ export default function PhyLearnMore() {
 					</div>
 				</div>
 			</div>
-			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
+			<div className='w-full py-7'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='w-full flex-auto lg:flex'>
 						<div className='w-full lg:w-1/2 lg:pe-7 2xl:ps-9'>
 							<div className='mb-2 text-xl lg:text-2xl text-center text-lgtred'>Upgrade Now to Professional Healthcare</div>
 							<div className='w-full mb-5 flex justify-center'>
-								<Image className='max-h-28 lg:max-h-40 w-auto' src={logo} alt='Supernova3x' />
+								<Image className='max-h-28 lg:max-h-40 w-auto' src={logo} priority={true} alt='Supernova3x' />
 							</div>
 							<div className='text-left text-sm lg:text-base'>
 								<div className='mb-5'>

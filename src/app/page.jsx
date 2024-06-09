@@ -53,16 +53,16 @@ export default function Home() {
 					<div className='mb-1 text-sm lg:text-base text-center'>Coming soon to the Apple Store and Google Play</div>
 					<div className='w-full flex-auto lg:flex lg:gap-6 lg:justify-center lg:items-center'>
 						<div className='w-full lg:w-1/5 xl:w-1/6 mb-1 lg:mb-0 flex justify-center'>
-							<Image className='max-h-28 w-auto' src={america} alt='Made in America' />
+							<Image className='max-h-28 w-auto' src={america} priority={true} alt='Made in America' />
 						</div>
 						<div className='w-full lg:w-1/5 xl:w-1/6 mb-2 lg:mb-0 flex justify-center'>
-							<Image className='max-h-12 w-auto' src={btnSx3} alt='POPpc' />
+							<Image className='max-h-12 w-auto' src={btnSx3} priority={true} alt='POPpc' />
 						</div>
 						<div className='w-full lg:w-1/5 xl:w-1/6 mb-2 lg:mb-0 flex justify-center'>
-							<Image className='max-h-12 w-auto' src={btnApple} alt='Apple Store' />
+							<Image className='max-h-12 w-auto' src={btnApple} priority={true} alt='Apple Store' />
 						</div>
 						<div className='w-full lg:w-1/5 xl:w-1/6 flex justify-center'>
-							<Image className='max-h-12 w-auto' src={btnGoogle} alt='Google Play' />
+							<Image className='max-h-12 w-auto' src={btnGoogle} priority={true} alt='Google Play' />
 						</div>
 					</div>
 				</div>
@@ -77,7 +77,7 @@ export default function Home() {
 					<div className='w-full flex-auto xl:flex xl:gap-3'>
 						<div className='xl:w-1/3'>
 							<div className='w-full mb-2 flex justify-center'>
-								<Image className='max-h-24 w-auto' src={hmpgPts} alt='Subscribers' />
+								<Image className='max-h-24 w-auto' src={hmpgPts} priority={true} alt='Subscribers' />
 							</div>
 							<div className='w-full h-5/6 p-4 mb-7 rounded-3xl border-4 border-drkgry relative'>
 								<div className='flex justify-center'>
@@ -120,7 +120,7 @@ export default function Home() {
 						</div>
 						<div className='xl:w-1/3'>
 							<div className='w-full mb-2 flex justify-center'>
-								<Image className='max-h-24 w-auto' src={hmpgPhy} alt='Physicians' />
+								<Image className='max-h-24 w-auto' src={hmpgPhy} priority={true} alt='Physicians' />
 							</div>
 							<div className='w-full h-5/6 p-4 mb-7 rounded-3xl border-4 border-drkgry relative'>
 								<div className='flex justify-center'>
@@ -161,7 +161,7 @@ export default function Home() {
 						</div>
 						<div className='xl:w-1/3'>
 							<div className='w-full mb-2 flex justify-center'>
-								<Image className='max-h-24 w-auto' src={hmpgEmp} alt='Sponsors' />
+								<Image className='max-h-24 w-auto' src={hmpgEmp} priority={true} alt='Sponsors' />
 							</div>
 							<div className='w-full h-5/6 p-4 mb-7 rounded-3xl border-4 border-drkgry relative'>
 								<div className='flex justify-center'>
@@ -214,7 +214,7 @@ export default function Home() {
 								The SN3X Network Directory connects patients and employers to premium Physician supervised medical services.
 							</div>
 							<div className='w-full mb-5 flex justify-center'>
-								<Image className='max-h-28 lg:max-h-40 w-auto' src={hmpgLogo} alt='Supernova3x' />
+								<Image className='max-h-28 lg:max-h-40 w-auto' src={hmpgLogo} priority={true} alt='Supernova3x' />
 							</div>
 							<div className='mb-7 lg:mb-0 text-center text-sm lg:text-base'>
 								Abundant, accessible and affordable healthcare is found in the SN3X Directory.
@@ -232,7 +232,7 @@ export default function Home() {
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPts} alt='Subscribers' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPts} priority={true} alt='Subscribers' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Patients</div>
 					<div className='w-full flex-auto lg:flex '>
@@ -263,7 +263,7 @@ export default function Home() {
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPhy} alt='Physicians' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPhy} priority={true} alt='Physicians' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Physicians</div>
 					<div className='w-full flex-auto lg:flex'>
@@ -299,7 +299,7 @@ export default function Home() {
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberEmp} alt='Employers' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberEmp} priority={true} alt='Employers' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Sponsors</div>
 					<div className='w-full flex-auto lg:flex'>

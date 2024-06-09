@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const uniqueValidator = require('mongoose-unique-validator');
 const { Schema } = mongoose;
 
 const preregphysSchema = new Schema(
@@ -29,17 +30,13 @@ const preregphysSchema = new Schema(
 			type: String,
 			trim: true,
 			required: true,
+			unique: true,
 			lowercase: true,
 		},
 		password: {
 			type: String,
 			trim: true,
 			required: true,
-		},
-		active: {
-			type: Boolean,
-			required: true,
-			default: true,
 		},
 		license: {
 			type: String,
@@ -71,14 +68,12 @@ const preregphysSchema = new Schema(
 		verifycode: {
 			type: String,
 			trim: true,
-		},
-		emailconfirmed: {
-			type: Boolean,
-			required: true,
-			default: false,
+			unique: true,
 		},
 	},
 	{ timestamps: true }
 );
+
+preregphysSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Preregphys || mongoose.model('Preregphys', preregphysSchema);

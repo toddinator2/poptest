@@ -1,6 +1,6 @@
 'use client';
 import React, { useState } from 'react';
-import { FixPhone, FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/Functions';
+import { FixDob, FixPhone, FormatDob, FormatPhoneNumber, IsValidEmail, RandomStringMake } from '@/components/global/functions/Functions';
 import Image from 'next/image';
 import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
@@ -23,6 +23,7 @@ export default function SubLearnMore() {
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
 	const [zip, setZip] = useState('');
+	const [dob, setDob] = useState('');
 	const [loading, setLoading] = useState('');
 
 	const handleSubmit = async (e) => {
@@ -45,6 +46,10 @@ export default function SubLearnMore() {
 		//Fix Phone Number
 		const ptPhone = FixPhone(phone);
 
+		//Fix DOB to only numbers
+		let newDob = '';
+		newDob = await FixDob(dob);
+
 		//Create the email verification code
 		const verifycode = RandomStringMake(64);
 
@@ -56,6 +61,7 @@ export default function SubLearnMore() {
 				register: 'subscribers',
 				fname,
 				lname,
+				dob: newDob,
 				email,
 				phone: ptPhone,
 				password: pword,
@@ -126,6 +132,7 @@ export default function SubLearnMore() {
 
 					setFname('');
 					setLname('');
+					setDob('');
 					setEmail('');
 					setPhone('');
 					toast.success('Registration Successful: Please watch for verification email');
@@ -139,10 +146,19 @@ export default function SubLearnMore() {
 		}
 	};
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// PAGE FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	function handlePhone(e) {
 		const value = e.target.value;
 		const formattedPhoneNumber = FormatPhoneNumber(value);
 		setPhone(formattedPhoneNumber);
+	}
+
+	function handleDob(e) {
+		const value = e.target.value;
+		const chkDob = FormatDob(value);
+		setDob(chkDob);
 	}
 
 	return (
@@ -150,7 +166,7 @@ export default function SubLearnMore() {
 			<div className='w-full py-7 border-b-2 border-dotted border-drkgry'>
 				<div className='w-5/6 md:w-3/5 lg:w-4/5 2xl:w-2/3 mx-auto'>
 					<div className='flex justify-center'>
-						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPts} alt='Subscribers' />
+						<Image className='max-h-20 lg:max-h-28 w-auto' src={icoMemberPts} priority={true} alt='Subscribers' />
 					</div>
 					<div className='mb-5 text-2xl lg:text-3xl flex justify-center'>For Patients</div>
 					<div className='w-full flex-auto lg:flex'>
@@ -230,7 +246,7 @@ export default function SubLearnMore() {
 							<div className='ps-12 text-sm xl:text-base'>
 								<ul className='list-disc'>
 									<li>Access your medical history in real-time</li>
-									<li>Schedule Office/Virtual Appointment&apos;s</li>
+									<li>Schedule Office/Virtual Appointments</li>
 									<li>Request refills</li>
 									<li>Message your Physicians and medical teams</li>
 								</ul>
@@ -252,8 +268,9 @@ export default function SubLearnMore() {
 							<ChkInput label='Zip Code' type='text' value={zip} setValue={setZip} />
 							<Input label='Email' type='email' id='email' required={true} value={email} setValue={setEmail} />
 							<Input label='Mobile Phone' type='tel' id='phone' required={true} value={phone} funcCall={handlePhone} />
+							<Input label='DOB (mmddyyyy)' type='text' value={dob} funcCall={handleDob} />
 							<div className='w-full mt-4 flex justify-center'>
-								<Button type='submit' disabled={!fname || !lname || !email || !phone}>
+								<Button type='submit' disabled={!fname || !lname || !email || !phone || !dob}>
 									Register
 								</Button>
 							</div>
