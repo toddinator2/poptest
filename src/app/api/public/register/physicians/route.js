@@ -9,7 +9,7 @@ export const POST = async (req) => {
 	const authToken = process.env.AUTH_TOKEN;
 	const reqData = await req.json();
 	const body = reqData.data;
-	const { fname, lname, email, phone, username, password, license, state, npi, specialty, isphysician, verifycode, token } = body;
+	const { fname, lname, email, phone, username, password, license, licensestate, npi, specialty, isphysician, verifycode, token } = body;
 	let lwrEmail = '';
 	let lwrUname = '';
 
@@ -24,45 +24,45 @@ export const POST = async (req) => {
 	//Hash password for storage
 	const hashedPassword = await bcrypt.hash(password, 10);
 
+	//Check if email already exists in preReg or officeusers
+	const preUserExists = await Preregphys.findOne({ email: lwrEmail });
+	if (preUserExists) {
+		return NextResponse.json({ status: 400 });
+	}
+	const userExists = await Officeuser.findOne({ email: lwrEmail });
+	if (userExists) {
+		return NextResponse.json({ status: 400 });
+	}
+
+	//Check if username already exists in preReg or officeusers
+	const preUsernameExists = await Preregphys.findOne({ username: lwrUname });
+	if (preUsernameExists) {
+		return NextResponse.json({ status: 401 });
+	}
+	const usernameExists = await Officeuser.findOne({ username: lwrUname });
+	if (usernameExists) {
+		return NextResponse.json({ status: 401 });
+	}
+
+	const phyObj = new Preregphys({
+		fname,
+		lname,
+		email: lwrEmail,
+		phone,
+		username: lwrUname,
+		password: hashedPassword,
+		license,
+		licensestate,
+		npi,
+		specialty,
+		isphysician,
+		verifycode,
+	});
+
 	if (token === authToken) {
 		try {
-			//Check if email already exists in preReg or officeusers
-			const preUserExists = await Preregphys.findOne({ email: lwrEmail });
-			if (preUserExists) {
-				return NextResponse.json({ status: 400 });
-			}
-			const userExists = await Officeuser.findOne({ email: lwrEmail });
-			if (userExists) {
-				return NextResponse.json({ status: 400 });
-			}
-
-			//Check if username already exists in preReg or officeusers
-			const preUsernameExists = await Preregphys.findOne({ username: lwrUname });
-			if (preUsernameExists) {
-				return NextResponse.json({ status: 401 });
-			}
-			const usernameExists = await Officeuser.findOne({ username: lwrUname });
-			if (usernameExists) {
-				return NextResponse.json({ status: 401 });
-			}
-
-			await new Preregphys({
-				fname,
-				lname,
-				email: lwrEmail,
-				phone,
-				username: lwrUname,
-				password: hashedPassword,
-				license,
-				licensestate: state,
-				npi,
-				specialty,
-				isphysician,
-				verifycode,
-			}).save();
-
-			const newPhy = await Preregphys.findOne({ verifycode: verifycode });
-			if (newPhy) {
+			const svdPhy = await phyObj.save();
+			if (svdPhy) {
 				return NextResponse.json({ status: 200 });
 			} else {
 				return NextResponse.json({ status: 500 });

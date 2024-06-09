@@ -43,7 +43,7 @@ const preregphysSchema = new Schema(
 			trim: true,
 			required: true,
 		},
-		state: {
+		licensestate: {
 			type: String,
 			trim: true,
 			required: true,

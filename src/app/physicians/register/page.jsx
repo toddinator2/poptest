@@ -21,9 +21,9 @@ export default function PhyRegister() {
 	const [lname, setLname] = useState('');
 	const [email, setEmail] = useState('');
 	const [phone, setPhone] = useState('');
-	const [license, setLicense] = useState('');
 	const [city, setCity] = useState('');
-	const [state, setState] = useState('');
+	const [license, setLicense] = useState('');
+	const [licensestate, setLicenseState] = useState('');
 	const [npi, setNpi] = useState('');
 	const [specialty, setSpecialty] = useState('');
 	const [username, setUsername] = useState('');
@@ -90,7 +90,7 @@ export default function PhyRegister() {
 				username,
 				password: newPword,
 				license,
-				state,
+				licensestate,
 				npi,
 				specialty,
 				isphysician: isPhysician,
@@ -158,7 +158,7 @@ export default function PhyRegister() {
 					email: email,
 					phone: phone,
 					license: license,
-					state: state,
+					state: licensestate,
 					npi: npi,
 					specialty: specialty,
 				};
@@ -177,7 +177,7 @@ export default function PhyRegister() {
 				setCnfPword('');
 				setLicense('');
 				setCity('');
-				setState('');
+				setLicenseState('');
 				setNpi('');
 				setSpecialty('');
 				setIsPhysician(false);
@@ -225,7 +225,12 @@ export default function PhyRegister() {
 							<ChkInput label='City' type='text' value={city} setValue={setCity} />
 							<Input label='License' type='text' required={true} value={license} setValue={setLicense} />
 							<div className='frmLabel'>License State</div>
-							<select className='inpBorder form-control mb-2' required={true} value={state} onChange={(e) => setState(e.target.value)}>
+							<select
+								className='inpBorder form-control mb-2'
+								required={true}
+								value={licensestate}
+								onChange={(e) => setLicenseState(e.target.value)}
+							>
 								<option value=''>Select One...</option>
 								<option value='AL'>Alabama</option>
 								<option value='AK'>Alaska</option>
@@ -281,7 +286,7 @@ export default function PhyRegister() {
 							</select>
 							<Input label='Individual NPI' type='text' required={true} value={npi} setValue={setNpi} />
 							<div className='frmLabel'>Specialty</div>
-							<select className='inpBorder form-control' required={true} value={specialty} onChange={(e) => setSpecialty(e.target.value)}>
+							<select className='inpBorder form-control mb-2' required={true} value={specialty} onChange={(e) => setSpecialty(e.target.value)}>
 								<option value=''>Select One...</option>
 								<option value='Allergy & Immunology'>Allergy & Immunology</option>
 								<option value='Anatomical Pathology'>Anatomical Pathology</option>
@@ -353,7 +358,7 @@ export default function PhyRegister() {
 										!email ||
 										!phone ||
 										!license ||
-										!state ||
+										!licensestate ||
 										!npi ||
 										!specialty ||
 										!username ||
