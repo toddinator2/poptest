@@ -11,11 +11,21 @@ export const GET = async (request) => {
 		const ofc = await Officesetup.findOne({ officeObjId: ofcId });
 		if (ofc) {
 			const ofcObj = {
-				basic: ofc.basic,
-				owner: ofc.owner,
-				loc: ofc.location,
-				user: ofc.user,
+				profile: ofc.profile,
+				company: ofc.company,
+				location: ofc.location,
+				licensing: ofc.licensing,
+				payment: ofc.payment,
+				sponsor: ofc.sponsor,
+				directory: ofc.directory,
+				procenter: ofc.procenter,
+				agora: ofc.agora,
+				merchant: ofc.merchant,
+				terms: ofc.terms,
+				privacy: ofc.privacy,
+				comm: ofc.comm,
 			};
+
 			return NextResponse.json({ setup: ofcObj, status: 200 });
 		} else {
 			return NextResponse.json({ status: 400 });

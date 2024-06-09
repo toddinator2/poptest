@@ -103,7 +103,21 @@ export default function Progress() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (chkdSetup) {
-			if (!profile || !company || !location) {
+			if (
+				!profile ||
+				!company ||
+				!location ||
+				!licensing ||
+				!payment ||
+				!sponsor ||
+				!directory ||
+				!procenter ||
+				!agora ||
+				!merchant ||
+				!terms ||
+				!privacy ||
+				!comm
+			) {
 				if (!profile) {
 					setPage('profile');
 					return;

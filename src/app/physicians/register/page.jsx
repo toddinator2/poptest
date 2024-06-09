@@ -60,6 +60,7 @@ export default function PhyRegister() {
 			setNewPword('');
 			setCnfPword('');
 			document.getElementById('newPword').focus();
+			setLoading(false);
 			return;
 		}
 		if (newPword !== cnfPword) {
@@ -67,6 +68,7 @@ export default function PhyRegister() {
 			setNewPword('');
 			setCnfPword('');
 			document.getElementById('newPword').focus();
+			setLoading(false);
 			return;
 		}
 

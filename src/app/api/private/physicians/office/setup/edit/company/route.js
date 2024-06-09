@@ -25,7 +25,7 @@ export const PUT = async (req) => {
 			},
 			{ new: true }
 		);
-		await Officesetup.findOneAndUpdate({ officeObjId: ofcid }, { company: true }, { new: true });
+		await Officesetup.findOneAndUpdate({ officeObjId: _id }, { company: true }, { new: true });
 		return NextResponse.json({ msg: 'Office Profile updated successfully', status: 200 });
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });

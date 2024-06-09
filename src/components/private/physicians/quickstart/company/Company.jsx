@@ -1,6 +1,7 @@
-import React, { useContext } from 'react';
-import { FormatPhoneNumber, IsNumber } from '@/components/global/functions/Functions';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { FormatPhoneNumber, IsNumber, IsValidEmail } from '@/components/global/functions/Functions';
 import { AuthContext } from '@/utils/context/global/AuthContext';
+import toast from 'react-hot-toast';
 import Input from '@/components/global/forms/input/Input';
 import Button from '@/components/global/forms/buttons/Button';
 import Checklist from '../checklist/Checklist';
@@ -52,6 +53,15 @@ export default function Company() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		//Check email
+		if (!IsValidEmail(email)) {
+			toast.error('Please enter a valid email');
+			document.getElementById('email').focus();
+			setLoading(false);
+			return;
+		}
+
 		try {
 			const response = await fetch(`${process.env.API_URL}/physicians/office/setup/edit/company`, {
 				method: 'PUT',
@@ -66,7 +76,7 @@ export default function Company() {
 					email,
 					phone,
 					numphysicians: numphys,
-					numnpps: numnpps,
+					numnpps,
 					numstaff,
 					numnonmedstaff: numnonmed,
 					currentehr: currentEhr,
@@ -130,7 +140,7 @@ export default function Company() {
 						<label className='frmLabel'>EIN</label>
 						<Input type='text' required={true} value={ein} setValue={setEin} />
 						<label className='frmLabel'>Email</label>
-						<Input type='email' required={true} value={email} setValue={setEmail} />
+						<Input type='email' id='email' required={true} value={email} setValue={setEmail} />
 						<label className='frmLabel'>Phone</label>
 						<Input type='tel' required={true} value={phone} funcCall={handlePhone} />
 						<label className='frmLabel'># of Physicians</label>

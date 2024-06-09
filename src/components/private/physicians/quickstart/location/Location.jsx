@@ -7,7 +7,7 @@ import Checklist from '../checklist/Checklist';
 import Input from '@/components/global/forms/input/Input';
 import Button from '@/components/global/forms/buttons/Button';
 
-export default function Location({ ofcId }) {
+export default function Location() {
 	const gglKey = process.env.MAPS_KEY;
 	const [auth] = useContext(AuthContext);
 	const [name, setName] = useState('');
@@ -89,8 +89,8 @@ export default function Location({ ofcId }) {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		let latitude;
-		let longitude;
+		let latitude = '';
+		let longitude = '';
 
 		//Set longitude and latitude
 		if (add && city && state && zip) {
@@ -116,7 +116,7 @@ export default function Location({ ofcId }) {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					ofcid: ofcId,
+					ofcid: auth.user.ofcObjId,
 					name,
 					address: add,
 					address2: add2,

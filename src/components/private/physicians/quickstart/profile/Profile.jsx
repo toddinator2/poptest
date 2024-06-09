@@ -3,7 +3,7 @@ import { nanoid } from 'nanoid';
 import { storage } from '@/firebase';
 import { getDownloadURL, ref, uploadBytes } from 'firebase/storage';
 import { AuthContext } from '@/utils/context/global/AuthContext';
-import { FormatPhoneNumber, FormatZip } from '@/components/global/functions/Functions';
+import { FormatPhoneNumber, FormatZip, IsValidEmail } from '@/components/global/functions/Functions';
 import toast from 'react-hot-toast';
 import Checklist from '../checklist/Checklist';
 import Input from '@/components/global/forms/input/Input';
@@ -67,6 +67,15 @@ export default function Profile() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+
+		//Check email
+		if (!IsValidEmail(email)) {
+			toast.error('Please enter a valid email');
+			document.getElementById('email').focus();
+			setLoading(false);
+			return;
+		}
+
 		try {
 			const response = await fetch(`${process.env.API_URL}/physicians/office/setup/edit/profile`, {
 				method: 'PUT',
@@ -149,7 +158,7 @@ export default function Profile() {
 						<label className='frmLabel'>Last Name</label>
 						<Input type='text' required={true} value={lname} setValue={setLname} />
 						<label className='frmLabel'>Email</label>
-						<Input type='email' required={true} value={email} setValue={setEmail} />
+						<Input type='email' id='email' required={true} value={email} setValue={setEmail} />
 						<label className='frmLabel'>Cell Phone</label>
 						<Input type='tel' required={true} value={phone} funcCall={handlePhone} />
 						<label className='frmLabel'>Home Street Address</label>
