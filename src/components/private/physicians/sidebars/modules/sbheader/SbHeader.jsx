@@ -67,7 +67,7 @@ export default function SbHeader({ page }) {
 						<div className='w-1/2'>
 							<div
 								className='text-sm text-center text-txtblu hover:text-txtclr cursor-pointer'
-								onClick={() => signOut({ callbackUrl: '/subscribers/login' })}
+								onClick={() => signOut({ callbackUrl: '/physicians/login' })}
 							>
 								Logout
 							</div>

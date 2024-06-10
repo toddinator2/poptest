@@ -64,6 +64,8 @@ export default function Directory() {
 				setInits('');
 				document.getElementById('inits').focus();
 			}
+		} else {
+			setInits(value.toUpperCase());
 		}
 	};
 

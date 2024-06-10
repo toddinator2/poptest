@@ -64,6 +64,8 @@ export default function Merchant() {
 				setInits('');
 				document.getElementById('inits').focus();
 			}
+		} else {
+			setInits(value.toUpperCase());
 		}
 	};
 

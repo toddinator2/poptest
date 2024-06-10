@@ -165,6 +165,12 @@ const officelocationSchema = new Schema(
 			type: String,
 			trim: true,
 		},
+		patients: [
+			{
+				type: String,
+				trim: true,
+			},
+		],
 		officeObjId: {
 			type: ObjectId,
 			ref: 'offices',

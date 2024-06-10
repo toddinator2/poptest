@@ -64,6 +64,8 @@ export default function Procenter() {
 				setInits('');
 				document.getElementById('inits').focus();
 			}
+		} else {
+			setInits(value.toUpperCase());
 		}
 	};
 

@@ -64,6 +64,8 @@ export default function Payment() {
 				setInits('');
 				document.getElementById('inits').focus();
 			}
+		} else {
+			setInits(value.toUpperCase());
 		}
 	};
 
@@ -88,6 +90,7 @@ export default function Payment() {
 								type='text'
 								required
 								id='inits'
+								autoComplete='off'
 								maxLength={2}
 								value={inits}
 								onChange={(e) => handleInits(e)}

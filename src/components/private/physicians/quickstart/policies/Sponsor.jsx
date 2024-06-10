@@ -64,6 +64,8 @@ export default function Sponsor() {
 				setInits('');
 				document.getElementById('inits').focus();
 			}
+		} else {
+			setInits(value.toUpperCase());
 		}
 	};
 
@@ -84,10 +86,11 @@ export default function Sponsor() {
 					<div className='flex flex-row items-center'>
 						<div className='w-1/4 flex justify-end'>
 							<input
-								className='inpBorder form-control'
+								className='inpBorder'
 								type='text'
 								required
 								id='inits'
+								autoComplete='false'
 								maxLength={2}
 								value={inits}
 								onChange={(e) => handleInits(e)}

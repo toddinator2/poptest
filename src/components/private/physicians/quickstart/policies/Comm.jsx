@@ -36,7 +36,7 @@ export default function Comm() {
 
 			if (data.status === 200) {
 				toast.success(data.msg);
-				router.push('physicians/sphere');
+				router.push('/physicians/sphere');
 			} else {
 				toast.error(data.msg);
 			}
@@ -67,6 +67,8 @@ export default function Comm() {
 				setInits('');
 				document.getElementById('inits').focus();
 			}
+		} else {
+			setInits(value.toUpperCase());
 		}
 	};
 

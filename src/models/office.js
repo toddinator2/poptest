@@ -57,12 +57,6 @@ const officeSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		patients: [
-			{
-				type: String,
-				trim: true,
-			},
-		],
 		officeid: {
 			type: String,
 			trim: true,
