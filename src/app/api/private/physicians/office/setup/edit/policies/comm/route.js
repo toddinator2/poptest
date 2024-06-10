@@ -11,9 +11,8 @@ export const PUT = async (req) => {
 
 	try {
 		await Policyphy.findOneAndUpdate({ officeuserObjId: userid, officeObjId: ofcid }, { comm: accepted, commdate: today, comminits: inits }, { new: true });
-		await Office.findByIdAndUpdate(ofcid, { setupcomplete: true }, { new: true });
-		await Officesetup.findOneAndDelete({ officeObjId: ofcid });
-		return NextResponse.json({ msg: 'You have successfully completed the Quick Start', status: 200 });
+		await Officesetup.findOneAndUpdate({ officeObjId: ofcid }, { comm: accepted }, { new: true });
+		return NextResponse.json({ msg: 'SN3X Digital Communication Agreement successfully signed', status: 200 });
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
 	}

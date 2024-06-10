@@ -15,6 +15,7 @@ import Merchant from '../policies/Merchant';
 import Terms from '../policies/Terms';
 import Privacy from '../policies/Privacy';
 import Comm from '../policies/Comm';
+import Bank from '../bank/Bank';
 
 import * as Realm from 'realm-web';
 const app = new Realm.App({ id: process.env.REALM_ID });
@@ -35,6 +36,7 @@ export default function Progress() {
 	const [terms, setTerms] = useState(false);
 	const [privacy, setPrivacy] = useState(false);
 	const [comm, setComm] = useState(false);
+	const [bank, setBank] = useState(false);
 	const [page, setPage] = useState('');
 	const [chkdSetup, setChkdSetup] = useState(false);
 
@@ -62,6 +64,7 @@ export default function Progress() {
 				setTerms(data.setup.terms);
 				setPrivacy(data.setup.privacy);
 				setComm(data.setup.comm);
+				setBank(data.setup.bank);
 				setChkdSetup(true);
 			} else {
 				toast.error(data.msg);
@@ -116,7 +119,8 @@ export default function Progress() {
 				!merchant ||
 				!terms ||
 				!privacy ||
-				!comm
+				!comm ||
+				!bank
 			) {
 				if (!profile) {
 					setPage('profile');
@@ -170,6 +174,10 @@ export default function Progress() {
 					setPage('comm');
 					return;
 				}
+				if (!bank) {
+					setPage('bank');
+					return;
+				}
 			}
 		}
 	}, [chkdSetup, profile, company, location, licensing, payment, sponsor, directory, procenter, agora, merchant, terms, privacy, comm]);
@@ -190,6 +198,7 @@ export default function Progress() {
 			{page === 'terms' && <Terms />}
 			{page === 'privacy' && <Privacy />}
 			{page === 'comm' && <Comm />}
+			{page === 'bank' && <Bank />}
 		</>
 	);
 }

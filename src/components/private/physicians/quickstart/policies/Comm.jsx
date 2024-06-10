@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { Today } from '@/components/global/functions/Functions';
 import toast from 'react-hot-toast';
@@ -8,7 +7,6 @@ import Checklist from '../checklist/Checklist';
 
 export default function Comm() {
 	const today = Today();
-	const router = useRouter();
 	const [auth] = useContext(AuthContext);
 	const [accepted, setAccepted] = useState(false);
 	const [inits, setInits] = useState('');
@@ -36,7 +34,6 @@ export default function Comm() {
 
 			if (data.status === 200) {
 				toast.success(data.msg);
-				router.push('/physicians/sphere');
 			} else {
 				toast.error(data.msg);
 			}

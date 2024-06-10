@@ -21,6 +21,7 @@ export default function Checklist() {
 	const [terms, setTerms] = useState(false);
 	const [privacy, setPrivacy] = useState(false);
 	const [comm, setComm] = useState(false);
+	const [bank, setBank] = useState(false);
 	const [chkdSetup, setChkdSetup] = useState(false);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,7 @@ export default function Checklist() {
 				setTerms(data.setup.terms);
 				setPrivacy(data.setup.privacy);
 				setComm(data.setup.comm);
+				setBank(data.setup.bank);
 				setChkdSetup(true);
 			} else {
 				toast.error(data.msg);
@@ -104,7 +106,7 @@ export default function Checklist() {
 							<div className='text-sm'>Company Profile</div>
 						</div>
 					</div>
-					<div className=' mb-4 flex flex-row'>
+					<div className='mb-4 flex flex-row'>
 						<div className='w-1/6 flex justify-end items-center'>
 							<input className='chkBox' type='checkbox' checked={location} readOnly />
 						</div>
@@ -161,7 +163,7 @@ export default function Checklist() {
 							<div className='text-sm'>Agora Agreement</div>
 						</div>
 					</div>
-					<div className=' mb-4 flex flex-row'>
+					<div className='mb-4 flex flex-row'>
 						<div className='w-1/6 flex justify-end items-center'>
 							<input className='chkBox' type='checkbox' checked={merchant} readOnly />
 						</div>
@@ -178,7 +180,7 @@ export default function Checklist() {
 							<div className='text-sm'>Terms &amp; Conditions</div>
 						</div>
 					</div>
-					<div className=' mb-2 flex flex-row'>
+					<div className='mb-2 flex flex-row'>
 						<div className='w-1/6 flex justify-end items-center'>
 							<input className='chkBox' type='checkbox' checked={privacy} readOnly />
 						</div>
@@ -186,12 +188,21 @@ export default function Checklist() {
 							<div className='text-sm'>Privacy &amp; Security</div>
 						</div>
 					</div>
-					<div className='flex flex-row'>
+					<div className='mb-4 flex flex-row'>
 						<div className='w-1/6 flex justify-end items-center'>
 							<input className='chkBox' type='checkbox' checked={comm} readOnly />
 						</div>
 						<div className='ps-2'>
 							<div className='text-sm'>Digital Communications</div>
+						</div>
+					</div>
+					<div className='mb-1 text-lg font-semibold text-lgtppl'>Payment Info & Payment</div>
+					<div className='mb-2 flex flex-row'>
+						<div className='w-1/6 flex justify-end items-center'>
+							<input className='chkBox' type='checkbox' checked={bank} readOnly />
+						</div>
+						<div className='ps-2'>
+							<div className='text-sm'>Payment Information</div>
 						</div>
 					</div>
 				</>

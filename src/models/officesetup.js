@@ -56,6 +56,10 @@ const officesetupSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
+		bank: {
+			type: Boolean,
+			default: false,
+		},
 		officeObjId: {
 			type: ObjectId,
 			ref: 'offices',

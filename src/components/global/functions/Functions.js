@@ -173,6 +173,27 @@ export function FormatCurrency(value) {
 	}
 }
 
+export function FormatCreditCard(value) {
+	if (!value) return value;
+	let cardNum = value.replace(/[^\d]/g, '');
+	const cardNumberLength = cardNum.length;
+	if (cardNumberLength > 16) {
+		cardNum = cardNum.slice(0, 16);
+	}
+
+	if (cardNumberLength < 4) return cardNum;
+
+	if (cardNumberLength < 9) {
+		return `${cardNum.slice(0, 4)} ${cardNum.slice(4)}`;
+	}
+
+	if (cardNumberLength >= 9 && cardNumberLength < 13) {
+		return `${cardNum.slice(0, 4)} ${cardNum.slice(4, 4)} ${cardNum.slice(9)}`;
+	}
+
+	return `${cardNum.slice(0, 4)} ${cardNum.slice(4, 4)} ${cardNum.slice(9, 13)} ${cardNum.slice(13)}`;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // FIX VALUES
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +213,11 @@ export function FixPhone(num) {
 export function FixVisitDate(date) {
 	const [year, month, day] = date.split('-');
 	const result = `${month}/${day}/${year}`;
+	return result;
+}
+
+export function FixCreditCard(num) {
+	const result = num.split(' ').join('');
 	return result;
 }
 
