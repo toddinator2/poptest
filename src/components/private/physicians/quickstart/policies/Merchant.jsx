@@ -90,6 +90,7 @@ export default function Merchant() {
 								type='text'
 								required
 								id='inits'
+								autoComplete='off'
 								maxLength={2}
 								value={inits}
 								onChange={(e) => handleInits(e)}
