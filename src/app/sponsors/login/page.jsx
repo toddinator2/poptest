@@ -29,10 +29,8 @@ export default function Login() {
 		if (!uname && !chkdUname) {
 			const svdUname = getFromLocalStorage(lsUname);
 			const svdRemember = getFromLocalStorage(lsRem);
-			if (svdUname) {
-				setUname(svdUname);
-			}
 			if (svdRemember) {
+				setUname(svdUname);
 				setRemember(svdRemember);
 			}
 			setChkdUname(true);
@@ -59,9 +57,9 @@ export default function Login() {
 				removeFromLocalStorage(lsData);
 				//set username and remember in localstorage
 				if (remember) {
-					saveInLocalStorage(lsUname, uname.toLowerCase());
 					saveInLocalStorage(lsRem, remember);
 				}
+				saveInLocalStorage(lsUname, uname.toLowerCase());
 				router.push('/sponsors/authorize');
 			}
 		} catch (error) {
@@ -74,6 +72,7 @@ export default function Login() {
 
 	const handleRemember = (e) => {
 		const value = e.target.checked;
+		console.log('value:', value);
 		setRemember(value);
 	};
 
