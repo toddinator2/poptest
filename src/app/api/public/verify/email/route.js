@@ -174,15 +174,15 @@ export const POST = async (req) => {
 
 					newSpn = new Sponsor({
 						type: preSpn.type.toLowerCase(),
-						sponsorid: spnId,
-						company: preSpn.company,
+						legalname: preSpn.company,
+						dba: preSpn.company,
 						fname: preSpn.fname,
 						lname: preSpn.lname,
 						email: preSpn.email.toLowerCase(),
 						phone: preSpn.phone,
 						phoneext: preSpn.phoneext,
-						active: true,
 						website: preSpn.website,
+						sponsorid: spnId,
 					});
 					const svdSpn = await newSpn.save();
 					const newSpnId = svdSpn._id;

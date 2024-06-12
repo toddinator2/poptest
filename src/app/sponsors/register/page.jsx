@@ -177,7 +177,7 @@ export default function EmpRegister() {
 					</div>
 					<div className='w-full flex-auto'>
 						<div className='w-full mb-7'>
-							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Free Sponsor Registration Form</div>
+							<div className='text-2xl lg:text-3xl 2xl:text-4xl text-center'>Sponsor Registration Form</div>
 						</div>
 						<div className='w-full'>
 							<div className='mb-3 text-xl lg:text-2xl 2xl:text-3xl text-center'>What Type Of Sponsor Are You?</div>

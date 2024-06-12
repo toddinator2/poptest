@@ -180,7 +180,7 @@ export default function Progress() {
 				}
 			}
 		}
-	}, [chkdSetup, profile, company, location, licensing, payment, sponsor, directory, procenter, agora, merchant, terms, privacy, comm]);
+	}, [chkdSetup, profile, company, location, licensing, payment, sponsor, directory, procenter, agora, merchant, terms, privacy, comm, bank]);
 
 	return (
 		<>

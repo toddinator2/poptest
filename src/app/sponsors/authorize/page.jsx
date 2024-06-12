@@ -94,7 +94,7 @@ export default function Authorize() {
 				}
 			}
 		}
-	}, [svdUname, user, auth, setAuth, lsUserData, router]);
+	}, [svdUname, user, auth, setAuth, lsUserData, sucomplete, router]);
 
 	return <>{loading && <Spinner />}</>;
 }
