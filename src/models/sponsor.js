@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const uniqueValidator = require('mongoose-unique-validator');
 const { Schema } = mongoose;
 
 const sponsorSchema = new Schema(
@@ -8,14 +9,16 @@ const sponsorSchema = new Schema(
 			required: true,
 			lowercase: true,
 		},
-		sponsorid: {
+		legalname: {
 			type: String,
 			trim: true,
 			required: true,
-			unique: true,
-			lowercase: true,
 		},
-		companyname: {
+		dba: {
+			type: String,
+			trim: true,
+		},
+		ein: {
 			type: String,
 			trim: true,
 		},
@@ -54,15 +57,7 @@ const sponsorSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		legalname: {
-			type: String,
-			trim: true,
-		},
-		eid: {
-			type: String,
-			trim: true,
-		},
-		industry: {
+		numlocs: {
 			type: String,
 			trim: true,
 		},
@@ -70,8 +65,34 @@ const sponsorSchema = new Schema(
 			type: String,
 			trim: true,
 		},
+		nummgnt: {
+			type: String,
+			trim: true,
+		},
+		curpayins: {
+			type: Boolean,
+			default: false,
+		},
+		curselffund: {
+			type: Boolean,
+			default: false,
+		},
+		setupcomplete: {
+			type: Boolean,
+			required: true,
+			default: false,
+		},
+		sponsorid: {
+			type: String,
+			trim: true,
+			required: true,
+			unique: true,
+			lowercase: true,
+		},
 	},
 	{ timestamps: true }
 );
+
+sponsorSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Sponsor || mongoose.model('Sponsor', sponsorSchema);

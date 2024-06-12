@@ -4,13 +4,23 @@ import Officebankinfo from '@/models/officebankinfo';
 import Office from '@/models/office';
 import Officesetup from '@/models/officesetup';
 
-export const PUT = async (req) => {
+export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { routingnum, accountnum, ofcid } = body;
+	const { name, ccnum, ccexpmo, ccexpyr, cvv, cczip, ofcid } = body;
+
+	const bankObj = new Officebankinfo({
+		name: name,
+		ccnum: ccnum,
+		ccexpmo: ccexpmo,
+		ccexpyr: ccexpyr,
+		cvv: cvv,
+		cczip: cczip,
+		officeObjId: ofcid,
+	});
 
 	try {
-		await Officebankinfo.findOneAndUpdate({ officeObjId: ofcid }, { routingnum, accountnum }, { new: true });
+		await bankObj.save();
 		await Office.findByIdAndUpdate(ofcid, { setupcomplete: true }, { new: true });
 		await Officesetup.findOneAndDelete({ officeObjId: ofcid });
 		return NextResponse.json({ msg: 'Thank You: Quick Start is now complete!', status: 200 });

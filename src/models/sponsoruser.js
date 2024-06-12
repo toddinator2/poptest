@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+const uniqueValidator = require('mongoose-unique-validator');
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema;
 
@@ -18,6 +19,7 @@ const sponsoruserSchema = new Schema(
 			type: String,
 			trim: true,
 			required: true,
+			unique: true,
 			lowercase: true,
 		},
 		username: {
@@ -98,5 +100,7 @@ const sponsoruserSchema = new Schema(
 	},
 	{ timestamps: true }
 );
+
+sponsoruserSchema.plugin(uniqueValidator);
 
 export default mongoose.models.Sponsoruser || mongoose.model('Sponsoruser', sponsoruserSchema);

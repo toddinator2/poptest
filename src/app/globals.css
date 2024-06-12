@@ -93,6 +93,7 @@ input::-ms-input-placeholder {
 	color: #dee2e6;
 }
 select option {
+	padding: 10px;
 	background-color: rgba(0, 0, 0, 0.95);
 }
 

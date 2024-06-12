@@ -12,7 +12,6 @@ const spnlocationSchema = new Schema(
 		address: {
 			type: String,
 			trim: true,
-			required: true,
 		},
 		address2: {
 			type: String,
@@ -21,22 +20,18 @@ const spnlocationSchema = new Schema(
 		city: {
 			type: String,
 			trim: true,
-			required: true,
 		},
 		state: {
 			type: String,
 			trim: true,
-			required: true,
 		},
 		zip: {
 			type: String,
 			trim: true,
-			required: true,
 		},
 		phone: {
 			type: String,
 			trim: true,
-			required: true,
 		},
 		latitude: {
 			type: String,

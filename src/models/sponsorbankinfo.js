@@ -2,7 +2,7 @@ import mongoose from 'mongoose';
 const { Schema } = mongoose;
 const { ObjectId } = mongoose.Schema;
 
-const officebankinfoSchema = new Schema(
+const sponsorbankinfoSchema = new Schema(
 	{
 		routingnum: {
 			type: String,
@@ -36,13 +36,13 @@ const officebankinfoSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		officeObjId: {
+		sponsorObjId: {
 			type: ObjectId,
-			ref: 'offices',
+			ref: 'sponsors',
 			required: true,
 		},
 	},
 	{ timestamps: true }
 );
 
-export default mongoose.models.Officebankinfo || mongoose.model('Officebankinfo', officebankinfoSchema);
+export default mongoose.models.Sponsorbankinfo || mongoose.model('Sponsorbankinfo', sponsorbankinfoSchema);

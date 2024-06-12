@@ -175,23 +175,34 @@ export function FormatCurrency(value) {
 
 export function FormatCreditCard(value) {
 	if (!value) return value;
-	let cardNum = value.replace(/[^\d]/g, '');
+	let cardNum = value.replace(/[^\d\b]/g, '');
 	const cardNumberLength = cardNum.length;
 	if (cardNumberLength > 16) {
 		cardNum = cardNum.slice(0, 16);
 	}
 
-	if (cardNumberLength < 4) return cardNum;
+	if (cardNumberLength <= 4) return cardNum;
 
-	if (cardNumberLength < 9) {
-		return `${cardNum.slice(0, 4)} ${cardNum.slice(4)}`;
+	if (cardNumberLength >= 5 && cardNumberLength < 9) {
+		const set1 = cardNum.substring(0, 4);
+		const set2 = cardNum.substring(4, 8);
+		return `${set1} ${set2}`;
 	}
 
 	if (cardNumberLength >= 9 && cardNumberLength < 13) {
-		return `${cardNum.slice(0, 4)} ${cardNum.slice(4, 4)} ${cardNum.slice(9)}`;
+		const set1 = cardNum.substring(0, 4);
+		const set2 = cardNum.substring(4, 8);
+		const set3 = cardNum.substring(8, 12);
+		return `${set1} ${set2} ${set3}`;
 	}
 
-	return `${cardNum.slice(0, 4)} ${cardNum.slice(4, 4)} ${cardNum.slice(9, 13)} ${cardNum.slice(13)}`;
+	if (cardNumberLength >= 13) {
+		const set1 = cardNum.substring(0, 4);
+		const set2 = cardNum.substring(4, 8);
+		const set3 = cardNum.substring(8, 12);
+		const set4 = cardNum.substring(12, 16);
+		return `${set1} ${set2} ${set3} ${set4}`;
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////

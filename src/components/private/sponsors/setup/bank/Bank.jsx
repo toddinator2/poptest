@@ -48,7 +48,7 @@ export default function Bank() {
 					return;
 				}
 
-				const response = await fetch(`${process.env.API_URL}/physicians/office/setup/add/bank/ach`, {
+				const response = await fetch(`${process.env.API_URL}/sponsors/setup/add/bank/ach`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -56,19 +56,19 @@ export default function Bank() {
 					body: JSON.stringify({
 						routingnum: routing,
 						accountnum: acctnum,
-						ofcid: auth.user.ofcObjId,
+						spnid: auth.user.spnObjId,
 					}),
 				});
 				data = await response.json();
 
 				if (data.status === 200) {
 					toast.success(data.msg);
-					router.push('/physicians/sphere');
+					router.push('/sponsors/sphere');
 				} else {
 					toast.error(data.msg);
 				}
 			} else {
-				const response = await fetch(`${process.env.API_URL}/physicians/office/setup/add/bank/cc`, {
+				const response = await fetch(`${process.env.API_URL}/sponsors/setup/add/bank/cc`, {
 					method: 'POST',
 					headers: {
 						'Content-Type': 'application/json',
@@ -80,14 +80,14 @@ export default function Bank() {
 						ccexpyr,
 						cvv,
 						cczip,
-						ofcid: auth.user.ofcObjId,
+						spnid: auth.user.spnObjId,
 					}),
 				});
 				data = await response.json();
 
 				if (data.status === 200) {
 					toast.success(data.msg);
-					router.push('/physicians/sphere');
+					router.push('/sponsors/sphere');
 				} else {
 					toast.error(data.msg);
 				}
@@ -249,9 +249,9 @@ export default function Bank() {
 					</div>
 					<div className='mb-3'>
 						Once you have saved your information, your first monthly payment will be charged and you will immediately have access to the Supernova3X
-						software. You can always change and update your method or payment in the Physician Sphere.
+						software. You can always change and update your method or payment in the Sponsor Sphere.
 					</div>
-					<div>Thank you for completing the Quick Start and enjoy your new business and freedom!</div>
+					<div>Thank you for completing the Account Setup process!</div>
 				</div>
 			</div>
 			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto border-4 border-drkppl rounded-2xl order-3'>

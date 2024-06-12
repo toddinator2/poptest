@@ -24,6 +24,7 @@ export const GET = async (request) => {
 				terms: ofc.terms,
 				privacy: ofc.privacy,
 				comm: ofc.comm,
+				bank: ofc.bank,
 			};
 
 			return NextResponse.json({ setup: ofcObj, status: 200 });

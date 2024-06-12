@@ -4,13 +4,19 @@ import Officebankinfo from '@/models/officebankinfo';
 import Office from '@/models/office';
 import Officesetup from '@/models/officesetup';
 
-export const PUT = async (req) => {
+export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { ccnum, ccexpmo, ccexpyr, cvv, cczip, ofcid } = body;
+	const { routingnum, accountnum, ofcid } = body;
+
+	const achObj = new Officebankinfo({
+		routingnum: routingnum,
+		accountnum: accountnum,
+		officeObjId: ofcid,
+	});
 
 	try {
-		await Officebankinfo.findOneAndUpdate({ officeObjId: ofcid }, { ccnum, ccexpmo, ccexpyr, cvv, cczip }, { new: true });
+		await achObj.save();
 		await Office.findByIdAndUpdate(ofcid, { setupcomplete: true }, { new: true });
 		await Officesetup.findOneAndDelete({ officeObjId: ofcid });
 		return NextResponse.json({ msg: 'Thank You: Quick Start is now complete!', status: 200 });

@@ -15,6 +15,7 @@ export default function Authorize() {
 	const { status } = useSession();
 	const [auth, setAuth] = useContext(AuthContext);
 	const [user, setUser] = useState({});
+	const [sucomplete, setSuComplete] = useState(false);
 	const [loading, setLoading] = useState(false);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,13 +24,14 @@ export default function Authorize() {
 	const loadUser = useCallback(async () => {
 		try {
 			setLoading(true);
-			const response = await fetch(`${process.env.API_URL}/sponsors/get/byusername?uname=${svdUname}`, {
+			const response = await fetch(`${process.env.API_URL}/sponsors/users/get/byusername?uname=${svdUname}`, {
 				method: 'GET',
 			});
 			const data = await response.json();
 
 			if (data.status === 200) {
 				setUser(data.sponsor);
+				setSuComplete(data.setupcomplete);
 			} else {
 				setUser({});
 				toast.error(data.msg);
@@ -78,7 +80,7 @@ export default function Authorize() {
 					setAuth({ user: userObj });
 					saveInLocalStorage(lsUserData, userObj);
 
-					if (!user.setupdone) {
+					if (!sucomplete) {
 						router.push('/sponsors/setup');
 					} else {
 						router.push('/sponsors/sphere');

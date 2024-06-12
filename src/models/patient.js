@@ -204,14 +204,16 @@ const patientSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		offices: [
+		officelocations: [
 			{
-				type: Object,
+				type: String,
+				trim: true,
 			},
 		],
 		mainproviderObjId: {
 			type: ObjectId,
 			ref: 'users',
+			required: false,
 		},
 		sponsorObjId: [
 			{

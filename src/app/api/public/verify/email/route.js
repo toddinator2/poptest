@@ -6,7 +6,11 @@ import Preregpat from '@/models/preregpat';
 import Patient from '@/models/patient';
 import Preregspn from '@/models/preregspn';
 import Sponsor from '@/models/sponsor';
+import Spnlocation from '@/models/spnlocation';
 import Sponsoruser from '@/models/sponsoruser';
+import Sponsorsetup from '@/models/sponsorsetup';
+import Sponsorbankinfo from '@/models/sponsorbankinfo';
+import Policyspn from '@/models/policyspn';
 import Preregphys from '@/models/preregphys';
 import Office from '@/models/office';
 import Officelocation from '@/models/officelocation';
@@ -149,6 +153,7 @@ export const POST = async (req) => {
 					//sponsors first
 					let newSpn;
 					let newSpnUser;
+					let newSpnLoc;
 					let spnId = '';
 
 					//Create a Sponsor ID and check if already exists
@@ -183,6 +188,24 @@ export const POST = async (req) => {
 					const newSpnId = svdSpn._id;
 
 					if (newSpnId) {
+						//create the first location
+						newSpnLoc = new Spnlocation({
+							name: 'Headquarters',
+							sponsorObjId: newSpnId,
+						});
+						const svdLoc = await newSpnLoc.save();
+						const newLocId = svdLoc._id;
+
+						//create the setup table
+						await new Sponsorsetup({
+							sponsorObjId: newSpnId,
+						}).save();
+
+						//create bank info table
+						await new Sponsorbankinfo({
+							sponsorObjId: newSpnId,
+						}).save();
+
 						//save to sponsorusers
 						newSpnUser = new Sponsoruser({
 							fname: preSpn.fname,
@@ -199,12 +222,19 @@ export const POST = async (req) => {
 							verifycode: '',
 							emailconfirmed: true,
 							sponsorid: spnId,
+							spnlocationObjId: newLocId,
 							sponsorObjId: newSpnId,
 						});
 						const svdUser = await newSpnUser.save();
 						const newUserId = svdUser._id;
 
 						if (newUserId) {
+							//create policy accept table
+							await new Policyspn({
+								sponsoruserObjId: newUserId,
+								sponsorObjId: newSpnId,
+							}).save();
+
 							await Preregspn.findOneAndDelete({ verifycode: verifycode });
 							return NextResponse.json({ status: 200 });
 						} else {
