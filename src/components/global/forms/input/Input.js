@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Input({ name, label, type, placeholder, id, required, value, readonly, max, setValue, funcCall }) {
+export default function Input({ name, label, type, placeholder, id, required, autocomplete, value, readonly, max, setValue, funcCall }) {
 	return (
 		<>
 			{label && setValue && (
@@ -17,6 +17,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						readOnly={readonly}
 						maxLength={max}
 						required={required}
+						autoComplete={autocomplete}
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
 					/>
@@ -33,6 +34,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						readOnly={readonly}
 						maxLength={max}
 						required={required}
+						autoComplete={autocomplete}
 						value={value}
 						onChange={(e) => setValue(e.target.value)}
 					/>
@@ -52,6 +54,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						readOnly={readonly}
 						maxLength={max}
 						required={required}
+						autoComplete={autocomplete}
 						value={value}
 						onChange={(e) => funcCall(e)}
 					/>
@@ -68,6 +71,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						readOnly={readonly}
 						maxLength={max}
 						required={required}
+						autoComplete={autocomplete}
 						value={value}
 						onChange={(e) => funcCall(e)}
 					/>
@@ -87,6 +91,7 @@ export default function Input({ name, label, type, placeholder, id, required, va
 						readOnly={readonly}
 						maxLength={max}
 						required={required}
+						autoComplete={autocomplete}
 						value={value}
 					/>
 				</div>

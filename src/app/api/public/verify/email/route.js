@@ -9,7 +9,6 @@ import Sponsor from '@/models/sponsor';
 import Spnlocation from '@/models/spnlocation';
 import Sponsoruser from '@/models/sponsoruser';
 import Sponsorsetup from '@/models/sponsorsetup';
-import Sponsorbankinfo from '@/models/sponsorbankinfo';
 import Policyspn from '@/models/policyspn';
 import Preregphys from '@/models/preregphys';
 import Office from '@/models/office';
@@ -198,11 +197,6 @@ export const POST = async (req) => {
 
 						//create the setup table
 						await new Sponsorsetup({
-							sponsorObjId: newSpnId,
-						}).save();
-
-						//create bank info table
-						await new Sponsorbankinfo({
 							sponsorObjId: newSpnId,
 						}).save();
 

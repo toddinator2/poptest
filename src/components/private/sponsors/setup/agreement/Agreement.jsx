@@ -76,7 +76,7 @@ export default function Agreement() {
 							</div>
 						</div>
 						<label className='frmLabel'>Type Name to Sign &amp; Accept</label>
-						<Input type='text' id='sign' required value={sign} setValue={setSign} />
+						<Input type='text' id='sign' required autocomplete='off' value={sign} setValue={setSign} />
 						<div className='my-5 flex justify-center'>
 							<Button type='submit' disabled={!agree || !sign}>
 								Accept Agreement

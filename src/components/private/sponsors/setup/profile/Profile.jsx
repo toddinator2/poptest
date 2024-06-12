@@ -39,6 +39,7 @@ export default function Profile() {
 			if (data.status === 200) {
 				setType(data.sponsor.type);
 				setLegalName(data.sponsor.legalname);
+				setDba(data.sponsor.legalname);
 				setFname(data.sponsor.fname);
 				setLname(data.sponsor.lname);
 				setEmail(data.sponsor.email);
