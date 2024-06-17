@@ -6,7 +6,7 @@ import Subsetup from '@/models/subsetup';
 export const PUT = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { agreement, agreementdate, agreementsign, userid, subObjId } = body;
+	const { agreement, agreementdate, agreementsign, subObjId } = body;
 
 	try {
 		await Subpolicy.findOneAndUpdate({ subObjId: subObjId }, { agreement, agreementdate, agreementsign }, { new: true });

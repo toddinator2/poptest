@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
+import Subscriber from '@/models/subscriber';
 import Subsetup from '@/models/subsetup';
-import Subsumedhist from '@/models/subsumedhist';
 
 export const PUT = async (req) => {
 	await connect();
@@ -9,9 +9,9 @@ export const PUT = async (req) => {
 	const { subid } = body;
 
 	try {
-		await Subsetup.findOneAndUpdate({ subObjId: subid }, { medhist: true }, { new: true });
-		await Subsumedhist.findOneAndDelete({ subObjId: subid });
-		return NextResponse.json({ msg: 'Medical History completed', status: 200 });
+		await Subscriber.findByIdAndUpdate(subid, { setupdone: true }, { new: true });
+		await Subsetup.findOneAndDelete({ subObjId: subid });
+		return NextResponse.json({ msg: 'Account Setup completed', status: 200 });
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
 	}

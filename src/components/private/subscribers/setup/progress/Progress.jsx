@@ -1,5 +1,6 @@
 'use client';
 import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import toast from 'react-hot-toast';
 import Profile from '../profile/Profile';
@@ -13,6 +14,7 @@ const app = new Realm.App({ id: process.env.REALM_ID });
 
 export default function Progress() {
 	const dbName = process.env.REALM_DB;
+	const router = useRouter();
 	const [auth] = useContext(AuthContext);
 	const [profile, setProfile] = useState(false);
 	const [docform, setDocForm] = useState(false);
@@ -21,6 +23,31 @@ export default function Progress() {
 	const [agreement, setAgreement] = useState(false);
 	const [chkdSetup, setChkdSetup] = useState(false);
 	const [page, setPage] = useState('');
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// GENERAL FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const setupDone = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/subscribers/setup/done`, {
+				method: 'PUT',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify({
+					subid: auth.user._id,
+				}),
+			});
+			const data = await response.json();
+
+			if (data.status === '200') {
+				toast.success(data.msg);
+				router.push('/subscribers/sphere');
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [auth]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DATA LOAD FUNCTIONS
@@ -78,6 +105,10 @@ export default function Progress() {
 			if (!agreement) {
 				setPage('agreement');
 				return;
+			}
+
+			if (profile && docform && empform && medhist && agreement) {
+				setupDone();
 			}
 		}
 	}, [chkdSetup, profile, docform, empform, medhist, agreement]);

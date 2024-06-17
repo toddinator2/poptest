@@ -71,6 +71,7 @@ export default function Authorize() {
 						email: user.email,
 						phone: user.phone,
 						photo: user.photo,
+						sex: user.sex,
 						subs3xid: user.subs3xid,
 						permission: user.permission,
 						role: user.role,

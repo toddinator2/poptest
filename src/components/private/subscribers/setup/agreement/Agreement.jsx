@@ -66,8 +66,7 @@ export default function Agreement() {
 					agreement: agree,
 					agreementdate: today,
 					agreementsign: sign,
-					userid: auth.user._id,
-					spnObjId: auth.user.spnObjId,
+					subObjId: auth.user._id,
 				}),
 			});
 			const data = await response.json();
@@ -91,41 +90,46 @@ export default function Agreement() {
 	};
 
 	return (
-		<div className='w-full pb-5 lg:w-5/6 2xl:w-3/4 lg:mx-auto flex flex-col xl:flex-row xl:justify-center gap-3 2xl:gap-6'>
-			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkred rounded-2xl order-2 xl:order-1'>
-				<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkred'>SUBSCRIBER AGREEMENT</div>
-				<div className='w-5/6 mx-auto px-2 py-3 flex justify-center'>Agreement Goes Here</div>
-				<form onSubmit={handleSubmit}>
-					<div className='w-5/6 mx-auto px-2 py-3'>
-						<div className='mb-2 flex flex-row items-center'>
-							<div className='w-1/6 flex justify-end'>
-								<input className='chkBox' type='checkbox' checked={agree} onChange={(e) => handleAccepted(e)} />
+		<>
+			<div className='w-full my-7 font-semibold text-center text-2xl'>Subscriber Agreement</div>
+			<div className='w-full pb-5 lg:w-5/6 2xl:w-3/4 lg:mx-auto flex flex-col xl:flex-row xl:justify-center gap-3 2xl:gap-6'>
+				<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkred rounded-2xl order-2 xl:order-1'>
+					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkred'>SUBSCRIBER AGREEMENT</div>
+					<div className='w-5/6 mx-auto px-2 py-3 flex justify-center'>Agreement Goes Here</div>
+					<form onSubmit={handleSubmit}>
+						<div className='w-5/6 mx-auto px-2 py-3'>
+							<div className='mb-2 flex flex-row items-center'>
+								<div className='w-1/6 flex justify-end'>
+									<input className='chkBox' type='checkbox' checked={agree} onChange={(e) => handleAccepted(e)} />
+								</div>
+								<div className='w-5/6 ps-2'>
+									<div className='text-sm'>I Accept</div>
+								</div>
 							</div>
-							<div className='w-5/6 ps-2'>
-								<div className='text-sm'>I Accept</div>
+							<label className='frmLabel'>Type Name to Sign &amp; Accept</label>
+							<Input type='text' id='sign' required autocomplete='off' value={sign} setValue={setSign} />
+							<div className='my-5 flex justify-center'>
+								<Button type='submit' disabled={!agree || !sign}>
+									Accept Agreement
+								</Button>
 							</div>
 						</div>
-						<label className='frmLabel'>Type Name to Sign &amp; Accept</label>
-						<Input type='text' id='sign' required autocomplete='off' value={sign} setValue={setSign} />
-						<div className='my-5 flex justify-center'>
-							<Button type='submit' disabled={!agree || !sign}>
-								Accept Agreement
-							</Button>
+					</form>
+				</div>
+				<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkblu rounded-2xl order-1 xl:order-2'>
+					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkblu'>DETAILS</div>
+					<div className='w-5/6 mx-auto py-3 flex flex-col'>
+						<div className='mb-3 text-lg font-semibold text-center'>SUBSCRIBER AGREEMENT</div>
+						<div>
+							Please read and check the &quot;I Accept&quot; checkbox and type in your first and last name to accept the Subscriber Agreement.
 						</div>
 					</div>
-				</form>
-			</div>
-			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkblu rounded-2xl order-1 xl:order-2'>
-				<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkblu'>DETAILS</div>
-				<div className='w-5/6 mx-auto py-3 flex flex-col'>
-					<div className='mb-3 text-lg font-semibold text-center'>SUBSCRIBER AGREEMENT</div>
-					<div>Please read and check the &quot;I Accept&quot; checkbox and type in your first and last name to accept the Subscriber Agreement.</div>
+				</div>
+				<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto border-4 border-drkppl rounded-2xl order-3'>
+					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkppl'>SETUP CHECKLIST</div>
+					<Checklist />
 				</div>
 			</div>
-			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto border-4 border-drkppl rounded-2xl order-3'>
-				<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkppl'>SETUP CHECKLIST</div>
-				<Checklist />
-			</div>
-		</div>
+		</>
 	);
 }
