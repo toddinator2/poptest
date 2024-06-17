@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Officeuser from '@/models/officeuser';
+import Ofcuser from '@/models/ofcuser';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const uname = searchParams.get('uname');
 
 	try {
-		const allData = await Officeuser.findOne({ username: uname });
+		const allData = await Ofcuser.findOne({ username: uname });
 		if (allData) {
 			const userObj = {
 				_id: allData._id,
@@ -25,9 +25,9 @@ export const GET = async (request) => {
 				license: allData.license,
 				npi: allData.npi,
 				specialty: allData.specialty,
-				officeid: allData.officeid,
-				locationObjId: allData.locationObjId,
-				officeObjId: allData.officeObjId,
+				ofcs3xid: allData.ofcs3xid,
+				ofclocObjId: allData.ofclocObjId,
+				ofcObjId: allData.ofcObjId,
 			};
 
 			return NextResponse.json({ user: userObj, status: 200 });

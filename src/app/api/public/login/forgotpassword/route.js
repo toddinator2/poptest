@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Sponsoruser from '@/models/sponsoruser';
-import Officeuser from '@/models/officeuser';
+import Subscriber from '@/models/subscriber';
+import Spnuser from '@/models/spnuser';
+import Ofcuser from '@/models/ofcuser';
 import S3xuser from '@/models/s3xuser';
 
 export const PUT = async (req) => {
@@ -23,26 +23,26 @@ export const PUT = async (req) => {
 
 	if (token === authToken) {
 		try {
-			if (type === 'patient') {
-				const user = await Patient.findOne({ email: lwrEmail, username: lwrUname });
+			if (type === 'subscriber') {
+				const user = await Subscriber.findOne({ email: lwrEmail, username: lwrUname });
 				if (user) {
-					await Patient.findOneAndUpdate({ email: lwrEmail, username: lwrUname }, { resetcode: resetcode }, { new: true });
+					await Subscriber.findOneAndUpdate({ email: lwrEmail, username: lwrUname }, { resetcode: resetcode }, { new: true });
 					return NextResponse.json({ status: 200 });
 				} else {
 					return NextResponse.json({ status: 400 });
 				}
 			} else if (type === 'sponsor') {
-				const user = await Sponsoruser.findOne({ email: lwrEmail, username: lwrUname });
+				const user = await Spnuser.findOne({ email: lwrEmail, username: lwrUname });
 				if (user) {
-					await Sponsoruser.findOneAndUpdate({ email: lwrEmail, username: lwrUname }, { resetcode: resetcode }, { new: true });
+					await Spnuser.findOneAndUpdate({ email: lwrEmail, username: lwrUname }, { resetcode: resetcode }, { new: true });
 					return NextResponse.json({ status: 200 });
 				} else {
 					return NextResponse.json({ status: 400 });
 				}
 			} else if (type === 'physician') {
-				const user = await Officeuser.findOne({ email: lwrEmail, username: lwrUname });
+				const user = await Ofcuser.findOne({ email: lwrEmail, username: lwrUname });
 				if (user) {
-					await Officeuser.findOneAndUpdate({ email: lwrEmail, username: lwrUname }, { resetcode: resetcode }, { new: true });
+					await Ofcuser.findOneAndUpdate({ email: lwrEmail, username: lwrUname }, { resetcode: resetcode }, { new: true });
 					return NextResponse.json({ status: 200 });
 				} else {
 					return NextResponse.json({ status: 400 });

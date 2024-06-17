@@ -1,26 +1,13 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subsumedhist from '@/models/subsumedhist';
 import Massage from '@/models/massage';
 
 export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { not, nvr, iwc, may, ned, cur, learnmore, patientObjId } = body;
+	const { not, nvr, iwc, may, ned, cur, learnmore, subObjId } = body;
 
-	//update setup progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.setupprogress !== undefined) {
-		let tmpArr = pt.setupprogress;
-		tmpArr.push('massage');
-		await Patient.findByIdAndUpdate(patientObjId, { setupprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('massage');
-		await Patient.findByIdAndUpdate(patientObjId, { setupprogress: tmpArr }, { new: true });
-	}
-
-	//insert into massages
 	try {
 		const newRec = await new Massage({
 			not,
@@ -30,10 +17,12 @@ export const POST = async (req) => {
 			ned,
 			cur,
 			learnmore,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newRecId = newRec._id;
+
 		if (newRecId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { massage: true }, { new: true });
 			return NextResponse.json({ msg: 'Massage Therapy submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Massage Therapy Error: Please try again', status: 400 });

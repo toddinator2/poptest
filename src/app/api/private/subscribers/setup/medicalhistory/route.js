@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subsumedhist from '@/models/subsumedhist';
 import Medicalhistory from '@/models/medicalhistory';
 
 export const POST = async (req) => {
@@ -47,22 +47,9 @@ export const POST = async (req) => {
 		thy,
 		oth,
 		other,
-		patientObjId,
+		subObjId,
 	} = body;
 
-	//update history progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.historyprogress !== undefined) {
-		let tmpArr = pt.historyprogress;
-		tmpArr.push('medical');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('medical');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	}
-
-	//add to immunizations table
 	try {
 		const newHist = await new Medicalhistory({
 			acr,
@@ -105,10 +92,12 @@ export const POST = async (req) => {
 			thy,
 			oth,
 			other,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newHistId = newHist._id;
+
 		if (newHistId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { medicalhistory: true }, { new: true });
 			return NextResponse.json({ msg: 'Medical History submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Medical History Error: Please try again', status: 400 });

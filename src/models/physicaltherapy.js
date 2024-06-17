@@ -4,7 +4,7 @@ const { ObjectId } = mongoose.Schema;
 
 const physicaltherapySchema = new Schema(
 	{
-		cur: {
+		not: {
 			type: Boolean,
 			default: false,
 		},
@@ -24,11 +24,7 @@ const physicaltherapySchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		knw: {
-			type: Boolean,
-			default: false,
-		},
-		not: {
+		cur: {
 			type: Boolean,
 			default: false,
 		},
@@ -40,9 +36,9 @@ const physicaltherapySchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		patientObjId: {
+		subObjId: {
 			type: ObjectId,
-			ref: 'patients',
+			ref: 'subscribers',
 			required: true,
 		},
 	},

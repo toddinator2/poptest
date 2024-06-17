@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Resource from '@/models/resource';
+import Ofcresource from '@/models/ofcresource';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const locid = searchParams.get('locid');
 
 	try {
-		const rscs = await Resource.find({ locationObjId: locid }).sort({ order: 1 });
+		const rscs = await Ofcresource.find({ ofclocObjId: locid }).sort({ order: 1 });
 		if (rscs) {
 			return NextResponse.json({ rscs: rscs, status: 200 });
 		} else {

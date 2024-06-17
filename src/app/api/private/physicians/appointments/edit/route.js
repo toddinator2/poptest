@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Appointment from '@/models/appointment';
-import Officeuser from '@/models/officeuser';
-import Resource from '@/models/resource';
+import Ofcuser from '@/models/ofcuser';
+import Resource from '@/models/ofcresource';
 
 export const PUT = async (req) => {
 	await connect();
@@ -32,7 +32,7 @@ export const PUT = async (req) => {
 
 	//set people who need to sign visit
 	//get all users for this location
-	const allUsers = await Officeuser.find({ officeObjId: officeObjId });
+	const allUsers = await Ofcuser.find({ officeObjId: officeObjId });
 	let tmpUsers = [];
 	if (allUsers) {
 		for (let i = 0; i < allUsers.length; i++) {

@@ -30,7 +30,7 @@ export default function Chiropractic({ userId }) {
 					ned,
 					cur,
 					learnmore,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

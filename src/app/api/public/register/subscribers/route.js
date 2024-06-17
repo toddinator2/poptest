@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { CreateUsername } from '@/components/global/functions/Functions';
 import connect from '@/utils/dbConnect';
-import Preregpat from '@/models/preregpat';
-import Patient from '@/models/patient';
+import Subprereg from '@/models/subprereg';
+import Subscriber from '@/models/subscriber';
 
 export const POST = async (req) => {
 	await connect();
@@ -22,15 +22,15 @@ export const POST = async (req) => {
 		//Create username
 		for (let i = 0; i <= 1000000; i++) {
 			const newUname = CreateUsername(fname, lname);
-			const unameExistsPrereg = await Preregpat.findOne({ username: newUname });
-			const unameExistsPatient = await Patient.findOne({ username: newUname });
+			const unameExistsPrereg = await Subprereg.findOne({ username: newUname });
+			const unameExistsPatient = await Subscriber.findOne({ username: newUname });
 			if ((!unameExistsPrereg || unameExistsPrereg === null) && (!unameExistsPatient || unameExistsPatient === null)) {
 				uname = newUname.toLowerCase();
 				break;
 			}
 		}
 
-		const newPt = new Preregpat({
+		const newPt = new Subprereg({
 			fname: fname,
 			lname: lname,
 			dob: dob,

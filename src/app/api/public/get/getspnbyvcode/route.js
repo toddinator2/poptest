@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Preregspn from '@/models/preregspn';
+import Spnprereg from '@/models/spnprereg';
 
 export async function GET(request) {
 	await connect();
@@ -11,7 +11,7 @@ export async function GET(request) {
 
 	if (token === authToken) {
 		try {
-			const user = await Preregspn.findOne({ verifycode: vcode });
+			const user = await Spnprereg.findOne({ verifycode: vcode });
 			if (!user || user === null) {
 				return NextResponse.json({ status: 400 });
 			} else {

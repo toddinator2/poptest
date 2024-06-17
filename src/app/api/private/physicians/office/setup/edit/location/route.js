@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Officelocation from '@/models/officelocation';
-import Officesetup from '@/models/officesetup';
+import Ofclocation from '@/models/ofclocation';
+import Ofcsetup from '@/models/ofcsetup';
 
 export const PUT = async (req) => {
 	await connect();
@@ -51,8 +51,8 @@ export const PUT = async (req) => {
 	} = body;
 
 	try {
-		await Officelocation.findOneAndUpdate(
-			{ officeObjId: ofcid },
+		await Ofclocation.findOneAndUpdate(
+			{ ofcObjId: ofcid },
 			{
 				name,
 				address,
@@ -97,7 +97,7 @@ export const PUT = async (req) => {
 			},
 			{ new: true }
 		);
-		await Officesetup.findOneAndUpdate({ officeObjId: ofcid }, { location: true }, { new: true });
+		await Ofcsetup.findOneAndUpdate({ ofcObjId: ofcid }, { location: true }, { new: true });
 
 		return NextResponse.json({ msg: 'Location updated successfully', status: 200 });
 	} catch (err) {

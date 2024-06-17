@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const locid = searchParams.get('locid');
 
 	try {
-		const cats = await Category.find({ locationObjId: locid });
+		const cats = await Category.find({ ofclocObjId: locid });
 		if (cats) {
 			return NextResponse.json({ cats: cats, status: 200 });
 		} else {

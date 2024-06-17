@@ -26,7 +26,7 @@ export default function MenSexual({ userId }) {
 					after,
 					comp,
 					satfy,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

@@ -92,7 +92,7 @@ export default function Last30({ userId }) {
 					swa,
 					urf,
 					vom,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

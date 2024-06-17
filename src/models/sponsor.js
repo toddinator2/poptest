@@ -82,7 +82,7 @@ const sponsorSchema = new Schema(
 			required: true,
 			default: false,
 		},
-		sponsorid: {
+		spns3xid: {
 			type: String,
 			trim: true,
 			required: true,

@@ -57,7 +57,7 @@ const officeSchema = new Schema(
 			type: Boolean,
 			default: false,
 		},
-		officeid: {
+		ofcs3xid: {
 			type: String,
 			trim: true,
 			required: true,

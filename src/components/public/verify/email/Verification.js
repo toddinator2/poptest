@@ -53,7 +53,7 @@ export default function Verification({ type, verifycode }) {
 
 			if (data.status === 200) {
 				toast.success('Verification Successful');
-				if (type === 'patient' || type === 'newpatient') {
+				if (type === 'subscriber' || type === 'newsubscriber') {
 					router.push('/subscribers/login');
 				}
 				if (type === 'sponsor') {

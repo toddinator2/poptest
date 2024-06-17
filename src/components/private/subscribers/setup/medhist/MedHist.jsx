@@ -1,5 +1,6 @@
 'use client';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import toast from 'react-hot-toast';
 import Checklist from '../checklist/Checklist';
 import General from './general/General';
@@ -35,8 +36,46 @@ import Massage from './massage/Massage';
 import PhysicalTherapy from './physicaltherapy/PhysicalTherapy';
 import Important from './important/Important';
 
-export default function MedHist({ user }) {
-	//Edit Divs
+import * as Realm from 'realm-web';
+const app = new Realm.App({ id: process.env.REALM_ID });
+
+export default function MedHist() {
+	const dbName = process.env.REALM_DB;
+	const [auth] = useContext(AuthContext);
+	const [general, setGeneral] = useState(false);
+	const [emergency, setEmergency] = useState(false);
+	const [pharmacy, setPharmacy] = useState(false);
+	const [medications, setMedications] = useState(false);
+	const [immunizations, setImmunizations] = useState(false);
+	const [medhistory, setMedHistory] = useState(false);
+	const [procedures, setProcedures] = useState(false);
+	const [social, setSocial] = useState(false);
+	const [famhistory, setFamHistory] = useState(false);
+	const [last30, setLast30] = useState(false);
+	const [wmnhealth, setWmnHealth] = useState(false);
+	const [wmnobgyn, setWmnObgyn] = useState(false);
+	const [wmnprevent, setWmnPrevent] = useState(false);
+	const [wmnsexual, setWmnSexual] = useState(false);
+	const [wmnmenopause, setWmnMenopause] = useState(false);
+	const [wmnhormone, setWmnHormone] = useState(false);
+	const [menhealth, setMenHealth] = useState(false);
+	const [menprevent, setMenPrevent] = useState(false);
+	const [menurinary, setMenUrinary] = useState(false);
+	const [mensexual, setMenSexual] = useState(false);
+	const [mentestosterone, setMenTestosterone] = useState(false);
+	const [physicalfitness, setPhysicalFitness] = useState(false);
+	const [algmeds, setAlgMeds] = useState(false);
+	const [algfoods, setAlgFoods] = useState(false);
+	const [algenv, setAlgEnv] = useState(false);
+	const [algsymptoms, setAlgSymptoms] = useState(false);
+	const [algcurmeds, setAlgCurMeds] = useState(false);
+	const [behavioral, setBehavioral] = useState(false);
+	const [chiropractic, setChiropractic] = useState(false);
+	const [massage, setMassage] = useState(false);
+	const [physicaltherapy, setPhysicalTherapy] = useState(false);
+	const [important, setImportant] = useState(false);
+
+	//Show Divs
 	const [shwGeneral, setShwGeneral] = useState(false);
 	const [shwEmergency, setShwEmergency] = useState(false);
 	const [shwPharmacy, setShwPharmacy] = useState(false);
@@ -69,49 +108,20 @@ export default function MedHist({ user }) {
 	const [shwMassage, setShwMassage] = useState(false);
 	const [shwPhysicalTherapy, setShwPhysicalTherapy] = useState(false);
 	const [shwImportant, setShwImportant] = useState(false);
-	//Done Data
-	const [doneGeneral, setDoneGeneral] = useState(false);
-	const [doneEmergency, setDoneEmergency] = useState(false);
-	const [donePharmacy, setDonePharmacy] = useState(false);
-	const [doneMeds, setDoneMeds] = useState(false);
-	const [doneImmune, setDoneImmune] = useState(false);
-	const [doneMedical, setDoneMedical] = useState(false);
-	const [doneProcedures, setDoneProcedures] = useState(false);
-	const [doneSocial, setDoneSocial] = useState(false);
-	const [doneFamily, setDoneFamily] = useState(false);
-	const [doneLast30, setDoneLast30] = useState(false);
-	const [doneWomen, setDoneWomen] = useState(false);
-	const [doneObgyn, setDoneObgyn] = useState(false);
-	const [doneWmnPrevent, setDoneWmnPrevent] = useState(false);
-	const [doneWmnSex, setDoneWmnSex] = useState(false);
-	const [doneWmnMen, setDoneWmnMen] = useState(false);
-	const [doneWmnHrt, setDoneWmnHrt] = useState(false);
-	const [doneMen, setDoneMen] = useState(false);
-	const [doneMenPrevent, setDoneMenPrevent] = useState(false);
-	const [doneMenUrinary, setDoneMenUrinary] = useState(false);
-	const [doneMenSex, setDoneMenSex] = useState(false);
-	const [doneMenTrt, setDoneMenTrt] = useState(false);
-	const [doneFitness, setDoneFitness] = useState(false);
-	const [doneAlgMeds, setDoneAlgMeds] = useState(false);
-	const [doneAlgFood, setDoneAlgFood] = useState(false);
-	const [doneAlgEnv, setDoneAlgEnv] = useState(false);
-	const [doneAlgSym, setDoneAlgSym] = useState(false);
-	const [doneAlgCurMed, setDoneAlgCurMed] = useState(false);
-	const [doneBehavioral, setDoneBehavioral] = useState(false);
-	const [doneChiropractic, setDoneChiropractic] = useState(false);
-	const [doneMassage, setDoneMassage] = useState(false);
-	const [donePhysicalTherapy, setDonePhysicalTherapy] = useState(false);
-	const [doneImportant, setDoneImportant] = useState(false);
+	const [chkdMedHist, setChkdMedHist] = useState(false);
 
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// GENERAL FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	const historyDone = useCallback(async () => {
 		try {
-			const response = await fetch(`${process.env.API_URL_PUB}/subscribers/setup/medhistdone`, {
+			const response = await fetch(`${process.env.API_URL}/subscribers/setup/medhistdone`, {
 				method: 'PUT',
 				headers: {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					ptId: user._id,
+					subid: auth.user._id,
 				}),
 			});
 			const data = await response.json();
@@ -122,193 +132,161 @@ export default function MedHist({ user }) {
 		} catch (err) {
 			toast.error(err);
 		}
-	}, [user]);
+	}, [auth]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// SET PROGRESS
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadMedHist = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/subscribers/setup/progress/medhist?subid=${auth.user._id}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setGeneral(data.medhist.general);
+				setEmergency(data.medhist.emergency);
+				setPharmacy(data.medhist.pharmacy);
+				setMedications(data.medhist.medications);
+				setImmunizations(data.medhist.immunizations);
+				setMedHistory(data.medhist.medicalhistory);
+				setProcedures(data.medhist.procedures);
+				setSocial(data.medhist.social);
+				setFamHistory(data.medhist.familyhistory);
+				setLast30(data.medhist.last30);
+				setWmnHealth(data.medhist.wmnhealth);
+				setWmnObgyn(data.medhist.wmnobgyn);
+				setWmnPrevent(data.medhist.wmnprevent);
+				setWmnSexual(data.medhist.wmnsexual);
+				setWmnMenopause(data.medhist.wmnmenopause);
+				setWmnHormone(data.medhist.wmnhormone);
+				setMenHealth(data.medhist.menhealth);
+				setMenPrevent(data.medhist.menprevent);
+				setMenUrinary(data.medhist.menurinary);
+				setMenSexual(data.medhist.mensexual);
+				setMenTestosterone(data.medhist.mentestosterone);
+				setPhysicalFitness(data.medhist.physicalfitness);
+				setAlgMeds(data.medhist.algmeds);
+				setAlgFoods(data.medhist.algfoods);
+				setAlgEnv(data.medhist.algenv);
+				setAlgSymptoms(data.medhist.algsymptoms);
+				setAlgCurMeds(data.medhist.algcurmeds);
+				setBehavioral(data.medhist.behavioral);
+				setChiropractic(data.medhist.chiropractic);
+				setMassage(data.medhist.massage);
+				setPhysicalTherapy(data.medhist.physicaltherapy);
+				setImportant(data.medhist.important);
+				setChkdMedHist(true);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (user !== undefined) {
-			if (Object.keys(user).length !== 0) {
-				if (user.historyprogress.length === 0 || user.historyprogress === undefined) {
-					setDoneGeneral(false);
-				} else {
-					for (let i = 0; i < user.historyprogress.length; i++) {
-						const hist = user.historyprogress[i];
-						if (hist === 'general') {
-							setDoneGeneral(true);
-						}
-						if (hist === 'emergency') {
-							setDoneEmergency(true);
-						}
-						if (hist === 'pharmacy') {
-							setDonePharmacy(true);
-						}
-						if (hist === 'medications') {
-							setDoneMeds(true);
-						}
-						if (hist === 'immune') {
-							setDoneImmune(true);
-						}
-						if (hist === 'medical') {
-							setDoneMedical(true);
-						}
-						if (hist === 'procedures') {
-							setDoneProcedures(true);
-						}
-						if (hist === 'social') {
-							setDoneSocial(true);
-						}
-						if (hist === 'family') {
-							setDoneFamily(true);
-						}
-						if (hist === 'last30') {
-							setDoneLast30(true);
-						}
-						if (hist === 'women') {
-							setDoneWomen(true);
-						}
-						if (hist === 'obgyn') {
-							setDoneObgyn(true);
-						}
-						if (hist === 'wmnprevent') {
-							setDoneWmnPrevent(true);
-						}
-						if (hist === 'wmnsex') {
-							setDoneWmnSex(true);
-						}
-						if (hist === 'wmnmen') {
-							setDoneWmnMen(true);
-						}
-						if (hist === 'wmnhrt') {
-							setDoneWmnHrt(true);
-						}
-						if (hist === 'men') {
-							setDoneMen(true);
-						}
-						if (hist === 'menprevent') {
-							setDoneMenPrevent(true);
-						}
-						if (hist === 'menurinary') {
-							setDoneMenUrinary(true);
-						}
-						if (hist === 'mensex') {
-							setDoneMenSex(true);
-						}
-						if (hist === 'mentrt') {
-							setDoneMenTrt(true);
-						}
-						if (hist === 'fitness') {
-							setDoneFitness(true);
-						}
-						if (hist === 'algmeds') {
-							setDoneAlgMeds(true);
-						}
-						if (hist === 'algfood') {
-							setDoneAlgFood(true);
-						}
-						if (hist === 'algenv') {
-							setDoneAlgEnv(true);
-						}
-						if (hist === 'algsym') {
-							setDoneAlgSym(true);
-						}
-						if (hist === 'algcurmed') {
-							setDoneAlgCurMed(true);
-						}
-						if (hist === 'behavioral') {
-							setDoneBehavioral(true);
-						}
-						if (hist === 'chiropractic') {
-							setDoneChiropractic(true);
-						}
-						if (hist === 'massage') {
-							setDoneMassage(true);
-						}
-						if (hist === 'physicaltherapy') {
-							setDonePhysicalTherapy(true);
-						}
-						if (hist === 'important') {
-							setDoneImportant(true);
-						}
-					}
+		loadMedHist();
+	}, [loadMedHist]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHANGE STREAM WATCHES
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		const wchHistory = async () => {
+			await app.logIn(Realm.Credentials.anonymous());
+
+			// Connect to the database
+			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
+			const hist = mongodb.db(dbName).collection('subsumedhists');
+
+			for await (const change of hist.watch()) {
+				if (change.operationType === 'update') {
+					loadMedHist();
 				}
 			}
-		}
-	}, [user]);
+		};
+		wchHistory();
+	}, [dbName, loadMedHist]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CHECK PROGRESS
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (
-			doneGeneral &&
-			doneEmergency &&
-			donePharmacy &&
-			doneMeds &&
-			doneImmune &&
-			doneMedical &&
-			doneProcedures &&
-			doneSocial &&
-			doneFamily &&
-			doneLast30 &&
-			doneFitness &&
-			doneAlgMeds &&
-			doneAlgFood &&
-			doneAlgEnv &&
-			doneAlgSym &&
-			doneAlgCurMed &&
-			doneBehavioral &&
-			doneChiropractic &&
-			doneMassage &&
-			donePhysicalTherapy &&
-			doneImportant
-		) {
-			if (user.sex === 'f') {
-				if (doneWomen && doneObgyn && doneWmnPrevent && doneWmnSex && doneWmnMen && doneWmnHrt) {
-					historyDone();
+		if (chkdMedHist) {
+			if (
+				general &&
+				emergency &&
+				pharmacy &&
+				medications &&
+				immunizations &&
+				medhistory &&
+				procedures &&
+				social &&
+				famhistory &&
+				last30 &&
+				physicalfitness &&
+				algmeds &&
+				algfoods &&
+				algenv &&
+				algsymptoms &&
+				algcurmeds &&
+				behavioral &&
+				chiropractic &&
+				massage &&
+				physicaltherapy &&
+				important
+			) {
+				if (auth.user.sex === 'f') {
+					if (wmnhealth && wmnobgyn && wmnprevent && wmnsexual && wmnmenopause && wmnhormone) {
+						historyDone();
+					}
 				}
-			}
-			if (user.sex === 'm') {
-				if (doneMen && doneMenPrevent && doneMenUrinary && doneMenSex && doneMenTrt) {
-					historyDone();
+				if (auth.user.sex === 'm') {
+					if (menhealth && menprevent && menurinary && mensexual && mentestosterone) {
+						historyDone();
+					}
 				}
 			}
 		}
 	}, [
-		user,
-		doneGeneral,
-		doneEmergency,
-		donePharmacy,
-		doneMeds,
-		doneImmune,
-		doneMedical,
-		doneProcedures,
-		doneSocial,
-		doneFamily,
-		doneLast30,
-		doneWomen,
-		doneObgyn,
-		doneWmnPrevent,
-		doneWmnSex,
-		doneWmnMen,
-		doneWmnHrt,
-		doneMen,
-		doneMenPrevent,
-		doneMenUrinary,
-		doneMenSex,
-		doneMenTrt,
-		doneFitness,
-		doneAlgMeds,
-		doneAlgFood,
-		doneAlgEnv,
-		doneAlgSym,
-		doneAlgCurMed,
-		doneBehavioral,
-		doneChiropractic,
-		doneMassage,
-		donePhysicalTherapy,
-		doneImportant,
+		auth,
+		general,
+		emergency,
+		pharmacy,
+		medications,
+		immunizations,
+		medhistory,
+		procedures,
+		social,
+		famhistory,
+		last30,
+		wmnhealth,
+		wmnobgyn,
+		wmnprevent,
+		wmnsexual,
+		wmnmenopause,
+		wmnhormone,
+		menhealth,
+		menprevent,
+		menurinary,
+		mensexual,
+		mentestosterone,
+		physicalfitness,
+		algmeds,
+		algfoods,
+		algenv,
+		algsymptoms,
+		algcurmeds,
+		behavioral,
+		chiropractic,
+		massage,
+		physicaltherapy,
+		important,
 		historyDone,
 	]);
 
@@ -1413,7 +1391,7 @@ export default function MedHist({ user }) {
 				<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkred rounded-2xl order-2 xl:order-1'>
 					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkred'>MEDICAL HISTORY</div>
 					<div className='w-full sm:w-5/6 mx-auto px-2 py-3 flex flex-col'>
-						{doneGeneral ? (
+						{general ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>General Information</div>
 						) : (
 							<>
@@ -1422,12 +1400,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwGeneral && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<General userId={user._id} />
+										<General userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneEmergency ? (
+						{emergency ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Emergency Contact</div>
 						) : (
 							<>
@@ -1436,12 +1414,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwEmergency && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Emergency userId={user._id} />
+										<Emergency userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{donePharmacy ? (
+						{pharmacy ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Pharmacy</div>
 						) : (
 							<>
@@ -1450,12 +1428,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwPharmacy && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Pharmacy userId={user._id} />
+										<Pharmacy userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneMeds ? (
+						{medications ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Medications</div>
 						) : (
 							<>
@@ -1464,12 +1442,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwMeds && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Medications userId={user._id} />
+										<Medications userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneImmune ? (
+						{immunizations ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Immunizations</div>
 						) : (
 							<>
@@ -1478,12 +1456,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwImmunizations && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Immunizations userId={user._id} />
+										<Immunizations userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneMedical ? (
+						{medhistory ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Medical History</div>
 						) : (
 							<>
@@ -1492,12 +1470,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwMedical && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<MedicalHistory userId={user._id} />
+										<MedicalHistory userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneProcedures ? (
+						{procedures ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Past Medical Procedures</div>
 						) : (
 							<>
@@ -1506,12 +1484,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwProcedures && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Procedures userId={user._id} />
+										<Procedures userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneSocial ? (
+						{social ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Social History</div>
 						) : (
 							<>
@@ -1520,12 +1498,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwSocial && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Social userId={user._id} />
+										<Social userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneFamily ? (
+						{famhistory ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Family History</div>
 						) : (
 							<>
@@ -1534,12 +1512,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwFamily && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<FamilyHistory userId={user._id} />
+										<FamilyHistory userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneLast30 ? (
+						{last30 ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Last 30 Days</div>
 						) : (
 							<>
@@ -1548,14 +1526,14 @@ export default function MedHist({ user }) {
 								</div>
 								{shwLast30 && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Last30 userId={user._id} />
+										<Last30 userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{user.sex === 'f' ? (
+						{auth.user.sex === 'f' ? (
 							<>
-								{doneWomen ? (
+								{wmnhealth ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Women&apos;s Health</div>
 								) : (
 									<>
@@ -1564,12 +1542,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwWomen && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<Women userId={user._id} />
+												<Women userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneObgyn ? (
+								{wmnobgyn ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Gynecologic History</div>
 								) : (
 									<>
@@ -1578,12 +1556,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwObgyn && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<Obgyn userId={user._id} />
+												<Obgyn userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneWmnPrevent ? (
+								{wmnprevent ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Preventative Care</div>
 								) : (
 									<>
@@ -1592,12 +1570,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwWmnPrevent && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<WmnPrevent userId={user._id} />
+												<WmnPrevent userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneWmnMen ? (
+								{wmnmenopause ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Menopause</div>
 								) : (
 									<>
@@ -1606,12 +1584,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwWmnMen && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<Menopause userId={user._id} />
+												<Menopause userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneWmnSex ? (
+								{wmnsexual ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Sexual Function</div>
 								) : (
 									<>
@@ -1620,12 +1598,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwWmnSex && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<WmnSexual userId={user._id} />
+												<WmnSexual userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneWmnHrt ? (
+								{wmnhormone ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Hormone Replacement Therapy</div>
 								) : (
 									<>
@@ -1634,7 +1612,7 @@ export default function MedHist({ user }) {
 										</div>
 										{shwWmnHrt && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<Hormone userId={user._id} />
+												<Hormone userId={auth.user._id} />
 											</div>
 										)}
 									</>
@@ -1642,7 +1620,7 @@ export default function MedHist({ user }) {
 							</>
 						) : (
 							<>
-								{doneMen ? (
+								{menhealth ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Men&apos;s Health</div>
 								) : (
 									<>
@@ -1651,12 +1629,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwMen && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<Men userId={user._id} />
+												<Men userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneMenPrevent ? (
+								{menprevent ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Preventative Care</div>
 								) : (
 									<>
@@ -1665,12 +1643,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwMenPrevent && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<MenPrevent userId={user._id} />
+												<MenPrevent userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneMenUrinary ? (
+								{menurinary ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Urinary Function</div>
 								) : (
 									<>
@@ -1679,12 +1657,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwMenUrinary && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<MenUrinary userId={user._id} />
+												<MenUrinary userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneMenSex ? (
+								{mensexual ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Sexual Function</div>
 								) : (
 									<>
@@ -1693,12 +1671,12 @@ export default function MedHist({ user }) {
 										</div>
 										{shwMenSexual && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<MenSexual userId={user._id} />
+												<MenSexual userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
-								{doneMenTrt ? (
+								{mentestosterone ? (
 									<div className='mb-1 font-medium text-sm text-lgtred'>Testosterone Replacement Therapy</div>
 								) : (
 									<>
@@ -1707,14 +1685,14 @@ export default function MedHist({ user }) {
 										</div>
 										{shwMenTrt && (
 											<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-												<Testosterone userId={user._id} />
+												<Testosterone userId={auth.user._id} />
 											</div>
 										)}
 									</>
 								)}
 							</>
 						)}
-						{doneFitness ? (
+						{physicalfitness ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Physical Fitness</div>
 						) : (
 							<>
@@ -1723,12 +1701,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwFitness && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Fitness userId={user._id} />
+										<Fitness userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneAlgMeds ? (
+						{algmeds ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Allergies &ndash; Medications</div>
 						) : (
 							<>
@@ -1737,12 +1715,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwAlgMeds && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<AlgMeds userId={user._id} />
+										<AlgMeds userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneAlgFood ? (
+						{algfoods ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Allergies &ndash; Food</div>
 						) : (
 							<>
@@ -1751,12 +1729,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwAlgFood && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<AlgFood userId={user._id} />
+										<AlgFood userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneAlgEnv ? (
+						{algenv ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Allergies &ndash; Environment</div>
 						) : (
 							<>
@@ -1765,12 +1743,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwAlgEnv && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<AlgEnv userId={user._id} />
+										<AlgEnv userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneAlgSym ? (
+						{algsymptoms ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Allergies &ndash; Current Symptoms</div>
 						) : (
 							<>
@@ -1779,12 +1757,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwAlgSym && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<AlgSymptoms userId={user._id} />
+										<AlgSymptoms userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneAlgCurMed ? (
+						{algcurmeds ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Allergies &ndash; Current Medications</div>
 						) : (
 							<>
@@ -1793,12 +1771,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwAlgCurMed && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<AlgCurMeds userId={user._id} />
+										<AlgCurMeds userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneBehavioral ? (
+						{behavioral ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Behavioral Therapy</div>
 						) : (
 							<>
@@ -1807,12 +1785,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwBehavioral && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Behavioral userId={user._id} />
+										<Behavioral userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneChiropractic ? (
+						{chiropractic ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Chiropractic Therapy</div>
 						) : (
 							<>
@@ -1821,12 +1799,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwChiropractic && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Chiropractic userId={user._id} />
+										<Chiropractic userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneMassage ? (
+						{massage ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Massage Therapy</div>
 						) : (
 							<>
@@ -1835,12 +1813,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwMassage && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Massage userId={user._id} />
+										<Massage userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{donePhysicalTherapy ? (
+						{physicaltherapy ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Physical Therapy</div>
 						) : (
 							<>
@@ -1849,12 +1827,12 @@ export default function MedHist({ user }) {
 								</div>
 								{shwPhysicalTherapy && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<PhysicalTherapy userId={user._id} />
+										<PhysicalTherapy userId={auth.user._id} />
 									</div>
 								)}
 							</>
 						)}
-						{doneImportant ? (
+						{important ? (
 							<div className='mb-1 font-medium text-sm text-lgtred'>Important To You</div>
 						) : (
 							<>
@@ -1863,7 +1841,7 @@ export default function MedHist({ user }) {
 								</div>
 								{shwImportant && (
 									<div className='w-full mb-7 p-3 border-2 border-drkgry rounded-2xl'>
-										<Important userId={user._id} />
+										<Important userId={auth.user._id} />
 									</div>
 								)}
 							</>
@@ -1890,7 +1868,7 @@ export default function MedHist({ user }) {
 				</div>
 				<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto border-4 border-drkppl rounded-2xl order-3'>
 					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkppl'>SETUP CHECKLIST</div>
-					<Checklist progress={user.setupprogress} />
+					<Checklist />
 				</div>
 			</div>
 		</>

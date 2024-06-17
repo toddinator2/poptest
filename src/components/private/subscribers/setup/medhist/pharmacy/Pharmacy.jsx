@@ -34,7 +34,7 @@ export default function Pharmacy({ userId }) {
 					onlpharmphone,
 					onlpharmfax,
 					onlpharmaddress,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

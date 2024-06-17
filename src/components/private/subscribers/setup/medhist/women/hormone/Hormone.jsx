@@ -28,7 +28,7 @@ export default function Hormone({ userId }) {
 					int,
 					cur,
 					learnmore,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

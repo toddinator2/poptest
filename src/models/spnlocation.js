@@ -41,7 +41,7 @@ const spnlocationSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		sponsorObjId: {
+		spnObjId: {
 			type: ObjectId,
 			ref: 'sponsors',
 			required: true,

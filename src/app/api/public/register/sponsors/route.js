@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { CreateUsername } from '@/components/global/functions/Functions';
 import connect from '@/utils/dbConnect';
-import Preregspn from '@/models/preregspn';
-import Sponsoruser from '@/models/sponsoruser';
+import Spnprereg from '@/models/spnprereg';
+import Spnuser from '@/models/spnuser';
 
 export const POST = async (req) => {
 	await connect();
@@ -22,15 +22,15 @@ export const POST = async (req) => {
 		//Create username
 		for (let i = 0; i <= 1000000; i++) {
 			const newUname = CreateUsername(fname, lname);
-			const unameExistsPrereg = await Preregspn.findOne({ username: newUname });
-			const unameExistsSponsor = await Sponsoruser.findOne({ username: newUname });
+			const unameExistsPrereg = await Spnprereg.findOne({ username: newUname });
+			const unameExistsSponsor = await Spnuser.findOne({ username: newUname });
 			if ((!unameExistsPrereg || unameExistsPrereg === null) && (!unameExistsSponsor || unameExistsSponsor === null)) {
 				uname = newUname.toLowerCase();
 				break;
 			}
 		}
 
-		const newSpn = new Preregspn({
+		const newSpn = new Spnprereg({
 			fname: fname,
 			lname: lname,
 			company: company,

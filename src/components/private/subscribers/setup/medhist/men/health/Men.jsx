@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import Button from '@/components/global/forms/buttons/Button';
 
-export default function Men() {
+export default function Men({ userId }) {
 	const [erd, setErd] = useState(false);
 	const [sex, setSex] = useState(false);
 	const [mus, setMus] = useState(false);
@@ -28,7 +28,7 @@ export default function Men() {
 					nun,
 					tst,
 					exc,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

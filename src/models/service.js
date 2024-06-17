@@ -23,12 +23,12 @@ const serviceSchema = new Schema(
 			ref: 'categories',
 			required: true,
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 			required: true,
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 			required: true,

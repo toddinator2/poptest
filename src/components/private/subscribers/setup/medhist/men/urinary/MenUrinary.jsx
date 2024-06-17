@@ -32,7 +32,7 @@ export default function MenUrinary({ userId }) {
 					push,
 					nite,
 					life,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

@@ -66,7 +66,7 @@ export default function FamilyHistory({ userId }) {
 					thy,
 					oth,
 					other,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

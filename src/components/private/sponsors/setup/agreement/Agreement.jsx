@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { Today } from '@/components/global/functions/Functions';
 import toast from 'react-hot-toast';
@@ -9,8 +9,38 @@ import Checklist from '../checklist/Checklist';
 export default function Agreement() {
 	const today = Today();
 	const [auth] = useContext(AuthContext);
+	const [fname, setFname] = useState('');
+	const [lname, setLname] = useState('');
 	const [agree, setAgree] = useState(false);
 	const [sign, setSign] = useState('');
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// DATA LOAD FUNCTIONS
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	const loadUser = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/sponsors/users/get/byid?id=${auth.user._id}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setFname(data.user.fname);
+				setLname(data.user.lname);
+			} else {
+				toast.error(data.msg);
+			}
+		} catch (err) {
+			toast.error(err);
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		loadUser();
+	}, [loadUser]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// FORM FUNCTIONS
@@ -19,7 +49,7 @@ export default function Agreement() {
 		e.preventDefault();
 
 		//test typed name
-		if (sign.toLowerCase() !== (auth.user.fname + ' ' + auth.user.lname).toLowerCase()) {
+		if (sign.toLowerCase() !== (fname + ' ' + lname).toLowerCase()) {
 			toast.error('Typed name yours is not, try again you must...');
 			setSign('');
 			document.getElementById('sign').focus();

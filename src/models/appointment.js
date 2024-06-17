@@ -182,27 +182,27 @@ const appointmentSchema = new Schema(
 				required: true,
 			},
 		],
-		categoryObjId: {
+		catObjId: {
 			type: ObjectId,
 			ref: 'categories',
 			required: true,
 		},
-		serviceObjId: {
+		svcObjId: {
 			type: ObjectId,
 			ref: 'services',
 			required: true,
 		},
-		patientObjId: {
+		subObjId: {
 			type: ObjectId,
-			ref: 'patients',
+			ref: 'subscribers',
 			required: true,
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 			required: true,
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 			required: true,

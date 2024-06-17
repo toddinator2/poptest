@@ -37,7 +37,7 @@ export default function AlgMeds({ userId }) {
 					udd,
 					oth,
 					other,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

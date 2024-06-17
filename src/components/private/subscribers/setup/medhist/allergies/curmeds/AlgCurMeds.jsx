@@ -30,7 +30,7 @@ export default function AlgCurMeds({ userId }) {
 					nas,
 					orl,
 					learnmore,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Officeuser from '@/models/officeuser';
+import Ofcuser from '@/models/ofcuser';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,8 +8,8 @@ export const GET = async (request) => {
 	const _id = searchParams.get('id');
 
 	try {
-		const phy = await Officeuser.findById(_id).select(
-			'-username -password -resetcreds -resetcode -permission -role -verifycode -emailconfirmed -officeid -locationObjId -officeObjId'
+		const phy = await Ofcuser.findById(_id).select(
+			'-username -password -resetcreds -resetcode -permission -role -verifycode -emailconfirmed -ofcs3xid -ofclocObjId -ofcObjId'
 		);
 		if (phy) {
 			return NextResponse.json({ phy: phy, status: 200 });

@@ -1,28 +1,15 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Women from '@/models/women';
+import Subsumedhist from '@/models/subsumedhist';
+import Wmnhealth from '@/models/wmnhealth';
 
 export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { bhc, dgp, fhr, hot, irr, lsx, nun, patientObjId } = body;
+	const { bhc, dgp, fhr, hot, irr, lsx, nun, subObjId } = body;
 
-	//update history progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.historyprogress !== undefined) {
-		let tmpArr = pt.historyprogress;
-		tmpArr.push('women');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('women');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	}
-
-	//add to women table
 	try {
-		const newWomen = await new Women({
+		const newWomen = await new Wmnhealth({
 			bhc,
 			dgp,
 			fhr,
@@ -30,10 +17,12 @@ export const POST = async (req) => {
 			irr,
 			lsx,
 			nun,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newWomenId = newWomen._id;
+
 		if (newWomenId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { wmnhealth: true }, { new: true });
 			return NextResponse.json({ msg: 'Womens Health submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Womens Health Error: Please try again', status: 400 });

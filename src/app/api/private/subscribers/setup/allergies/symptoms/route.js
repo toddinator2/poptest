@@ -1,26 +1,13 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subsumedhist from '@/models/subsumedhist';
 import Algsymptom from '@/models/algsymptom';
 
 export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { any, cou, dbr, ecz, ein, eit, eyg, eyi, eyw, fre, hed, hiv, nit, nru, nst, sin, spr, spa, snz, whz, patientObjId } = body;
+	const { any, cou, dbr, ecz, ein, eit, eyg, eyi, eyw, fre, hed, hiv, nit, nru, nst, sin, spr, spa, snz, whz, subObjId } = body;
 
-	//update setup progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.setupprogress !== undefined) {
-		let tmpArr = pt.setupprogress;
-		tmpArr.push('algsym');
-		await Patient.findByIdAndUpdate(patientObjId, { setupprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('algsym');
-		await Patient.findByIdAndUpdate(patientObjId, { setupprogress: tmpArr }, { new: true });
-	}
-
-	//insert into algsymptoms
 	try {
 		const newRec = await new Algsymptom({
 			any,
@@ -43,10 +30,12 @@ export const POST = async (req) => {
 			spa,
 			snz,
 			whz,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newRecId = newRec._id;
+
 		if (newRecId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { algsymptoms: true }, { new: true });
 			return NextResponse.json({ msg: 'Current Allergy Symptoms submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Current Allergy Symptoms Error: Please try again', status: 400 });

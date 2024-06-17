@@ -56,7 +56,7 @@ export default function AlgSymptoms({ userId }) {
 					spa,
 					snz,
 					whz,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

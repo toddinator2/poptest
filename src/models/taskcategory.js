@@ -19,13 +19,13 @@ const taskcategorySchema = new Schema(
 			trim: true,
 			required: true,
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 		},
 	},
 	{ timestamps: true }

@@ -41,7 +41,7 @@ export default function AlgFood({ userId }) {
 					whe,
 					oth,
 					other,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

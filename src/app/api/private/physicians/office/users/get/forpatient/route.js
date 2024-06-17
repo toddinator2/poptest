@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Office from '@/models/office';
-import Officeuser from '@/models/officeuser';
+import Ofcuser from '@/models/ofcuser';
 
 export const GET = async (request) => {
 	await connect();
@@ -16,7 +16,7 @@ export const GET = async (request) => {
 			ofcName = ofcData.name;
 		}
 
-		const allData = await Officeuser.findOne({ officeObjId: ofcObjId, title: title });
+		const allData = await Ofcuser.findOne({ ofcObjId: ofcObjId, title: title });
 		if (allData) {
 			const userObj = {
 				fname: allData.fname,

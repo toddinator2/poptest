@@ -6,32 +6,40 @@ import Profile from '../profile/Profile';
 import DocForm from '../docform/DocForm';
 import EmpForm from '../empform/EmpForm';
 import MedHist from '../medhist/MedHist';
-/*
-import Policies from '../policies/Policies';
-*/
+import Agreement from '../agreement/Agreement';
+
 import * as Realm from 'realm-web';
 const app = new Realm.App({ id: process.env.REALM_ID });
 
 export default function Progress() {
 	const dbName = process.env.REALM_DB;
 	const [auth] = useContext(AuthContext);
-	const [user, setUser] = useState({});
+	const [profile, setProfile] = useState(false);
+	const [docform, setDocForm] = useState(false);
+	const [empform, setEmpForm] = useState(false);
+	const [medhist, setMedHist] = useState(false);
+	const [agreement, setAgreement] = useState(false);
+	const [chkdSetup, setChkdSetup] = useState(false);
 	const [page, setPage] = useState('');
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DATA LOAD FUNCTIONS
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	const loadUser = useCallback(async () => {
+	const loadProgress = useCallback(async () => {
 		try {
-			const response = await fetch(`${process.env.API_URL}/subscribers/get/byid?id=${auth.user._id}`, {
+			const response = await fetch(`${process.env.API_URL}/subscribers/setup/progress/overall?subid=${auth.user._id}`, {
 				method: 'GET',
 			});
 			const data = await response.json();
 
 			if (data.status === 200) {
-				setUser(data.patient);
+				setProfile(data.setup.profile);
+				setDocForm(data.setup.docform);
+				setEmpForm(data.setup.empform);
+				setMedHist(data.setup.medhist);
+				setAgreement(data.setup.agreement);
+				setChkdSetup(true);
 			} else {
-				setUser({});
 				toast.error(data.msg);
 			}
 		} catch (err) {
@@ -43,67 +51,64 @@ export default function Progress() {
 	// LOAD DATA
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		loadUser();
-	}, [loadUser]);
+		loadProgress();
+	}, [loadProgress]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DETERMINE PROGRESS
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (user !== undefined) {
-			if (Object.keys(user).length !== 0) {
-				if (user.setupprogress.length === 0 || user.setupprogress === undefined) {
-					setPage('profile');
-				} else {
-					for (let i = 0; i < user.setupprogress.length; i++) {
-						const pg = user.setupprogress[i];
-						if (pg === 'profile') {
-							setPage('docform');
-						}
-						if (pg === 'docform') {
-							setPage('empform');
-						}
-						if (pg === 'empform') {
-							setPage('medhist');
-						}
-						if (pg === 'medhist') {
-							setPage('policy');
-						}
-					}
-				}
+		if (chkdSetup) {
+			if (!profile) {
+				setPage('profile');
+				return;
+			}
+			if (!docform) {
+				setPage('docform');
+				return;
+			}
+			if (!empform) {
+				setPage('empform');
+				return;
+			}
+			if (!medhist) {
+				setPage('medhist');
+				return;
+			}
+			if (!agreement) {
+				setPage('agreement');
+				return;
 			}
 		}
-	}, [user, page]);
+	}, [chkdSetup, profile, docform, empform, medhist, agreement]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CHANGE STREAM WATCHES
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		const wchPatients = async () => {
+		const wchSetup = async () => {
 			await app.logIn(Realm.Credentials.anonymous());
 
 			// Connect to the database
 			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
-			const pts = mongodb.db(dbName).collection('patients');
+			const su = mongodb.db(dbName).collection('subsetups');
 
-			for await (const change of pts.watch()) {
+			for await (const change of su.watch()) {
 				if (change.operationType === 'update') {
-					loadUser();
+					loadProgress();
 				}
 			}
 		};
-		wchPatients();
-	}, [dbName, loadUser]);
+		wchSetup();
+	}, [dbName, loadProgress]);
 
 	return (
 		<>
-			{page === 'profile' && <Profile user={user} />}
-			{page === 'docform' && <DocForm user={user} />}
-			{page === 'empform' && <EmpForm user={user} />}
-			{page === 'medhist' && <MedHist user={user} />}
-			{/*}
-			{page === 'policy' && <Policies user={user} />}
-	{*/}
+			{page === 'profile' && <Profile />}
+			{page === 'docform' && <DocForm />}
+			{page === 'empform' && <EmpForm />}
+			{page === 'medhist' && <MedHist />}
+			{page === 'agreement' && <Agreement />}
 		</>
 	);
 }

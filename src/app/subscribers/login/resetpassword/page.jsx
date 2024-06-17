@@ -43,7 +43,7 @@ export default function SubRP() {
 			}
 
 			const objData = {
-				type: 'patient',
+				type: 'subscriber',
 				resetcode: code,
 				password: newPword,
 				token,

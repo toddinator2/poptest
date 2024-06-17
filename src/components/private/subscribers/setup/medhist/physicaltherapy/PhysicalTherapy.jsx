@@ -30,7 +30,7 @@ export default function PhysicalTherapy({ userId }) {
 					ned,
 					cur,
 					learnmore,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

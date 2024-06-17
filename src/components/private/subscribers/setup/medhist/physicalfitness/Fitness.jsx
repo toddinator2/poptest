@@ -64,7 +64,7 @@ export default function Fitness({ userId }) {
 					yoga,
 					pil,
 					learnmore,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

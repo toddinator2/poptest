@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Appointment from '@/models/appointment';
-import Patient from '@/models/patient';
+import Subscriber from '@/models/subscriber';
 
 export const GET = async (request) => {
 	await connect();
@@ -21,7 +21,7 @@ export const GET = async (request) => {
 			let tmpArr = [];
 			for (let i = 0; i < allTodays.length; i++) {
 				const appt = allTodays[i];
-				const patient = await Patient.findById(appt.patientObjId);
+				const patient = await Subscriber.findById(appt.patientObjId);
 				if (patient) {
 					const ptObj = {
 						_id: patient._id,

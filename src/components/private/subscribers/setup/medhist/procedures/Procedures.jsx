@@ -49,7 +49,7 @@ export default function Procedures({ userId }) {
 					wls,
 					oth,
 					other,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

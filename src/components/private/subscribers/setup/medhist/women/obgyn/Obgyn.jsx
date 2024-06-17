@@ -37,7 +37,7 @@ export default function Obgyn({ userId }) {
 					periods,
 					numpregs: numPregs,
 					numkids: numKids,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

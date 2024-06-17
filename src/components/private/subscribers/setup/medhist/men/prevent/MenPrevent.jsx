@@ -32,7 +32,7 @@ export default function MenPrevent({ userId }) {
 					eyedate: eyeDate,
 					psa,
 					psadate: psaDate,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

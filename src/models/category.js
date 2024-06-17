@@ -14,12 +14,12 @@ const categorySchema = new Schema(
 			trim: true,
 			default: 'cacad9',
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 			required: true,
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 			required: true,

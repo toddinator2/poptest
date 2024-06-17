@@ -1,28 +1,15 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Womenprevent from '@/models/womenprevent';
+import Subsumedhist from '@/models/subsumedhist';
+import Wmnprevent from '@/models/wmnprevent';
 
 export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { clg, clgdate, cls, clsdate, dex, dexdate, eye, eyedate, mam, mamdate, pap, papdate, patientObjId } = body;
+	const { clg, clgdate, cls, clsdate, dex, dexdate, eye, eyedate, mam, mamdate, pap, papdate, subObjId } = body;
 
-	//update history progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.historyprogress !== undefined) {
-		let tmpArr = pt.historyprogress;
-		tmpArr.push('wmnprevent');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('wmnprevent');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	}
-
-	//add to womenprevent table
 	try {
-		const newWp = await new Womenprevent({
+		const newWp = await new Wmnprevent({
 			clg,
 			clgdate,
 			cls,
@@ -35,10 +22,12 @@ export const POST = async (req) => {
 			mamdate,
 			pap,
 			papdate,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newWpId = newWp._id;
+
 		if (newWpId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { wmnprevent: true }, { new: true });
 			return NextResponse.json({ msg: 'Preventative Care submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Preventative Care Error: Please try again', status: 400 });

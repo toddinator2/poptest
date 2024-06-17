@@ -1,38 +1,27 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Men from '@/models/men';
+import Subsumedhist from '@/models/subsumedhist';
+import Menhealth from '@/models/menhealth';
 
 export const POST = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { erd, sex, mus, nun, tst, exc, patientObjId } = body;
+	const { erd, sex, mus, nun, tst, exc, subObjId } = body;
 
-	//update history progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.historyprogress !== undefined) {
-		let tmpArr = pt.historyprogress;
-		tmpArr.push('men');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('men');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	}
-
-	//add to men table
 	try {
-		const newRec = await new Men({
+		const newRec = await new Menhealth({
 			erd,
 			sex,
 			mus,
 			nun,
 			tst,
 			exc,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newRecId = newRec._id;
+
 		if (newRecId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { menhealth: true }, { new: true });
 			return NextResponse.json({ msg: 'Mens Health submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Mens Health Error: Please try again', status: 400 });

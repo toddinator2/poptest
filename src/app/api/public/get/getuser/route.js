@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Sponsoruser from '@/models/sponsoruser';
-import Officeuser from '@/models/officeuser';
+import Subscriber from '@/models/subscriber';
+import Spnuser from '@/models/spnuser';
+import Ofcuser from '@/models/ofcuser';
 import S3xuser from '@/models/s3xuser';
 
 export async function GET(request) {
@@ -20,8 +20,8 @@ export async function GET(request) {
 
 	if (token === authToken) {
 		try {
-			if (type === 'patient') {
-				const user = await Patient.findOne({ username: lwrUname }).select('-username -password');
+			if (type === 'subscriber') {
+				const user = await Subscriber.findOne({ username: lwrUname }).select('-username -password');
 				if (!user || user === null) {
 					return NextResponse.json({ status: 400 });
 				} else {
@@ -29,7 +29,7 @@ export async function GET(request) {
 				}
 			}
 			if (type === 'sponsor') {
-				const user = await Sponsoruser.findOne({ username: lwrUname });
+				const user = await Spnuser.findOne({ username: lwrUname });
 				if (!user || user === null) {
 					return NextResponse.json({ status: 400 });
 				} else {
@@ -37,7 +37,7 @@ export async function GET(request) {
 				}
 			}
 			if (type === 'physician') {
-				const user = await Officeuser.findOne({ username: lwrUname });
+				const user = await Ofcuser.findOne({ username: lwrUname });
 				if (!user || user === null) {
 					return NextResponse.json({ status: 400 });
 				} else {

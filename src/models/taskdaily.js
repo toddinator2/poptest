@@ -22,17 +22,17 @@ const taskdailySchema = new Schema(
 			type: ObjectId,
 			ref: 'taskitems',
 		},
-		officeuserObjId: {
+		ofcuserObjId: {
 			type: ObjectId,
-			ref: 'users',
+			ref: 'ofcusers',
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 		},
 	},
 	{ timestamps: true }

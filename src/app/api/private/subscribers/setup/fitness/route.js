@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subsumedhist from '@/models/subsumedhist';
 import Fitness from '@/models/fitness';
 
 export const POST = async (req) => {
@@ -31,22 +31,9 @@ export const POST = async (req) => {
 		yoga,
 		pil,
 		learnmore,
-		patientObjId,
+		subObjId,
 	} = body;
 
-	//update history progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.historyprogress !== undefined) {
-		let tmpArr = pt.historyprogress;
-		tmpArr.push('fitness');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('fitness');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	}
-
-	//add to fitness table
 	try {
 		const newRec = await new Fitness({
 			days,
@@ -73,10 +60,12 @@ export const POST = async (req) => {
 			yoga,
 			pil,
 			learnmore,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newRecId = newRec._id;
+
 		if (newRecId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { physicalfitness: true }, { new: true });
 			return NextResponse.json({ msg: 'Physical Fitness submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Physical Fitness Error: Please try again', status: 400 });

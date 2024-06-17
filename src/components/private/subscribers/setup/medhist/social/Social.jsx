@@ -59,7 +59,7 @@ export default function Social({ userId }) {
 					hdweek: hdWeek,
 					hdmonth: hdMonth,
 					hdquit: hdQuit,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

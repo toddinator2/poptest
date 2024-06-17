@@ -1,5 +1,6 @@
 'use client';
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
+import { AuthContext } from '@/utils/context/global/AuthContext';
 import { FormatPhoneNumber, FormatZip } from '@/components/global/functions/Functions';
 import emailjs from '@emailjs/browser';
 import toast from 'react-hot-toast';
@@ -9,6 +10,7 @@ import Button from '@/components/global/forms/buttons/Button';
 
 export default function EmpForm({ user }) {
 	const env = process.env.ENVIRONMENT;
+	const [auth] = useContext(AuthContext);
 	const [name, setName] = useState('');
 	const [company, setCompany] = useState('');
 	const [phone, setPhone] = useState('');
@@ -41,7 +43,7 @@ export default function EmpForm({ user }) {
 					city,
 					state,
 					zip,
-					patientObjId: user._id,
+					subObjId: auth.user._id,
 				}),
 			});
 			const data = await response.json();
@@ -76,7 +78,7 @@ export default function EmpForm({ user }) {
 					city: city,
 					state: state,
 					zip: zip,
-					patientname: user.fname + ' ' + user.lname,
+					patientname: auth.user.fname + ' ' + auth.user.lname,
 				};
 
 				//Send email
@@ -98,7 +100,7 @@ export default function EmpForm({ user }) {
 					'Content-Type': 'application/json',
 				},
 				body: JSON.stringify({
-					ptid: user._id,
+					subid: auth.user._id,
 					type: 'empform',
 				}),
 			});
@@ -246,7 +248,7 @@ export default function EmpForm({ user }) {
 				</div>
 				<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto border-4 border-drkppl rounded-2xl order-3'>
 					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkppl'>SETUP CHECKLIST</div>
-					<Checklist progress={user.setupprogress} />
+					<Checklist />
 				</div>
 			</div>
 			<div className='w-full my-5 flex justify-center'>

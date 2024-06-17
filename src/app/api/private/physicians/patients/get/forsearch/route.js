@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Office from '@/models/office';
-import Patient from '@/models/patient';
+import Subscriber from '@/models/subscriber';
 
 export const GET = async (request) => {
 	await connect();
@@ -15,7 +15,7 @@ export const GET = async (request) => {
 		if (office) {
 			const ofcPtArr = office.patients;
 			for (let i = 0; i < ofcPtArr.length; i++) {
-				const pt = await Patient.findById(ofcPtArr[i]);
+				const pt = await Subscriber.findById(ofcPtArr[i]);
 				const _id = pt._id;
 				const fname = pt.fname;
 				const lname = pt.lname;

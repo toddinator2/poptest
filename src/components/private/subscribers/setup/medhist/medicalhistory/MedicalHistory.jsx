@@ -97,7 +97,7 @@ export default function MedicalHistory({ userId }) {
 					thy,
 					oth,
 					other,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

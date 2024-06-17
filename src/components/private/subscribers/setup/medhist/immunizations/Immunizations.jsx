@@ -50,7 +50,7 @@ export default function Immunizations({ userId }) {
 					shidate: immShiDate,
 					tdp: immTdp,
 					tdpdate: immTdpDate,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

@@ -31,6 +31,7 @@ export default function EmpRegister() {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		setLoading(true);
+		let compName = '';
 
 		//Test for bots
 		if (zip) {
@@ -51,12 +52,19 @@ export default function EmpRegister() {
 		//Create a new password
 		const pword = RandomStringMake(10);
 
+		//Set company if type is private
+		if (type === 'private' && !company) {
+			compName = fname + ' ' + lname;
+		} else {
+			compName = company;
+		}
+
 		try {
 			const objData = {
 				register: 'sponsors',
 				fname,
 				lname,
-				company,
+				company: compName,
 				email,
 				phone,
 				phoneext: phoneExt,
@@ -187,12 +195,12 @@ export default function EmpRegister() {
 								{type === 'private' ? (
 									<Button type='button' on={true}>
 										<div className='w-full text-lg text-center'>Private</div>
-										<div className='w-full text-sm text-center'>Family, Friends, Church</div>
+										<div className='w-full text-sm text-center'>Paying for Others</div>
 									</Button>
 								) : (
 									<Button type='button' onClick={(e) => handleType('pvt')}>
 										<div className='w-full text-lg text-center'>Private</div>
-										<div className='w-full text-sm text-center'>Family, Friends, Church</div>
+										<div className='w-full text-sm text-center'>Paying for Others</div>
 									</Button>
 								)}
 							</div>
@@ -224,23 +232,31 @@ export default function EmpRegister() {
 							</div>
 						</div>
 					</div>
-					<form onSubmit={handleSubmit}>
-						<div className='w-4/5 sm:w-3/4 lg:w-1/2 2xl:w-1/3 mx-auto flex-auto'>
-							<Input label='Contact First Name' type='text' id='fname' required={true} value={fname} setValue={setFname} />
-							<Input label='Contact Last Name' type='text' id='lname' required={true} value={lname} setValue={setLname} />
-							<Input label='Company Name' type='text' required={true} value={company} setValue={setCompany} />
-							<ChkInput label='Zip Code' type='text' value={zip} setValue={setZip} />
-							<Input label='Email' type='email' id='email' required={true} value={email} setValue={setEmail} />
-							<Input label='Phone' type='tel' id='phone' required={true} value={phone} funcCall={handlePhone} />
-							<Input label='Phone Ext.' type='tel' value={phoneExt} setValue={setPhoneExt} />
-							<Input label='Website' type='text' value={website} setValue={setWebsite} />
-							<div className='w-full mt-4 flex justify-center'>
-								<Button type='submit' disabled={!type || !fname || !lname || !company || !email || !phone}>
-									Register
-								</Button>
+					{(type === 'private' || type === 'corporate' || type === 'philanthropic') && (
+						<form onSubmit={handleSubmit}>
+							<div className='w-4/5 sm:w-3/4 lg:w-1/2 2xl:w-1/3 mx-auto flex-auto'>
+								<Input label='Contact First Name' type='text' id='fname' required={true} value={fname} setValue={setFname} />
+								<Input label='Contact Last Name' type='text' id='lname' required={true} value={lname} setValue={setLname} />
+								{(type === 'corporate' || type === 'philanthropic') && (
+									<Input label='Company Name' type='text' required={true} value={company} setValue={setCompany} />
+								)}
+								<ChkInput label='Zip Code' type='text' value={zip} setValue={setZip} />
+								<Input label='Email' type='email' id='email' required={true} value={email} setValue={setEmail} />
+								<Input label='Phone' type='tel' id='phone' required={true} value={phone} funcCall={handlePhone} />
+								{(type === 'corporate' || type === 'philanthropic') && (
+									<>
+										<Input label='Phone Ext.' type='tel' value={phoneExt} setValue={setPhoneExt} />
+										<Input label='Website' type='text' value={website} setValue={setWebsite} />
+									</>
+								)}
+								<div className='w-full mt-4 flex justify-center'>
+									<Button type='submit' disabled={!type || !fname || !lname || !email || !phone}>
+										Register
+									</Button>
+								</div>
 							</div>
-						</div>
-					</form>
+						</form>
+					)}
 					{loading && <Spinner />}
 				</div>
 			</div>

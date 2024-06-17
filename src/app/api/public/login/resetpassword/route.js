@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Sponsoruser from '@/models/sponsoruser';
-import Officeuser from '@/models/officeuser';
+import Subscriber from '@/models/subscriber';
+import Spnuser from '@/models/spnuser';
+import Ofcuser from '@/models/ofcuser';
 import S3xuser from '@/models/s3xuser';
 
 export const PUT = async (req) => {
@@ -18,26 +18,26 @@ export const PUT = async (req) => {
 
 	if (token === authToken) {
 		try {
-			if (type === 'patient') {
-				const user = await Patient.findOne({ resetcode: resetcode });
+			if (type === 'subscriber') {
+				const user = await Subscriber.findOne({ resetcode: resetcode });
 				if (user) {
-					await Patient.findOneAndUpdate({ resetcode: resetcode }, { resetcode: '', password: hashedPassword }, { new: true });
+					await Subscriber.findOneAndUpdate({ resetcode: resetcode }, { resetcode: '', password: hashedPassword }, { new: true });
 					return NextResponse.json({ status: 200 });
 				} else {
 					return NextResponse.json({ status: 400 });
 				}
 			} else if (type === 'sponsor') {
-				const user = await Sponsoruser.findOne({ resetcode: resetcode });
+				const user = await Spnuser.findOne({ resetcode: resetcode });
 				if (user) {
-					await Sponsoruser.findOneAndUpdate({ resetcode: resetcode }, { resetcode: '', password: hashedPassword }, { new: true });
+					await Spnuser.findOneAndUpdate({ resetcode: resetcode }, { resetcode: '', password: hashedPassword }, { new: true });
 					return NextResponse.json({ status: 200 });
 				} else {
 					return NextResponse.json({ status: 400 });
 				}
 			} else if (type === 'physician') {
-				const user = await Officeuser.findOne({ resetcode: resetcode });
+				const user = await Ofcuser.findOne({ resetcode: resetcode });
 				if (user) {
-					await Officeuser.findOneAndUpdate({ resetcode: resetcode }, { resetcode: '', password: hashedPassword }, { new: true });
+					await Ofcuser.findOneAndUpdate({ resetcode: resetcode }, { resetcode: '', password: hashedPassword }, { new: true });
 					return NextResponse.json({ status: 200 });
 				} else {
 					return NextResponse.json({ status: 400 });

@@ -20,7 +20,6 @@ const s3xuserSchema = new Schema(
 			required: [true, 'Email is required'],
 			unique: true,
 			lowercase: true,
-			index: true,
 		},
 		phone: {
 			type: String,
@@ -33,7 +32,6 @@ const s3xuserSchema = new Schema(
 			required: [true, 'Username is required'],
 			unique: true,
 			lowercase: true,
-			index: true,
 		},
 		password: {
 			type: String,

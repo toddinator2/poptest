@@ -47,9 +47,9 @@ const contactdocSchema = new Schema(
 			trim: true,
 			required: true,
 		},
-		patientObjId: {
+		subObjId: {
 			type: ObjectId,
-			ref: 'patients',
+			ref: 'subscribers',
 			required: true,
 		},
 	},

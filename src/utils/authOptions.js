@@ -1,9 +1,9 @@
 import CredentialsProvider from 'next-auth/providers/credentials';
 import bcrypt from 'bcryptjs';
-import Patient from '@/models/patient';
-import Sponsoruser from '@/models/sponsoruser';
+import Subscriber from '@/models/subscriber';
+import Spnuser from '@/models/spnuser';
 import S3xuser from '@/models/s3xuser';
-import Officeuser from '@/models/officeuser';
+import Ofcuser from '@/models/ofcuser';
 import connect from './dbConnect';
 
 export const authOptions = {
@@ -23,12 +23,12 @@ export const authOptions = {
 
 				try {
 					connect();
-					if (type === 'patient') {
-						user = await Patient.findOne({ username: lwrUname, emailconfirmed: true, active: true });
+					if (type === 'subscriber') {
+						user = await Subscriber.findOne({ username: lwrUname, emailconfirmed: true, active: true });
 					} else if (type === 'sponsor') {
-						user = await Sponsoruser.findOne({ username: lwrUname, emailconfirmed: true, active: true });
+						user = await Spnuser.findOne({ username: lwrUname, emailconfirmed: true, active: true });
 					} else if (type === 'physician') {
-						user = await Officeuser.findOne({ username: lwrUname, emailconfirmed: true, active: true });
+						user = await Ofcuser.findOne({ username: lwrUname, emailconfirmed: true, active: true });
 					} else if (type === 's3x') {
 						user = await S3xuser.findOne({ username: lwrUname, emailconfirmed: true, active: true });
 					}

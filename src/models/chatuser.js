@@ -28,19 +28,19 @@ const chatuserSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		officeuserObjId: {
+		ofcuserObjId: {
 			type: String,
 			trim: true,
 			required: true,
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 			required: true,
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 			required: true,
 		},
 	},

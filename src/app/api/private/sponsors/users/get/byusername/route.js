@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Sponsor from '@/models/sponsor';
-import Sponsoruser from '@/models/sponsoruser';
+import Spnuser from '@/models/spnuser';
 
 export const GET = async (request) => {
 	await connect();
@@ -10,7 +10,7 @@ export const GET = async (request) => {
 	let sucomplete = false;
 
 	try {
-		const spn = await Sponsoruser.findOne({ username: uname }).select('-username -password');
+		const spn = await Spnuser.findOne({ username: uname }).select('-username -password');
 		if (spn) {
 			//check if setup is complete
 			const chkSetup = await Sponsor.findById(spn.sponsorObjId);

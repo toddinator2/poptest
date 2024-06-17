@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Officesetup from '@/models/officesetup';
+import Ofcsetup from '@/models/ofcsetup';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const ofcId = searchParams.get('ofcid');
 
 	try {
-		const ofc = await Officesetup.findOne({ officeObjId: ofcId });
+		const ofc = await Ofcsetup.findOne({ ofcObjId: ofcId });
 		if (ofc) {
 			const ofcObj = {
 				profile: ofc.profile,

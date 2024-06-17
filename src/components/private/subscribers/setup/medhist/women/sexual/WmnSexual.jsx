@@ -24,7 +24,7 @@ export default function WmnSexual({ userId }) {
 					lubrication,
 					overall,
 					discomfort,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

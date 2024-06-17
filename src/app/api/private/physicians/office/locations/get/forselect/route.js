@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Officelocation from '@/models/officelocation';
+import Ofclocation from '@/models/ofclocation';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const ofcid = searchParams.get('ofcid');
 
 	try {
-		const allLocs = await Officelocation.find({ officeObjId: ofcid }).sort({ name: 1 });
+		const allLocs = await Ofclocation.find({ ofcObjId: ofcid }).sort({ name: 1 });
 		if (allLocs) {
 			let tmpArr = [];
 			for (let i = 0; i < allLocs.length; i++) {

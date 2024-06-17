@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subsumedhist from '@/models/subsumedhist';
 import Social from '@/models/social';
 
 export const POST = async (req) => {
@@ -28,22 +28,9 @@ export const POST = async (req) => {
 		hdweek,
 		hdmonth,
 		hdquit,
-		patientObjId,
+		subObjId,
 	} = body;
 
-	//update history progress for profile
-	const pt = await Patient.findById(patientObjId);
-	if (pt.historyprogress !== undefined) {
-		let tmpArr = pt.historyprogress;
-		tmpArr.push('social');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	} else {
-		let tmpArr = [];
-		tmpArr.push('social');
-		await Patient.findByIdAndUpdate(patientObjId, { historyprogress: tmpArr }, { new: true });
-	}
-
-	//add to social table
 	try {
 		const newSoc = await new Social({
 			alc,
@@ -67,10 +54,12 @@ export const POST = async (req) => {
 			hdweek,
 			hdmonth,
 			hdquit,
-			patientObjId,
+			subObjId,
 		}).save();
 		const newSocId = newSoc._id;
+
 		if (newSocId) {
+			await Subsumedhist.findOneAndUpdate({ subObjId: subObjId }, { social: true }, { new: true });
 			return NextResponse.json({ msg: 'Social History submitted successfully', status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Social History Error: Please try again', status: 400 });

@@ -30,7 +30,7 @@ export default function SubFP() {
 
 		try {
 			const objData = {
-				type: 'patient',
+				type: 'subscriber',
 				email,
 				username,
 				resetcode,

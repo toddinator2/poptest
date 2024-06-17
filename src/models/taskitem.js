@@ -14,17 +14,17 @@ const taskitemSchema = new Schema(
 			trim: true,
 			required: true,
 		},
-		taskcategoryObjId: {
+		taskcatObjId: {
 			type: ObjectId,
 			ref: 'taskcategories',
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 		},
-		locationObjId: {
+		ofclocObjId: {
 			type: ObjectId,
-			ref: 'locations',
+			ref: 'ofclocations',
 		},
 	},
 	{ timestamps: true }

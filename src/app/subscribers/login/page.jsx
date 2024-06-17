@@ -44,7 +44,7 @@ export default function Login() {
 		try {
 			const result = await signIn('credentials', {
 				redirect: false,
-				type: 'patient',
+				type: 'subscriber',
 				username: uname,
 				password: pword,
 			});

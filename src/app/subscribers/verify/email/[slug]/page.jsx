@@ -4,7 +4,7 @@ import Verification from '@/components/public/verify/email/Verification';
 import logo from '@/assets/images/logoLgt.png';
 
 export default function SubVerifyEmail({ params }) {
-	const type = 'patient';
+	const type = 'subscriber';
 	const verifycode = params?.slug;
 	const domain = process.env.DOMAIN;
 

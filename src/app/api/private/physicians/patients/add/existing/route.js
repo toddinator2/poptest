@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subscriber from '@/models/subscriber';
 import Office from '@/models/office';
 
 export const PUT = async (req) => {
@@ -14,7 +14,7 @@ export const PUT = async (req) => {
 	}
 
 	try {
-		const curPt = await Patient.findOne({ s3xid: lwrS3xid });
+		const curPt = await Subscriber.findOne({ subs3xid: lwrS3xid });
 		const curOfc = await Office.findById(ofcid);
 		let curOfcPts = curOfc.patients;
 		let curPtOfcs = curPt.offices;
@@ -30,7 +30,7 @@ export const PUT = async (req) => {
 		curOfcPts.push(curPt._id);
 		curPtOfcs.push(curOfc._id);
 
-		await Patient.findByIdAndUpdate(curPt._id, { offices: curPtOfcs }, { new: true });
+		await Subscriber.findByIdAndUpdate(curPt._id, { offices: curPtOfcs }, { new: true });
 		await Office.findByIdAndUpdate(ofcid, { patients: curOfcPts }, { new: true });
 
 		return NextResponse.json({ msg: 'Patient Added Successfully', status: 200 });

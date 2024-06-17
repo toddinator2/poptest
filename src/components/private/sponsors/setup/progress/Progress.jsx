@@ -13,6 +13,7 @@ const app = new Realm.App({ id: process.env.REALM_ID });
 export default function Progress() {
 	const dbName = process.env.REALM_DB;
 	const [auth] = useContext(AuthContext);
+	const [type, setType] = useState('');
 	const [profile, setProfile] = useState(false);
 	const [location, setLocation] = useState(false);
 	const [agreement, setAgreement] = useState(false);
@@ -31,6 +32,7 @@ export default function Progress() {
 			const data = await response.json();
 
 			if (data.status === 200) {
+				setType(data.setup.type);
 				setProfile(data.setup.profile);
 				setLocation(data.setup.location);
 				setAgreement(data.setup.agreement);
@@ -84,7 +86,7 @@ export default function Progress() {
 
 			// Connect to the database
 			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
-			const su = mongodb.db(dbName).collection('sponsorsetups');
+			const su = mongodb.db(dbName).collection('spnsetups');
 
 			for await (const change of su.watch()) {
 				if (change.operationType === 'update') {
@@ -98,10 +100,10 @@ export default function Progress() {
 	return (
 		<>
 			<div className='my-5 text-2xl text-center'>Sponsor Account Setup</div>
-			{page === 'profile' && <Profile />}
-			{page === 'location' && <Location />}
-			{page === 'agreement' && <Agreement />}
-			{page === 'bank' && <Bank />}
+			{page === 'profile' && <Profile type={type} />}
+			{page === 'location' && <Location type={type} />}
+			{page === 'agreement' && <Agreement type={type} />}
+			{page === 'bank' && <Bank type={type} />}
 		</>
 	);
 }

@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Location from '@/models/officelocation';
+import Ofclocation from '@/models/ofclocation';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const ofcId = searchParams.get('ofcid');
 
 	try {
-		const loc = await Location.findOne({ officeObjId: ofcId });
+		const loc = await Ofclocation.findOne({ ofcObjId: ofcId });
 		if (loc) {
 			return NextResponse.json({ loc: loc, status: 200 });
 		} else {

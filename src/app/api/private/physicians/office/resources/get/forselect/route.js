@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Resource from '@/models/resource';
+import Ofcresource from '@/models/ofcresource';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,7 +8,7 @@ export const GET = async (request) => {
 	const locid = searchParams.get('locid');
 
 	try {
-		const allRscs = await Resource.find({ locationObjId: locid }).sort({ name: 1 });
+		const allRscs = await Ofcresource.find({ ofclocObjId: locid }).sort({ name: 1 });
 		if (allRscs) {
 			let tmpArr = [];
 			for (let i = 0; i < allRscs.length; i++) {

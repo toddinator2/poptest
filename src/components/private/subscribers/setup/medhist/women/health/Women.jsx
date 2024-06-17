@@ -30,7 +30,7 @@ export default function Women({ userId }) {
 					irr,
 					lsx,
 					nun,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

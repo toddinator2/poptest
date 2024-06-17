@@ -32,7 +32,7 @@ export default function Important({ userId }) {
 					services,
 					foods,
 					exercise,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

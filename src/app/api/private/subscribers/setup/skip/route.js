@@ -1,22 +1,17 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subsetup from '@/models/subsetup';
 
 export const PUT = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { ptid, type } = body;
+	const { subid, type } = body;
 
 	//update setup progress for docform
-	const pt = await Patient.findById(ptid);
-	if (pt.setupprogress !== undefined) {
-		let tmpArr = pt.setupprogress;
-		tmpArr.push(type);
-		await Patient.findByIdAndUpdate(ptid, { setupprogress: tmpArr }, { new: true });
+	if (type === 'docform') {
+		await Subsetup.findOneAndUpdate({ subObjId: subid }, { docform: true }, { new: true });
 	} else {
-		let tmpArr = [];
-		tmpArr.push(type);
-		await Patient.findByIdAndUpdate(ptid, { setupprogress: tmpArr }, { new: true });
+		await Subsetup.findOneAndUpdate({ subObjId: subid }, { empform: true }, { new: true });
 	}
 	return NextResponse.json({ status: 200 });
 };

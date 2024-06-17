@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
-import Preregphys from '@/models/preregphys';
-import Officeuser from '@/models/officeuser';
+import Ofcprereg from '@/models/ofcprereg';
+import Ofcuser from '@/models/ofcuser';
 
 export const POST = async (req) => {
 	await connect();
@@ -16,7 +16,6 @@ export const POST = async (req) => {
 	if (email) {
 		lwrEmail = email.toLowerCase();
 	}
-
 	if (username) {
 		lwrUname = username.toLowerCase();
 	}
@@ -25,26 +24,26 @@ export const POST = async (req) => {
 	const hashedPassword = await bcrypt.hash(password, 10);
 
 	//Check if email already exists in preReg or officeusers
-	const preUserExists = await Preregphys.findOne({ email: lwrEmail });
+	const preUserExists = await Ofcprereg.findOne({ email: lwrEmail });
 	if (preUserExists) {
 		return NextResponse.json({ status: 400 });
 	}
-	const userExists = await Officeuser.findOne({ email: lwrEmail });
+	const userExists = await Ofcuser.findOne({ email: lwrEmail });
 	if (userExists) {
 		return NextResponse.json({ status: 400 });
 	}
 
 	//Check if username already exists in preReg or officeusers
-	const preUsernameExists = await Preregphys.findOne({ username: lwrUname });
+	const preUsernameExists = await Ofcprereg.findOne({ username: lwrUname });
 	if (preUsernameExists) {
 		return NextResponse.json({ status: 401 });
 	}
-	const usernameExists = await Officeuser.findOne({ username: lwrUname });
+	const usernameExists = await Ofcuser.findOne({ username: lwrUname });
 	if (usernameExists) {
 		return NextResponse.json({ status: 401 });
 	}
 
-	const phyObj = new Preregphys({
+	const phyObj = new Ofcprereg({
 		fname,
 		lname,
 		email: lwrEmail,

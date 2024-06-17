@@ -39,7 +39,7 @@ export default function WmnPrevent({ userId }) {
 					mamdate: mamDate,
 					pap,
 					papdate: papDate,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

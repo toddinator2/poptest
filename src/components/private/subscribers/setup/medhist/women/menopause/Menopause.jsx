@@ -38,7 +38,7 @@ export default function Menopause({ userId }) {
 					phy,
 					sex,
 					slp,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

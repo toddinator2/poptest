@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
+import Subscriber from '@/models/subscriber';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,9 +8,9 @@ export const GET = async (request) => {
 	const id = searchParams.get('id');
 
 	try {
-		const pt = await Patient.findById(id).select('-username -password');
-		if (pt) {
-			return NextResponse.json({ patient: pt, status: 200 });
+		const sub = await Subscriber.findById(id).select('-username -password');
+		if (sub) {
+			return NextResponse.json({ user: sub, status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Patient Not Found', status: 400 });
 		}

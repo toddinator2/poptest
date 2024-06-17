@@ -104,9 +104,9 @@ const fitnessSchema = new Schema(
 			type: String,
 			trim: true,
 		},
-		patientObjId: {
+		subObjId: {
 			type: ObjectId,
-			ref: 'patients',
+			ref: 'subscribers',
 			required: true,
 		},
 	},

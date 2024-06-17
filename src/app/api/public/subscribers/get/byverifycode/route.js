@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Preregpat from '@/models/preregpat';
+import Subprereg from '@/models/subprereg';
 
 export const GET = async (request) => {
 	await connect();
@@ -11,7 +11,7 @@ export const GET = async (request) => {
 
 	if (token === authToken) {
 		try {
-			const pt = await Preregpat.findOne({ verifycode: vcode });
+			const pt = await Subprereg.findOne({ verifycode: vcode });
 			if (pt) {
 				return NextResponse.json({ uname: pt.username, status: 200 });
 			} else {

@@ -1,69 +1,30 @@
 import { NextResponse } from 'next/server';
-import { CreateOfficeId, CreateS3xId, CreateSponsorId, RandomStringMake } from '@/components/global/functions/Functions';
+import { CreateLocationId, CreateOfficeId, CreateS3xId, CreateSponsorId, RandomStringMake } from '@/components/global/functions/Functions';
 import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
-import Preregpat from '@/models/preregpat';
-import Patient from '@/models/patient';
-import Preregspn from '@/models/preregspn';
+/*** Subscriber ***/
+import Subscriber from '@/models/subscriber';
+import Subprereg from '@/models/subprereg';
+import Subsetup from '@/models/subsetup';
+import Subsumedhist from '@/models/subsumedhist';
+import Subpolicy from '@/models/subpolicy';
+/*** Sponsor ***/
 import Sponsor from '@/models/sponsor';
+import Spnprereg from '@/models/spnprereg';
 import Spnlocation from '@/models/spnlocation';
-import Sponsoruser from '@/models/sponsoruser';
-import Sponsorsetup from '@/models/sponsorsetup';
-import Policyspn from '@/models/policyspn';
-import Preregphys from '@/models/preregphys';
+import Spnuser from '@/models/spnuser';
+import Spnsetup from '@/models/spnsetup';
+import Spnpolicy from '@/models/spnpolicy';
+/*** Office ***/
+import Ofcprereg from '@/models/ofcprereg';
 import Office from '@/models/office';
-import Officelocation from '@/models/officelocation';
-import Officesetup from '@/models/officesetup';
-import Officeuser from '@/models/officeuser';
-import Owner from '@/models/owner';
-import Policyphy from '@/models/policyphy';
+import Ofclocation from '@/models/ofclocation';
+import Ofcsetup from '@/models/ofcsetup';
+import Ofcuser from '@/models/ofcuser';
+import Ofcowner from '@/models/ofcowner';
+import Ofcpolicy from '@/models/ofcpolicy';
+/*** S3X ***/
 import S3xuser from '@/models/s3xuser';
-
-const createSponsor = async (props) => {
-	let newSpn;
-	let newSpnUser;
-	let spnId = '';
-	//Create a Sponsor ID and check if already exists
-	for (let i = 0; i <= 1000000; i++) {
-		const newSpnId = CreateSponsorId(9);
-		const idExists = await Sponsor.findOne({ sponsorid: newSpnId.toLowerCase() });
-		if (!idExists || idExists === null) {
-			spnId = newSpnId.toLowerCase();
-			break;
-		}
-	}
-
-	//Hash password for storage
-	const hashedPassword = await bcrypt.hash(props.pword, 10);
-
-	newSpn = await new Sponsor({
-		type: 'Private',
-		sponsorid: spnId,
-		company: props.fname + ' ' + props.lname,
-		fname: props.fname,
-		lname: props.lname,
-		email: props.email,
-		phone: props.phone,
-	});
-	await newSpn.save();
-	const newSpnId = newSpn._id;
-
-	newSpnUser = new Sponsoruser({
-		fname: props.fname,
-		lname: props.lname,
-		email: props.email,
-		username: props.uname,
-		password: hashedPassword,
-		phone: props.phone,
-		resetcreds: true,
-		emailconfirmed: true,
-		sponsorid: spnId,
-		sponsorObjId: newSpnId,
-	});
-	await newSpnUser.save();
-
-	return newSpnId;
-};
 
 export const POST = async (req) => {
 	await connect();
@@ -74,33 +35,17 @@ export const POST = async (req) => {
 
 	if (token === authToken) {
 		try {
-			if (type === 'newpatient') {
+			if (type === 'newsubscriber') {
 				//patient was added from an office or sponsor, so went directly into patient table
-				//just need to update the data in both patient and sponsoruser
-				await Sponsoruser.findOneAndUpdate({ verifycode: verifycode }, { emailconfirmed: true, verifycode: '' }, { new: true });
-				await Patient.findOneAndUpdate({ verifycode: verifycode }, { emailconfirmed: true, verifycode: '' }, { new: true });
+				//just need to update the data
+				await Subscriber.findOneAndUpdate({ verifycode: verifycode }, { emailconfirmed: true, verifycode: '' }, { new: true });
 				return NextResponse.json({ status: 200 });
 			}
-			if (type === 'patient') {
+			if (type === 'subscriber') {
 				//move from pre-registration to patients
-				const pt = await Preregpat.findOne({ verifycode: verifycode });
+				const pt = await Subprereg.findOne({ verifycode: verifycode });
 				if (pt) {
-					let spnId = '';
 					let s3xId = '';
-					let tmpArr = [];
-
-					//create the personal sponsor account
-					const props = {
-						fname: pt.fname,
-						lname: pt.lname,
-						email: pt.email,
-						phone: pt.phone,
-						uname: pt.username,
-						pword: pt.password,
-					};
-					const newSpn = await createSponsor(props);
-					spnId = newSpn;
-					tmpArr.push(spnId);
 
 					//Hash password for storage
 					const hashedPassword = await bcrypt.hash(pt.password, 10);
@@ -108,7 +53,7 @@ export const POST = async (req) => {
 					//Create a Supernova3x ID and check if already exists
 					for (let i = 0; i <= 1000000; i++) {
 						const newS3xId = CreateS3xId(9);
-						const idExists = await Patient.findOne({ s3xid: newS3xId.toLowerCase() });
+						const idExists = await Subscriber.findOne({ subs3xid: newS3xId.toLowerCase() });
 						if (!idExists || idExists === null) {
 							s3xId = newS3xId.toLowerCase();
 							break;
@@ -118,25 +63,31 @@ export const POST = async (req) => {
 					//Create a reset creds code
 					const resetcode = RandomStringMake(32);
 
-					const newPt = new Patient({
+					const newPt = new Subscriber({
 						fname: pt.fname,
 						lname: pt.lname,
 						dob: pt.dob,
 						email: pt.email,
 						username: pt.username,
 						password: hashedPassword,
-						mphone: pt.phone,
-						s3xid: s3xId,
+						phone: pt.phone,
 						resetcreds: true,
 						resetcode: resetcode,
 						emailconfirmed: true,
-						sponsorObjId: tmpArr,
+						subs3xid: s3xId,
 					});
 					const svdPt = await newPt.save();
 					const newPtId = svdPt._id;
 
 					if (newPtId) {
-						await Preregpat.findOneAndDelete({ verifycode: verifycode });
+						//create setup
+						await new Subsetup({ subObjId: newPtId }).save();
+						//create setup medical history
+						await new Subsumedhist({ subObjId: newPtId }).save();
+						//create policies
+						await new Subpolicy({ subObjId: newPtId }).save();
+						//delete the pre-registration data
+						await Subprereg.findOneAndDelete({ verifycode: verifycode });
 						return NextResponse.json({ status: 200 });
 					} else {
 						return NextResponse.json({ status: 400 });
@@ -147,7 +98,7 @@ export const POST = async (req) => {
 			}
 			if (type === 'sponsor') {
 				//move from pre-registration to sponsors and sponsorusers
-				const preSpn = await Preregspn.findOne({ verifycode: verifycode });
+				const preSpn = await Spnprereg.findOne({ verifycode: verifycode });
 				if (preSpn) {
 					//sponsors first
 					let newSpn;
@@ -158,7 +109,7 @@ export const POST = async (req) => {
 					//Create a Sponsor ID and check if already exists
 					for (let i = 0; i <= 1000000; i++) {
 						const newSpnId = CreateSponsorId(9);
-						const idExists = await Sponsor.findOne({ sponsorid: newSpnId.toLowerCase() });
+						const idExists = await Sponsor.findOne({ spns3xid: newSpnId.toLowerCase() });
 						if (!idExists || idExists === null) {
 							spnId = newSpnId.toLowerCase();
 							break;
@@ -181,59 +132,96 @@ export const POST = async (req) => {
 						phone: preSpn.phone,
 						phoneext: preSpn.phoneext,
 						website: preSpn.website,
-						sponsorid: spnId,
+						spns3xid: spnId,
 					});
 					const svdSpn = await newSpn.save();
 					const newSpnId = svdSpn._id;
 
 					if (newSpnId) {
-						//create the first location
-						newSpnLoc = new Spnlocation({
-							name: 'Headquarters',
-							sponsorObjId: newSpnId,
-						});
+						//create the initial location
+						if (preSpn.type.toLowerCase() === 'private') {
+							newSpnLoc = new Spnlocation({
+								name: preSpn.company,
+								phone: preSpn.phone,
+								spnObjId: newSpnId,
+							});
+						} else {
+							newSpnLoc = new Spnlocation({
+								name: 'Headquarters',
+								phone: preSpn.phone,
+								spnObjId: newSpnId,
+							});
+						}
 						const svdLoc = await newSpnLoc.save();
 						const newLocId = svdLoc._id;
 
 						//create the setup table
-						await new Sponsorsetup({
-							sponsorObjId: newSpnId,
+						await new Spnsetup({
+							type: preSpn.type.toLowerCase(),
+							spnObjId: newSpnId,
 						}).save();
 
-						//save to sponsorusers
-						newSpnUser = new Sponsoruser({
-							fname: preSpn.fname,
-							lname: preSpn.lname,
-							email: preSpn.email.toLowerCase(),
-							username: preSpn.username.toLowerCase(),
-							password: hashedPassword,
-							phone: preSpn.phone,
-							phoneext: preSpn.phoneext,
-							permission: 'sponsor',
-							role: 'sponsor',
-							resetcreds: true,
-							resetcode: resetcode,
-							verifycode: '',
-							emailconfirmed: true,
-							sponsorid: spnId,
-							spnlocationObjId: newLocId,
-							sponsorObjId: newSpnId,
-						});
-						const svdUser = await newSpnUser.save();
-						const newUserId = svdUser._id;
+						//save to sponsor users
+						if (preSpn.type.toLowerCase() === 'private') {
+							newSpnUser = new Spnuser({
+								fname: preSpn.fname,
+								lname: preSpn.lname,
+								email: preSpn.email.toLowerCase(),
+								username: preSpn.username.toLowerCase(),
+								password: hashedPassword,
+								phone: preSpn.phone,
+								permission: 'sponsor',
+								role: 'financial',
+								resetcreds: true,
+								resetcode: resetcode,
+								verifycode: '',
+								emailconfirmed: true,
+								spns3xid: spnId,
+								spnlocObjId: newLocId,
+								spnObjId: newSpnId,
+							});
+							const svdUser = await newSpnUser.save();
+							const newUserId = svdUser._id;
 
-						if (newUserId) {
-							//create policy accept table
-							await new Policyspn({
-								sponsoruserObjId: newUserId,
-								sponsorObjId: newSpnId,
-							}).save();
-
-							await Preregspn.findOneAndDelete({ verifycode: verifycode });
-							return NextResponse.json({ status: 200 });
+							if (newUserId) {
+								//create policy accept table
+								await new Spnpolicy({
+									spnuserObjId: newUserId,
+									spnObjId: newSpnId,
+								}).save();
+							}
 						} else {
-							return NextResponse.json({ status: 400 });
+							newSpnUser = new Spnuser({
+								fname: preSpn.fname,
+								lname: preSpn.lname,
+								email: preSpn.email.toLowerCase(),
+								username: preSpn.username.toLowerCase(),
+								password: hashedPassword,
+								phone: preSpn.phone,
+								phoneext: preSpn.phoneext,
+								permission: 'sponsor',
+								role: 'admin',
+								resetcreds: true,
+								resetcode: resetcode,
+								verifycode: '',
+								emailconfirmed: true,
+								spns3xid: spnId,
+								spnlocObjId: newLocId,
+								spnObjId: newSpnId,
+							});
+							const svdUser = await newSpnUser.save();
+							const newUserId = svdUser._id;
+
+							if (newUserId) {
+								//create policy accept table
+								await new Spnpolicy({
+									spnuserObjId: newUserId,
+									spnObjId: newSpnId,
+								}).save();
+							}
 						}
+						await Spnprereg.findOneAndDelete({ verifycode: verifycode });
+						return NextResponse.json({ status: 200 });
 					} else {
 						return NextResponse.json({ status: 400 });
 					}
@@ -243,16 +231,27 @@ export const POST = async (req) => {
 			}
 			if (type === 'physician') {
 				//move from pre-registration to offices, officelocations, officeusers, and create officesetup
-				const prePhy = await Preregphys.findOne({ verifycode: verifycode });
+				const prePhy = await Ofcprereg.findOne({ verifycode: verifycode });
 				if (prePhy) {
 					let ofcId = '';
+					let locId = '';
 
 					//create office ID
 					for (let i = 0; i <= 1000000; i++) {
 						const newOfcId = CreateOfficeId(9);
-						const idExists = await Office.findOne({ officeid: newOfcId.toLowerCase() });
+						const idExists = await Office.findOne({ ofcs3xid: newOfcId.toLowerCase() });
 						if (!idExists || idExists === null) {
 							ofcId = newOfcId.toLowerCase();
+							break;
+						}
+					}
+
+					//create location ID
+					for (let i = 0; i <= 1000000; i++) {
+						const newLocId = CreateLocationId(9);
+						const idExists = await Ofclocation.findOne({ locs3xid: newLocId.toLowerCase() });
+						if (!idExists || idExists === null) {
+							locId = newLocId.toLowerCase();
 							break;
 						}
 					}
@@ -263,32 +262,33 @@ export const POST = async (req) => {
 						dba: 'HQ',
 						email: prePhy.email,
 						phone: prePhy.phone,
-						officeid: ofcId,
+						ofcs3xid: ofcId,
 					});
 					const svdOfc = await newOfc.save();
 					const newOfcObjId = svdOfc._id;
 
 					//create the initial owner
-					await new Owner({
+					await new Ofcowner({
 						fname: prePhy.fname,
 						lname: prePhy.lname,
 						email: prePhy.email,
 						phone: prePhy.phone,
-						officeObjId: newOfcObjId,
+						ofcObjId: newOfcObjId,
 					}).save();
 
 					//create new office location
-					const newLoc = new Officelocation({
+					const newLoc = new Ofclocation({
 						name: 'Headquarters',
 						state: prePhy.state,
 						phone: prePhy.phone,
-						officeObjId: newOfcObjId,
+						locs3xid: locId,
+						ofcObjId: newOfcObjId,
 					});
 					const svdLoc = await newLoc.save();
 					const newLocObjId = svdLoc._id;
 
 					//create new office user
-					const newPhy = new Officeuser({
+					const newPhy = new Ofcuser({
 						fname: prePhy.fname,
 						lname: prePhy.lname,
 						email: prePhy.email,
@@ -304,26 +304,26 @@ export const POST = async (req) => {
 						specialty: prePhy.specialty,
 						resetcreds: false,
 						emailconfirmed: true,
-						officeid: ofcId,
-						locationObjId: newLocObjId,
-						officeObjId: newOfcObjId,
+						ofcs3xid: ofcId,
+						ofclocObjId: newLocObjId,
+						ofcObjId: newOfcObjId,
 					});
 					const svdPhy = await newPhy.save();
 					const newPhyId = svdPhy._id;
 
 					//create new office setup
-					await new Officesetup({
-						officeObjId: newOfcObjId,
+					await new Ofcsetup({
+						ofcObjId: newOfcObjId,
 					}).save();
 
 					//create new office policy agreements
-					await new Policyphy({
-						officeuserObjId: newPhyId,
-						officeObjId: newOfcObjId,
+					await new Ofcpolicy({
+						ofcuserObjId: newPhyId,
+						ofcObjId: newOfcObjId,
 					}).save();
 
 					if (newPhyId) {
-						await Preregphys.findOneAndDelete({ verifycode: verifycode });
+						await Ofcprereg.findOneAndDelete({ verifycode: verifycode });
 						return NextResponse.json({ status: 200 });
 					}
 				} else {

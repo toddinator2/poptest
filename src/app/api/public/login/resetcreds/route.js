@@ -1,9 +1,9 @@
 import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Sponsoruser from '@/models/sponsoruser';
-import Officeuser from '@/models/officeuser';
+import Subscriber from '@/models/subscriber';
+import Spnuser from '@/models/spnuser';
+import Ofcuser from '@/models/ofcuser';
 import S3xuser from '@/models/s3xuser';
 
 export const PUT = async (req) => {
@@ -23,14 +23,14 @@ export const PUT = async (req) => {
 
 	if (token === authToken) {
 		try {
-			if (type === 'patient') {
-				const chkUname = await Patient.findOne({ username: lwrUname });
+			if (type === 'subscriber') {
+				const chkUname = await Subscriber.findOne({ username: lwrUname });
 				if (chkUname) {
 					return NextResponse.json({ status: 400 });
 				} else {
-					const user = await Patient.findOne({ resetcode: resetcode });
+					const user = await Subscriber.findOne({ resetcode: resetcode });
 					if (user) {
-						await Patient.findOneAndUpdate(
+						await Subscriber.findOneAndUpdate(
 							{ resetcode: resetcode },
 							{
 								username: lwrUname,
@@ -47,13 +47,13 @@ export const PUT = async (req) => {
 				}
 			}
 			if (type === 'sponsor') {
-				const chkUname = await Sponsoruser.findOne({ username: lwrUname });
+				const chkUname = await Spnuser.findOne({ username: lwrUname });
 				if (chkUname) {
 					return NextResponse.json({ status: 400 });
 				} else {
-					const user = await Sponsoruser.findOne({ resetcode: resetcode });
+					const user = await Spnuser.findOne({ resetcode: resetcode });
 					if (user) {
-						await Sponsoruser.findOneAndUpdate(
+						await Spnuser.findOneAndUpdate(
 							{ resetcode: resetcode },
 							{
 								username: lwrUname,
@@ -70,13 +70,13 @@ export const PUT = async (req) => {
 				}
 			}
 			if (type === 'physician') {
-				const chkUname = await Officeuser.findOne({ username: lwrUname });
+				const chkUname = await Ofcuser.findOne({ username: lwrUname });
 				if (chkUname) {
 					return NextResponse.json({ status: 400 });
 				} else {
-					const user = await Officeuser.findOne({ resetcode: resetcode });
+					const user = await Ofcuser.findOne({ resetcode: resetcode });
 					if (user) {
-						await Officeuser.findOneAndUpdate(
+						await Ofcuser.findOneAndUpdate(
 							{ resetcode: resetcode },
 							{
 								username: lwrUname,

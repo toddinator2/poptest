@@ -244,12 +244,13 @@ export default function Bank() {
 				<div className='w-5/6 mx-auto py-3 flex flex-col'>
 					<div className='mb-3 text-lg font-semibold text-center'>PAYMENT INFORMATION</div>
 					<div className='mb-3'>
-						Please setup how you would like to make your monthly payments to Supernova3X. The SN3X preferred method is ACH, which helps keep our
+						Please setup how you would like to make your monthly payments to your physicians. The SN3X preferred method is ACH, which helps keep our
 						costs down and bring better improvements to the software faster.
 					</div>
 					<div className='mb-3'>
-						Once you have saved your information, your first monthly payment will be charged and you will immediately have access to the Supernova3X
-						software. You can always change and update your method or payment in the Sponsor Sphere.
+						Once you have saved your information you will immediately have access to the Supernova3X software, and can begin adding your roster
+						list. You can always change and update your method of payment in the Sponsor Sphere. You will not be charged anything until you add your
+						roster list and have members with physician memberships.
 					</div>
 					<div>Thank you for completing the Account Setup process!</div>
 				</div>

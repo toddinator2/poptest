@@ -33,7 +33,7 @@ export default function Medications({ userId }) {
 				},
 				body: JSON.stringify({
 					meds,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

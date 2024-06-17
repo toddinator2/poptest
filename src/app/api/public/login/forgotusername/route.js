@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Patient from '@/models/patient';
-import Sponsoruser from '@/models/sponsoruser';
-import Officeuser from '@/models/officeuser';
+import Subscriber from '@/models/subscriber';
+import Spnuser from '@/models/spnuser';
+import Ofcuser from '@/models/ofcuser';
 import S3xuser from '@/models/s3xuser';
 
 export const GET = async (request) => {
@@ -21,20 +21,20 @@ export const GET = async (request) => {
 
 	if (token === authToken) {
 		try {
-			if (type === 'patient') {
-				const users = await Patient.find({ email: lwrEmail });
+			if (type === 'subscriber') {
+				const users = await Subscriber.find({ email: lwrEmail });
 				users.forEach((user) => {
 					uNames.push(user.username);
 				});
 				return NextResponse.json({ unames: uNames });
 			} else if (type === 'sponsor') {
-				const users = await Sponsoruser.find({ email: lwrEmail });
+				const users = await Spnuser.find({ email: lwrEmail });
 				users.forEach((user) => {
 					uNames.push(user.username);
 				});
 				return NextResponse.json({ unames: uNames });
 			} else if (type === 'physician') {
-				const users = await Officeuser.find({ email: lwrEmail });
+				const users = await Ofcuser.find({ email: lwrEmail });
 				users.forEach((user) => {
 					uNames.push(user.username);
 				});

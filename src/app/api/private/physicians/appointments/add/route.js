@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Appointment from '@/models/appointment';
-import Officeuser from '@/models/officeuser';
-import Resource from '@/models/resource';
+import Ofcuser from '@/models/ofcuser';
+import Ofcresource from '@/models/ofcresource';
 
 export const POST = async (req) => {
 	await connect();
@@ -33,13 +33,13 @@ export const POST = async (req) => {
 
 	//set people who need to sign visit
 	//get all users for this location
-	const allUsers = await Officeuser.find({ officeObjId: officeObjId });
+	const allUsers = await Ofcuser.find({ ofcObjId: officeObjId });
 	let tmpUsers = [];
 	if (allUsers) {
 		for (let i = 0; i < allUsers.length; i++) {
 			const user = allUsers[i];
-			for (let l = 0; l < user.locationObjId.length; l++) {
-				const locId = user.locationObjId[l];
+			for (let l = 0; l < user.ofclocObjId.length; l++) {
+				const locId = user.ofclocObjId[l];
 				if (locId === locationObjId) {
 					tmpUsers.push(user);
 					break;
@@ -50,7 +50,7 @@ export const POST = async (req) => {
 	const users = tmpUsers;
 
 	//get all resources for this location
-	const allRscs = await Resource.find({ locationObjId: locationObjId });
+	const allRscs = await Ofcresource.find({ ofclocObjId: locationObjId });
 	let tmpRscs = [];
 	if (allRscs) {
 		for (let i = 0; i < allRscs.length; i++) {
@@ -67,7 +67,7 @@ export const POST = async (req) => {
 			if (resource._id.toString() === rsc) {
 				for (let u = 0; u < users.length; u++) {
 					const user = users[u];
-					if (user._id.toString() === resource.officeuserObjId.toString()) {
+					if (user._id.toString() === resource.ofcuserObjId.toString()) {
 						if (user.permission === 'provider') {
 							prId = user._id;
 							prName = user.fname + ' ' + user.lname;

@@ -24,13 +24,13 @@ export default function Authorize() {
 		try {
 			setLoading(true);
 			//try getting saved data first
-			const response = await fetch(`${process.env.API_URL}/subscribers/get/byusername?uname=${svdUname}`, {
+			const response = await fetch(`${process.env.API_URL}/subscribers/get/forauthorize?uname=${svdUname}`, {
 				method: 'GET',
 			});
 			const data = await response.json();
 
 			if (data.status === 200) {
-				setUser(data.patient);
+				setUser(data.subscriber);
 			} else {
 				setUser({});
 				toast.error(data.msg);
@@ -62,19 +62,18 @@ export default function Authorize() {
 	useEffect(() => {
 		if (user !== undefined) {
 			if (Object.keys(user).length !== 0 && Object.keys(auth.user).length === 0) {
-				if (!user.resetcreds && user.permission === 'patient') {
+				if (!user.resetcreds && user.permission === 'subscriber') {
 					const userObj = {
 						_id: user._id,
 						fname: user.fname,
 						lname: user.lname,
 						dob: user.dob,
 						email: user.email,
-						phone: user.mphone,
+						phone: user.phone,
 						photo: user.photo,
-						s3xid: user.s3xid,
+						subs3xid: user.subs3xid,
 						permission: user.permission,
 						role: user.role,
-						offices: user.offices,
 					};
 					setAuth({ user: userObj });
 					saveInLocalStorage(lsUserData, userObj);
@@ -85,7 +84,7 @@ export default function Authorize() {
 						router.push('/subscribers/sphere');
 					}
 				} else {
-					if (user.permission !== 'patient') {
+					if (user.permission !== 'subscriber') {
 						router.push('/subscribers/login');
 					} else {
 						signOut({ callbackUrl: `/subscribers/login/resetcreds/${user.resetcode}` });

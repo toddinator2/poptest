@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
-import Sponsorsetup from '@/models/sponsorsetup';
+import Spnsetup from '@/models/spnsetup';
 
 export const GET = async (request) => {
 	await connect();
@@ -8,9 +8,10 @@ export const GET = async (request) => {
 	const spnId = searchParams.get('spnid');
 
 	try {
-		const spn = await Sponsorsetup.findOne({ sponsorObjId: spnId });
+		const spn = await Spnsetup.findOne({ spnObjId: spnId });
 		if (spn) {
 			const spnObj = {
+				type: spn.type,
 				profile: spn.profile,
 				location: spn.location,
 				agreement: spn.agreement,

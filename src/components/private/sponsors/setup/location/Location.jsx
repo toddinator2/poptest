@@ -7,7 +7,7 @@ import Input from '@/components/global/forms/input/Input';
 import Button from '@/components/global/forms/buttons/Button';
 import Checklist from '../checklist/Checklist';
 
-export default function Location() {
+export default function Location({ type }) {
 	const gglKey = process.env.MAPS_KEY;
 	const [auth] = useContext(AuthContext);
 	const [name, setName] = useState('');
@@ -30,6 +30,7 @@ export default function Location() {
 
 			if (data.status === 200) {
 				setName(data.location.name);
+				setPhone(data.location.phone);
 			} else {
 				toast.error(data.msg);
 			}
@@ -53,21 +54,23 @@ export default function Location() {
 		let latitude = '';
 		let longitude = '';
 
-		//Set longitude and latitude
-		if (add && city && state && zip) {
-			const convertAddress = `${add}, ${city}, ${state}, ${zip}`;
-			await geocode(RequestType.ADDRESS, convertAddress, {
-				key: gglKey,
-				language: 'en',
-				region: 'us',
-			})
-				.then((response) => {
-					latitude = response.results[0].geometry.location.lat.toString();
-					longitude = response.results[0].geometry.location.lng.toString();
+		if (type !== 'private') {
+			//Set longitude and latitude
+			if (add && city && state && zip) {
+				const convertAddress = `${add}, ${city}, ${state}, ${zip}`;
+				await geocode(RequestType.ADDRESS, convertAddress, {
+					key: gglKey,
+					language: 'en',
+					region: 'us',
 				})
-				.catch((error) => {
-					console.error(error);
-				});
+					.then((response) => {
+						latitude = response.results[0].geometry.location.lat.toString();
+						longitude = response.results[0].geometry.location.lng.toString();
+					})
+					.catch((error) => {
+						console.error(error);
+					});
+			}
 		}
 
 		try {
@@ -114,13 +117,21 @@ export default function Location() {
 	return (
 		<div className='w-full pb-5 lg:w-5/6 lg:mx-auto flex flex-col xl:flex-row xl-justify-center xl:gap-3'>
 			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkred rounded-2xl order-2 xl:order-1'>
-				<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkred'>LOCATION SETTINGS</div>
+				{type === 'private' ? (
+					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkred'>ADDRESS &amp; PHONE</div>
+				) : (
+					<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkred'>LOCATION SETTINGS</div>
+				)}
 				<div className='w-5/6 mx-auto px-2 py-3 flex flex-col'>
 					<form onSubmit={handleSubmit}>
-						<label className='frmLabel'>Name</label>
-						<div className='mb-2 ps-2'>
-							<Input type='text' required={true} value={name} setValue={setName} />
-						</div>
+						{type !== 'private' && (
+							<>
+								<label className='frmLabel'>Name</label>
+								<div className='mb-2 ps-2'>
+									<Input type='text' required={true} value={name} setValue={setName} />
+								</div>
+							</>
+						)}
 						<label className='frmLabel'>Address</label>
 						<div className='ps-2'>
 							<Input type='text' required={true} value={add} setValue={setAdd} />
@@ -194,25 +205,47 @@ export default function Location() {
 						<div className='ps-2'>
 							<Input type='text' required={true} value={zip} setValue={setZip} />
 						</div>
-						<label className='frmLabel'>Phone</label>
-						<div className='ps-2'>
-							<Input type='text' required={true} value={phone} funcCall={handlePhone} />
-						</div>
-						<div className='mt-5 flex justify-center'>
-							<Button type='submit' disabled={!name || !add || !city || !state || !zip || !phone}>
-								Save Changes
-							</Button>
-						</div>
+						{type !== 'private' && (
+							<>
+								<label className='frmLabel'>Phone</label>
+								<div className='ps-2'>
+									<Input type='text' required={true} value={phone} funcCall={handlePhone} />
+								</div>
+							</>
+						)}
+						{type === 'private' ? (
+							<div className='mt-5 flex justify-center'>
+								<Button type='submit' disabled={!add || !city || !state || !zip}>
+									Save Changes
+								</Button>
+							</div>
+						) : (
+							<div className='mt-5 flex justify-center'>
+								<Button type='submit' disabled={!name || !add || !city || !state || !zip || !phone}>
+									Save Changes
+								</Button>
+							</div>
+						)}
 					</form>
 				</div>
 			</div>
 			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto mb-3 xl:mb-0 border-4 border-drkblu rounded-2xl order-1 xl:order-2'>
 				<div className='w-full py-2 font-semibold text-center text-xl border-b-4 border-b-drkblu'>DETAILS</div>
 				<div className='w-5/6 mx-auto py-3 flex flex-col'>
-					<div className='mb-3 text-lg font-semibold text-center'>LOCATION SETTINGS</div>
-					<div>
-						Please fill out your first location information. You can add more locations in the Sponsor Sphere when the setup process is complete.
-					</div>
+					{type === 'private' ? (
+						<>
+							<div className='mb-3 text-lg font-semibold text-center'>RESPONSIBLE PARTY</div>
+							<div>Please fill out your address information. You can always change it and update it later in your Sponsor Sphere.</div>
+						</>
+					) : (
+						<>
+							<div className='mb-3 text-lg font-semibold text-center'>LOCATION SETTINGS</div>
+							<div>
+								Please fill out your first location information. You can add more locations in the Sponsor Sphere when the setup process is
+								complete.
+							</div>
+						</>
+					)}
 				</div>
 			</div>
 			<div className='w-5/6 md:w-2/3 xl:w-1/3 mx-auto border-4 border-drkppl rounded-2xl order-3'>

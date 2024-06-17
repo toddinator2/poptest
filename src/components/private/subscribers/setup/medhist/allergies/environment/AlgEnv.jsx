@@ -51,7 +51,7 @@ export default function AlgEnv({ userId }) {
 					pltype,
 					oth,
 					other,
-					patientObjId: userId,
+					subObjId: userId,
 				}),
 			});
 			const data = await response.json();

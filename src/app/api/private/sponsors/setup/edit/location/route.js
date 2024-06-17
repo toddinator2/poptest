@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
 import Spnlocation from '@/models/spnlocation';
-import Sponsorsetup from '@/models/sponsorsetup';
+import Spnsetup from '@/models/spnsetup';
 
 export const PUT = async (req) => {
 	await connect();
@@ -24,7 +24,7 @@ export const PUT = async (req) => {
 			},
 			{ new: true }
 		);
-		await Sponsorsetup.findOneAndUpdate({ sponsorObjId: spnid }, { location: true }, { new: true });
+		await Spnsetup.findOneAndUpdate({ spnObjId: spnid }, { location: true }, { new: true });
 
 		return NextResponse.json({ msg: 'Location updated successfully', status: 200 });
 	} catch (err) {

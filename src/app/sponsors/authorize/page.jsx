@@ -73,9 +73,9 @@ export default function Authorize() {
 						phoneext: user.phoneext,
 						permission: user.permission,
 						role: user.role,
-						spnid: user.sponsorid,
-						locObjId: user.spnlocationObjId,
-						spnObjId: user.sponsorObjId,
+						spnid: user.spns3xid,
+						locObjId: user.spnlocObjId,
+						spnObjId: user.spnObjId,
 					};
 					setAuth({ user: userObj });
 					saveInLocalStorage(lsUserData, userObj);

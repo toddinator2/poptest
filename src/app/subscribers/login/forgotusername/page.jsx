@@ -24,7 +24,7 @@ export default function SubFU() {
 		setLoading(true);
 
 		const objData = {
-			type: 'patient',
+			type: 'subscriber',
 			email,
 		};
 		//Encrypt data to send and send
@@ -80,7 +80,7 @@ export default function SubFU() {
 					</div>
 					<form onSubmit={handleSubmit}>
 						<div className='w-4/5 sm:w-3/4 lg:w-1/2 2xl:w-1/3 mx-auto flex-auto'>
-							<Input label='Email' type='email' id='email' autocomplete={true} required={true} value={email} setValue={setEmail} />
+							<Input label='Email' type='email' id='email' required={true} value={email} setValue={setEmail} />
 							<div className='w-full mt-4 flex justify-center'>
 								<Button type='submit' disabled={!email}>
 									Send Request

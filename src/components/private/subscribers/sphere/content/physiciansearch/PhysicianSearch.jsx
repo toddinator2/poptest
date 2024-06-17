@@ -39,9 +39,12 @@ export default function PhysicianSearch() {
 		setMisc({ defLocId: misc.defLocId, defLocName: misc.defLocName, editId: '', props: {} });
 
 		try {
-			const response = await fetch(`${process.env.API_URL}/subscribers/get/physicians/forsearch?spc=${specialty}&mls=${miles}&userId=${auth.user._id}`, {
-				method: 'GET',
-			});
+			const response = await fetch(
+				`${process.env.API_URL}/subscribers/get/physicians/forphysearch?spc=${specialty}&mls=${miles}&userId=${auth.user._id}`,
+				{
+					method: 'GET',
+				}
+			);
 			const data = await response.json();
 
 			if (data.status === 200) {

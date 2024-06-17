@@ -43,7 +43,7 @@ export default function SubRC({ params }) {
 			}
 
 			const objData = {
-				type: 'patient',
+				type: 'subscriber',
 				resetcode,
 				username: newUname,
 				password: newPword,
