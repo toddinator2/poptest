@@ -84,12 +84,12 @@ export default function Medications({ userId }) {
 						<option value='cbd'>Cannabidiol</option>
 					</select>
 				</div>
-				<label className='frmLabel'>Name</label>
-				<div className='mb-2 ps-2'>
-					<Input type='text' required={true} value={medName} setValue={setMedName} />
-				</div>
 				{medType === 'pre' && (
 					<>
+						<label className='frmLabel'>Name</label>
+						<div className='mb-2 ps-2'>
+							<Input type='text' required={true} value={medName} setValue={setMedName} />
+						</div>
 						<label className='frmLabel'>Dosage</label>
 						<div className='mb-2 ps-2'>
 							<Input type='text' required={true} value={medDosage} setValue={setMedDosage} />
@@ -102,6 +102,10 @@ export default function Medications({ userId }) {
 				)}
 				{medType !== 'pre' && medType !== '' && medType !== 'nun' && (
 					<>
+						<label className='frmLabel'>Name</label>
+						<div className='mb-2 ps-2'>
+							<Input type='text' required={true} value={medName} setValue={setMedName} />
+						</div>
 						<label className='frmLabel'>Reason</label>
 						<div className='mb-2 ps-2'>
 							<Input type='text' required={true} value={medReason} setValue={setMedReason} />
@@ -112,7 +116,7 @@ export default function Medications({ userId }) {
 					<div className='mb-3 flex justify-center'>
 						{medType === 'pre' && (
 							<Button type='button' disabled={!medType || !medName || !medDosage || !medFrequency} onClick={addMed}>
-								Save Changes
+								Save & Add Another
 							</Button>
 						)}
 						{medType !== 'pre' && (
