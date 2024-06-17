@@ -47,7 +47,7 @@ export default function Progress() {
 		} catch (err) {
 			toast.error(err);
 		}
-	}, [auth]);
+	}, [auth, router]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DATA LOAD FUNCTIONS
@@ -111,7 +111,7 @@ export default function Progress() {
 				setupDone();
 			}
 		}
-	}, [chkdSetup, profile, docform, empform, medhist, agreement]);
+	}, [chkdSetup, profile, docform, empform, medhist, agreement, setupDone]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CHANGE STREAM WATCHES
