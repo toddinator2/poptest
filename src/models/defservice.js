@@ -12,7 +12,7 @@ const defserviceSchema = new Schema({
 		type: Number,
 		trim: true,
 	},
-	catObjId: {
+	defcatObjId: {
 		type: ObjectId,
 		ref: 'defcategories',
 		required: true,

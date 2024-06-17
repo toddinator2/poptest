@@ -9,14 +9,14 @@ const diarySchema = new Schema(
 			trim: true,
 			required: true,
 		},
-		officeuserObjId: {
+		ofcuserObjId: {
 			type: ObjectId,
-			ref: 'users',
+			ref: 'ofcusers',
 			required: true,
 		},
-		patientObjId: {
+		subObjId: {
 			type: ObjectId,
-			ref: 'patients',
+			ref: 'subscribers',
 			required: true,
 		},
 	},

@@ -7,7 +7,7 @@ const defdoctypeSchema = new Schema({
 		trim: true,
 		required: true,
 	},
-	patientview: {
+	subcanview: {
 		type: Boolean,
 		required: true,
 		default: false,

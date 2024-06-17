@@ -9,12 +9,12 @@ const doctypeSchema = new Schema(
 			trim: true,
 			required: true,
 		},
-		patientview: {
+		subcanview: {
 			type: Boolean,
 			required: true,
 			default: false,
 		},
-		officeObjId: {
+		ofcObjId: {
 			type: ObjectId,
 			ref: 'offices',
 			required: true,
