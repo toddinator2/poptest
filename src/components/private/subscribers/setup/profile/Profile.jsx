@@ -13,7 +13,7 @@ import Checklist from '../checklist/Checklist';
 
 export default function Profile() {
 	const lsUserData = process.env.DATA_SUB;
-	const [auth] = useContext(AuthContext);
+	const [auth, setAuth] = useContext(AuthContext);
 	const [add, setAdd] = useState('');
 	const [add2, setAdd2] = useState('');
 	const [city, setCity] = useState('');
@@ -55,6 +55,7 @@ export default function Profile() {
 					_id: auth.user._id,
 					fname: auth.user.fname,
 					lname: auth.user.lname,
+					dob: auth.user.dob,
 					email: auth.user.email,
 					phone: auth.user.phone,
 					photo: newPicUrl,
@@ -65,7 +66,6 @@ export default function Profile() {
 				};
 				setAuth({ user: userObj });
 				saveInLocalStorage(lsUserData, userObj);
-
 				toast.success(data.msg);
 			}
 		} catch (err) {
