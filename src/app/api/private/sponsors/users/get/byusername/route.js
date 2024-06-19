@@ -7,13 +7,18 @@ export const GET = async (request) => {
 	await connect();
 	const { searchParams } = new URL(request.url);
 	const uname = searchParams.get('uname');
+	let lwrUname = '';
 	let sucomplete = false;
 
+	if (uname) {
+		lwrUname = uname.toLowerCase();
+	}
+
 	try {
-		const spn = await Spnuser.findOne({ username: uname }).select('-username -password');
+		const spn = await Spnuser.findOne({ username: lwrUname }).select('-username -password');
 		if (spn) {
 			//check if setup is complete
-			const chkSetup = await Sponsor.findById(spn.sponsorObjId);
+			const chkSetup = await Sponsor.findById(spn.spnObjId);
 			if (chkSetup) {
 				sucomplete = chkSetup.setupcomplete;
 			}
