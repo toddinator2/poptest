@@ -6,9 +6,14 @@ export const GET = async (request) => {
 	await connect();
 	const { searchParams } = new URL(request.url);
 	const uname = searchParams.get('uname');
+	let lwrUname = '';
+
+	if (uname) {
+		lwrUname = uname.toLowerCase();
+	}
 
 	try {
-		const allData = await Ofcuser.findOne({ username: uname });
+		const allData = await Ofcuser.findOne({ username: lwrUname });
 		if (allData) {
 			const userObj = {
 				_id: allData._id,

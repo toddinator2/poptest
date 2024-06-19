@@ -54,10 +54,8 @@ export default function Authorize() {
 	// LOAD DATA
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
-		if (Object.keys(user).length === 0 && svdUname) {
-			loadUser();
-		}
-	}, [user, svdUname, loadUser]);
+		loadUser();
+	}, [loadUser]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SET CONTEXT DATA
@@ -80,9 +78,9 @@ export default function Authorize() {
 					license: user.license,
 					npi: user.npi,
 					specialty: user.specialty,
-					ofcid: user.officeid,
-					locObjId: user.locationObjId,
-					ofcObjId: user.officeObjId,
+					ofcs3xid: user.ofcs3xid,
+					locObjId: user.ofclocObjId,
+					ofcObjId: user.ofcObjId,
 				};
 				setAuth({ user: userObj });
 
@@ -94,7 +92,7 @@ export default function Authorize() {
 					if (svdLocId) {
 						locId = svdLocId;
 					} else {
-						locId = user.locationObjId[0];
+						locId = user.ofclocObjId[0];
 					}
 
 					const getLoc = async () => {
@@ -109,7 +107,7 @@ export default function Authorize() {
 						}
 
 						//find out if office setup has been completed
-						const setup = await fetch(`${process.env.API_URL}/physicians/office/data/get/setupcomplete?id=${user.officeObjId}`, {
+						const setup = await fetch(`${process.env.API_URL}/physicians/office/data/get/setupcomplete?id=${user.ofcObjId}`, {
 							method: 'GET',
 						});
 						const setupData = await setup.json();
