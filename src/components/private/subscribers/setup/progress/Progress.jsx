@@ -40,7 +40,7 @@ export default function Progress() {
 			});
 			const data = await response.json();
 
-			if (data.status === '200') {
+			if (data.status === 200) {
 				toast.success(data.msg);
 				router.push('/subscribers/sphere');
 			}
@@ -111,7 +111,7 @@ export default function Progress() {
 				setupDone();
 			}
 		}
-	}, [chkdSetup, profile, docform, empform, medhist, agreement, setupDone]);
+	}, [chkdSetup, profile, docform, empform, medhist, agreement]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CHANGE STREAM WATCHES

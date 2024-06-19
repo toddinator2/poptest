@@ -10,8 +10,13 @@ export const PUT = async (req) => {
 
 	try {
 		await Subscriber.findByIdAndUpdate(subid, { setupdone: true }, { new: true });
-		await Subsetup.findOneAndDelete({ subObjId: subid });
-		return NextResponse.json({ msg: 'Account Setup completed', status: 200 });
+		const su = await Subsetup.findOne({ subObjId: subid });
+		if (su) {
+			await Subsetup.findOneAndDelete({ subObjId: subid });
+			return NextResponse.json({ msg: 'Account Setup completed', status: 200 });
+		} else {
+			return NextResponse.json({ status: 200 });
+		}
 	} catch (err) {
 		return NextResponse.json({ msg: 'Network Error: Please try again', status: 500 });
 	}
