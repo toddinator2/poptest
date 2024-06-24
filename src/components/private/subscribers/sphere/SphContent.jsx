@@ -9,8 +9,7 @@ import PhysicianSearch from './content/physicians/physiciansearch/PhysicianSearc
 import OfficeInfo from './content/physicians/officeinfo/OfficeInfo';
 import OfficeDetails from './content/physicians/physiciansearch/OfficeDetails';
 //Telemed
-import AgoraRTC, { AgoraRTCProvider } from 'agora-rtc-react';
-//import Videos from './content/virtual/Videos';
+import Videos from './content/virtual/Videos';
 //Messages
 import AddMessage from './content/messages/add/AddMessage';
 
@@ -49,14 +48,9 @@ export default function SphContent() {
 	return (
 		<>
 			{menu.vids && (
-				<AgoraRTCProvider client={AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })}>
-					<div>Videos Go Here</div>
-					{/*}
-					<div className='w-full py-5 xl:py-3 flex justify-center'>
-						<VideoScreens token={token} />
-					</div>
-					{*/}
-				</AgoraRTCProvider>
+				<div className='w-full py-5 xl:py-3 flex justify-center'>
+					<Videos token={token} />
+				</div>
 			)}
 			<div className='py-5 xl:py-3 xl:px-5 xl:flex xl:flex-row xl:justify-center xl:gap-3'>
 				<div className='w-full xl:w-1/3 mb-3 xl:mb-0 min-h-40 border-4 border-drkred rounded-3xl'>
