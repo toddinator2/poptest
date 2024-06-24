@@ -50,9 +50,7 @@ export default function SphContent() {
 		<>
 			{menu.vids && (
 				<AgoraRTCProvider client={AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })}>
-					<div className='w-full py-5 xl:py-3 flex justify-center'>
-						<VideoScreens token={token} />
-					</div>
+					<div className='w-full py-5 xl:py-3 flex justify-center'>{typeof window !== 'undefined' && <VideoScreens token={token} />}</div>
 				</AgoraRTCProvider>
 			)}
 			<div className='py-5 xl:py-3 xl:px-5 xl:flex xl:flex-row xl:justify-center xl:gap-3'>
