@@ -66,7 +66,7 @@ export default function Authorize() {
 		if (svdUname) {
 			loadUser();
 		}
-	}, [loadUser]);
+	}, [svdUname, loadUser]);
 
 	useEffect(() => {
 		loadOffices();
@@ -126,7 +126,7 @@ export default function Authorize() {
 				}
 			}
 		}
-	}, [svdUname, user, auth, setAuth, lsUserData, router]);
+	}, [svdUname, user, auth, offices, setAuth, lsUserData, router]);
 
 	return <>{loading && <Spinner />}</>;
 }

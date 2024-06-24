@@ -55,7 +55,7 @@ export default function SbOfcList() {
 		} catch (err) {
 			toast.error('Network Error: Please try again');
 		}
-	}, [auth, setAuth]);
+	}, [auth, setAuth, lsUserData]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// LOAD DATA

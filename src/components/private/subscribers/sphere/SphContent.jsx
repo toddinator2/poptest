@@ -3,13 +3,14 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
 import { MenuContext } from '@/utils/context/global/MenuContext';
 import toast from 'react-hot-toast';
+import dynamic from 'next/dynamic';
 //Physicians Button
 import PhysicianSearch from './content/physicians/physiciansearch/PhysicianSearch';
 import OfficeInfo from './content/physicians/officeinfo/OfficeInfo';
 import OfficeDetails from './content/physicians/physiciansearch/OfficeDetails';
 //Telemed
 import AgoraRTC, { AgoraRTCProvider } from 'agora-rtc-react';
-import Videos from './content/virtual/Videos';
+//import Videos from './content/virtual/Videos';
 //Messages
 import AddMessage from './content/messages/add/AddMessage';
 
@@ -18,6 +19,9 @@ export default function SphContent() {
 	const [menu] = useContext(MenuContext);
 	const [token, setToken] = useState('');
 	const channelName = auth.user.fname + ' ' + auth.user.lname;
+
+	//need to dynmaically import videos to not get the 'window is not defined error'
+	const VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CREATE TOKEN
@@ -47,7 +51,7 @@ export default function SphContent() {
 			{menu.vids && (
 				<AgoraRTCProvider client={AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })}>
 					<div className='w-full py-5 xl:py-3 flex justify-center'>
-						<Videos token={token} />
+						<VideoScreens token={token} />
 					</div>
 				</AgoraRTCProvider>
 			)}
