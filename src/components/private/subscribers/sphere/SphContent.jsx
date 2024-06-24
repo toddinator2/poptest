@@ -15,13 +15,16 @@ import AgoraRTC, { AgoraRTCProvider } from 'agora-rtc-react';
 import AddMessage from './content/messages/add/AddMessage';
 
 export default function SphContent() {
+	let VideoScreens;
 	const [auth] = useContext(AuthContext);
 	const [menu] = useContext(MenuContext);
 	const [token, setToken] = useState('');
 	const channelName = auth.user.fname + ' ' + auth.user.lname;
 
 	//need to dynmaically import videos to not get the 'window is not defined error'
-	const VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
+	if (typeof window !== undefined) {
+		VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
+	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CREATE TOKEN
@@ -50,7 +53,9 @@ export default function SphContent() {
 		<>
 			{menu.vids && (
 				<AgoraRTCProvider client={AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })}>
-					<div className='w-full py-5 xl:py-3 flex justify-center'>{typeof window !== 'undefined' && <VideoScreens token={token} />}</div>
+					<div className='w-full py-5 xl:py-3 flex justify-center'>
+						<VideoScreens token={token} />
+					</div>
 				</AgoraRTCProvider>
 			)}
 			<div className='py-5 xl:py-3 xl:px-5 xl:flex xl:flex-row xl:justify-center xl:gap-3'>
