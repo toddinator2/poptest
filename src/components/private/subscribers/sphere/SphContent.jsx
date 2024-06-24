@@ -22,7 +22,7 @@ export default function SphContent() {
 	const channelName = auth.user.fname + ' ' + auth.user.lname;
 
 	//need to dynmaically import videos to not get the 'window is not defined error'
-	if (typeof window !== undefined) {
+	if (typeof window !== 'undefined') {
 		VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
 	}
 
