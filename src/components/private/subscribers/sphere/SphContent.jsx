@@ -14,17 +14,14 @@ import AgoraRTC, { AgoraRTCProvider } from 'agora-rtc-react';
 //Messages
 import AddMessage from './content/messages/add/AddMessage';
 
+//need to dynmaically import videos to not get the 'window is not defined error'
+const VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
+
 export default function SphContent() {
-	let VideoScreens;
 	const [auth] = useContext(AuthContext);
 	const [menu] = useContext(MenuContext);
 	const [token, setToken] = useState('');
 	const channelName = auth.user.fname + ' ' + auth.user.lname;
-
-	//need to dynmaically import videos to not get the 'window is not defined error'
-	if (typeof window !== 'undefined') {
-		VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
-	}
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// CREATE TOKEN
