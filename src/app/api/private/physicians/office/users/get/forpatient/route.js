@@ -6,27 +6,26 @@ import Ofcuser from '@/models/ofcuser';
 export const GET = async (request) => {
 	await connect();
 	const { searchParams } = new URL(request.url);
-	const ofcObjId = searchParams.get('ofcid');
-	const title = searchParams.get('title');
+	const _id = searchParams.get('phyid');
 	let ofcName = '';
 
 	try {
-		const ofcData = await Office.findById(ofcObjId);
-		if (ofcData) {
-			ofcName = ofcData.name;
-		}
+		const phy = await Ofcuser.findById(_id);
+		if (phy) {
+			//get office name
+			const ofc = await Office.findById(phy.ofcObjId);
+			if (ofc) {
+				ofcName = ofc.dba;
+			}
 
-		const allData = await Ofcuser.findOne({ ofcObjId: ofcObjId, title: title });
-		if (allData) {
-			const userObj = {
-				fname: allData.fname,
-				lname: allData.lname,
-				photo: allData.photo,
-				specialty: allData.specialty,
+			const phyObj = {
+				photo: phy.photo,
+				title: phy.title,
+				specialty: phy.specialty,
 				ofcName: ofcName,
 			};
 
-			return NextResponse.json({ user: userObj, status: 200 });
+			return NextResponse.json({ user: phyObj, status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Physician Not Found', status: 400 });
 		}

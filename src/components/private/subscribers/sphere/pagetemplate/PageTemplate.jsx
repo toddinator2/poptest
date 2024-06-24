@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Header from '../header/Header';
+import Sidebar from '../sidebar/Sidebar';
 import SphContent from '../SphContent';
-//import Sidebar from '../sidebar/Sidebar';
 
 export default function PageTemplate() {
 	const [screenWidth, setScreenWidth] = useState(0);
@@ -38,22 +38,14 @@ export default function PageTemplate() {
 					)}
 					{screenWidth >= 1280 && (
 						<div className='w-full flex flex-row'>
-							<div className='w-1/5 min-h-screen 2xl:w-1/6 border-r-2 border-dotted border-r-drkgry'>&nbsp;</div>
-							<div className='w-4/5 min-h-screen 2xl:w-5/6'>&nbsp;</div>
+							<div className='w-1/5 min-h-screen 2xl:w-1/6 px-2 border-r-2 border-dotted border-r-drkgry'>
+								<Sidebar />
+							</div>
+							<div className='w-4/5 min-h-screen 2xl:w-5/6'>
+								<SphContent />
+							</div>
 						</div>
 					)}
-					{/*}
-				<div className='row'>
-					<div className='col-12 col-md-4 col-xl-3 col-xxl-2'>
-						<div className='subSideDiv py-2'>
-							<Sidebar />
-						</div>
-					</div>
-					<div className='subContContainer col-12 col-md-8 col-xl-9 col-xxl-10'>
-						<SubSphereContent />
-					</div>
-				</div>
-	{*/}
 				</div>
 			)}
 		</>

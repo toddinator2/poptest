@@ -67,8 +67,8 @@ export default function Location({ type }) {
 						latitude = response.results[0].geometry.location.lat.toString();
 						longitude = response.results[0].geometry.location.lng.toString();
 					})
-					.catch((error) => {
-						console.error(error);
+					.catch((err) => {
+						toast.error(err);
 					});
 			}
 		}

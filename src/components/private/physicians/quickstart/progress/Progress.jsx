@@ -5,16 +5,7 @@ import toast from 'react-hot-toast';
 import Profile from '../profile/Profile';
 import Company from '../company/Company';
 import Location from '../location/Location';
-import Licensing from '../policies/Licensing';
-import Payment from '../policies/Payment';
-import Sponsor from '../policies/Sponsor';
-import Directory from '../policies/Directory';
-import Procenter from '../policies/Procenter';
-import Agora from '../policies/Agora';
-import Merchant from '../policies/Merchant';
-import Terms from '../policies/Terms';
-import Privacy from '../policies/Privacy';
-import Comm from '../policies/Comm';
+import Policy from '@/components/global/policies/Policy';
 import Bank from '../bank/Bank';
 
 import * as Realm from 'realm-web';
@@ -26,16 +17,7 @@ export default function Progress() {
 	const [profile, setProfile] = useState(false);
 	const [company, setCompany] = useState(false);
 	const [location, setLocation] = useState(false);
-	const [licensing, setLicensing] = useState(false);
-	const [payment, setPayment] = useState(false);
-	const [sponsor, setSponsor] = useState(false);
-	const [directory, setDirectory] = useState(false);
-	const [procenter, setProcenter] = useState(false);
-	const [agora, setAgora] = useState(false);
-	const [merchant, setMerchant] = useState(false);
-	const [terms, setTerms] = useState(false);
-	const [privacy, setPrivacy] = useState(false);
-	const [comm, setComm] = useState(false);
+	const [agreement, setAgreement] = useState(false);
 	const [bank, setBank] = useState(false);
 	const [page, setPage] = useState('');
 	const [chkdSetup, setChkdSetup] = useState(false);
@@ -54,16 +36,7 @@ export default function Progress() {
 				setProfile(data.setup.profile);
 				setCompany(data.setup.company);
 				setLocation(data.setup.location);
-				setLicensing(data.setup.licensing);
-				setPayment(data.setup.payment);
-				setSponsor(data.setup.sponsor);
-				setDirectory(data.setup.directory);
-				setProcenter(data.setup.procenter);
-				setAgora(data.setup.agora);
-				setMerchant(data.setup.merchant);
-				setTerms(data.setup.terms);
-				setPrivacy(data.setup.privacy);
-				setComm(data.setup.comm);
+				setAgreement(data.setup.agreement);
 				setBank(data.setup.bank);
 				setChkdSetup(true);
 			} else {
@@ -90,7 +63,7 @@ export default function Progress() {
 
 			// Connect to the database
 			const mongodb = app.currentUser.mongoClient('mongodb-atlas');
-			const osu = mongodb.db(dbName).collection('officesetups');
+			const osu = mongodb.db(dbName).collection('ofcsetups');
 
 			for await (const change of osu.watch()) {
 				if (change.operationType === 'update') {
@@ -106,22 +79,7 @@ export default function Progress() {
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		if (chkdSetup) {
-			if (
-				!profile ||
-				!company ||
-				!location ||
-				!licensing ||
-				!payment ||
-				!sponsor ||
-				!directory ||
-				!procenter ||
-				!agora ||
-				!merchant ||
-				!terms ||
-				!privacy ||
-				!comm ||
-				!bank
-			) {
+			if (!profile || !company || !location || !agreement || !bank) {
 				if (!profile) {
 					setPage('profile');
 					return;
@@ -134,44 +92,8 @@ export default function Progress() {
 					setPage('location');
 					return;
 				}
-				if (!licensing) {
-					setPage('licensing');
-					return;
-				}
-				if (!payment) {
-					setPage('payment');
-					return;
-				}
-				if (!sponsor) {
-					setPage('sponsor');
-					return;
-				}
-				if (!directory) {
-					setPage('directory');
-					return;
-				}
-				if (!procenter) {
-					setPage('procenter');
-					return;
-				}
-				if (!agora) {
-					setPage('agora');
-					return;
-				}
-				if (!merchant) {
-					setPage('merchant');
-					return;
-				}
-				if (!terms) {
-					setPage('terms');
-					return;
-				}
-				if (!privacy) {
-					setPage('privacy');
-					return;
-				}
-				if (!comm) {
-					setPage('comm');
+				if (!agreement) {
+					setPage('S3xPhyLicenseAgreement');
 					return;
 				}
 				if (!bank) {
@@ -180,7 +102,7 @@ export default function Progress() {
 				}
 			}
 		}
-	}, [chkdSetup, profile, company, location, licensing, payment, sponsor, directory, procenter, agora, merchant, terms, privacy, comm, bank]);
+	}, [chkdSetup, profile, company, location, agreement, bank]);
 
 	return (
 		<>
@@ -188,16 +110,7 @@ export default function Progress() {
 			{page === 'profile' && <Profile />}
 			{page === 'company' && <Company />}
 			{page === 'location' && <Location />}
-			{page === 'licensing' && <Licensing />}
-			{page === 'payment' && <Payment />}
-			{page === 'sponsor' && <Sponsor />}
-			{page === 'directory' && <Directory />}
-			{page === 'procenter' && <Procenter />}
-			{page === 'agora' && <Agora />}
-			{page === 'merchant' && <Merchant />}
-			{page === 'terms' && <Terms />}
-			{page === 'privacy' && <Privacy />}
-			{page === 'comm' && <Comm />}
+			{page === 'S3xPhyLicenseAgreement' && <Policy pol={page} reqType='s3x' su='phy' suFld='agreement' suFin={false} />}
 			{page === 'bank' && <Bank />}
 		</>
 	);

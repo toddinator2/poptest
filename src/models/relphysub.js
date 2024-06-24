@@ -22,6 +22,12 @@ const relphysubSchema = new Schema(
 			required: true,
 			index: true,
 		},
+		ofcuserObjId: {
+			type: ObjectId,
+			ref: 'ofcusers',
+			required: true,
+			index: true,
+		},
 	},
 	{ timestamps: true }
 );

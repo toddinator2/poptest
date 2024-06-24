@@ -1,17 +1,25 @@
 import { NextResponse } from 'next/server';
 import connect from '@/utils/dbConnect';
+import Policys3x from '@/models/policys3x';
 import Ofcpolicy from '@/models/ofcpolicy';
 import Ofcsetup from '@/models/ofcsetup';
 
 export const PUT = async (req) => {
 	await connect();
 	const body = await req.json();
-	const { accepted, today, inits, userid, ofcid } = body;
+	const { polCmpName, accepted, today, inits, userid, ofcid } = body;
+	let polId = '';
+
+	//get policy id
+	const pol = await Policys3x.findOne({ compname: polCmpName });
+	if (pol) {
+		polId = pol._id;
+	}
 
 	try {
 		await Ofcpolicy.findOneAndUpdate(
 			{ officeuserObjId: userid, officeObjId: ofcid },
-			{ licensing: accepted, licensingdate: today, licensinginits: inits },
+			{ agreement: accepted, agreementdate: today, agreementsign: inits },
 			{ new: true }
 		);
 		await Ofcsetup.findOneAndUpdate({ officeObjId: ofcid }, { licensing: accepted }, { new: true });

@@ -149,7 +149,7 @@ const subscriberSchema = new Schema(
 			required: true,
 			default: false,
 		},
-		setupdone: {
+		setupcomplete: {
 			type: Boolean,
 			required: true,
 			default: false,

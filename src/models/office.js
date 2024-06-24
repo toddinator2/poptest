@@ -12,6 +12,7 @@ const officeSchema = new Schema(
 		dba: {
 			type: String,
 			trim: true,
+			required: true,
 		},
 		ein: {
 			type: String,

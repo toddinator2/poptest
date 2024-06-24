@@ -3,6 +3,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { signOut, useSession } from 'next-auth/react';
 import { AuthContext } from '@/utils/context/global/AuthContext';
+import { MiscContext } from '@/utils/context/global/MiscContext';
 import { getFromLocalStorage, saveInLocalStorage } from '@/utils/helpers/lsSecure';
 import toast from 'react-hot-toast';
 import Spinner from '@/components/global/spinner/Spinner';
@@ -14,8 +15,10 @@ export default function Authorize() {
 	const router = useRouter();
 	const { status } = useSession();
 	const [auth, setAuth] = useContext(AuthContext);
+	const [_misc, setMisc] = useContext(MiscContext);
 	const [user, setUser] = useState({});
 	const [loading, setLoading] = useState(false);
+	const [offices, setOffices] = useState([]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// DATA LOAD FUNCTIONS
@@ -33,7 +36,6 @@ export default function Authorize() {
 				setUser(data.subscriber);
 			} else {
 				setUser({});
-				toast.error(data.msg);
 			}
 		} catch (err) {
 			toast.error(err);
@@ -42,6 +44,37 @@ export default function Authorize() {
 		}
 	}, [svdUname]);
 
+	const loadOffices = useCallback(async () => {
+		try {
+			const response = await fetch(`${process.env.API_URL}/subscribers/get/offices?subid=${auth.user._id}`, {
+				method: 'GET',
+			});
+			const data = await response.json();
+
+			if (data.status === 200) {
+				setOffices(data.ofcs);
+			}
+		} catch (err) {
+			toast.error('Network Error: Please try again');
+		}
+	}, [auth]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// LOAD DATA
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (svdUname) {
+			loadUser();
+		}
+	}, [loadUser]);
+
+	useEffect(() => {
+		loadOffices();
+	}, [loadOffices]);
+
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// CHECK AUTHENTICATION
+	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	useEffect(() => {
 		//check status to make sure user is authenticated
 		if (status === 'unauthenticated' || !svdUname) {
@@ -50,15 +83,14 @@ export default function Authorize() {
 	}, [status, svdUname, router]);
 
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	// LOAD DATA
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	useEffect(() => {
-		loadUser();
-	}, [loadUser]);
-
-	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// SET CONTEXT DATA
 	//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	useEffect(() => {
+		if (offices.length !== 0) {
+			setMisc({ defLocId: offices[0].locObjId, defLocName: offices[0].locName, editId: '', props: {} });
+		}
+	}, [offices, setMisc]);
+
 	useEffect(() => {
 		if (user !== undefined) {
 			if (Object.keys(user).length !== 0 && Object.keys(auth.user).length === 0) {
@@ -72,14 +104,15 @@ export default function Authorize() {
 						phone: user.phone,
 						photo: user.photo,
 						sex: user.sex,
-						subs3xid: user.subs3xid,
-						permission: user.permission,
+						s3xid: user.subs3xid,
+						perm: user.permission,
 						role: user.role,
+						offices: offices,
 					};
 					setAuth({ user: userObj });
 					saveInLocalStorage(lsUserData, userObj);
 
-					if (!user.setupdone) {
+					if (!user.setupcomplete) {
 						router.push('/subscribers/setup');
 					} else {
 						router.push('/subscribers/sphere');

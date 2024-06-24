@@ -7,7 +7,7 @@ import Profile from '../profile/Profile';
 import DocForm from '../docform/DocForm';
 import EmpForm from '../empform/EmpForm';
 import MedHist from '../medhist/MedHist';
-import Agreement from '../agreement/Agreement';
+import Policy from '@/components/global/policies/Policy';
 
 import * as Realm from 'realm-web';
 const app = new Realm.App({ id: process.env.REALM_ID });
@@ -103,7 +103,7 @@ export default function Progress() {
 				return;
 			}
 			if (!agreement) {
-				setPage('agreement');
+				setPage('S3xSubLicenseAgreement');
 				return;
 			}
 
@@ -139,7 +139,7 @@ export default function Progress() {
 			{page === 'docform' && <DocForm />}
 			{page === 'empform' && <EmpForm />}
 			{page === 'medhist' && <MedHist />}
-			{page === 'agreement' && <Agreement />}
+			{page === 'S3xSubLicenseAgreement' && <Policy pol={page} reqType='s3x' su='sub' suFld='agreement' suFin={true} />}
 		</>
 	);
 }

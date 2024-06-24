@@ -71,9 +71,9 @@ export default function Authorize() {
 						email: user.email,
 						phone: user.mphone,
 						phoneext: user.phoneext,
-						permission: user.permission,
+						perm: user.permission,
 						role: user.role,
-						spnid: user.spns3xid,
+						s3xid: user.spns3xid,
 						locObjId: user.spnlocObjId,
 						spnObjId: user.spnObjId,
 					};

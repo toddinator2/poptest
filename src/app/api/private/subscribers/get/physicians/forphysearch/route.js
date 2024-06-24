@@ -44,7 +44,7 @@ export const GET = async (request) => {
 							//get office name
 							const ofc = await Office.findById(loc.ofcObjId);
 							if (ofc) {
-								ofcName = ofc.name;
+								ofcName = ofc.dba;
 							}
 
 							//create a unique key for mapping

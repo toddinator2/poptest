@@ -72,7 +72,6 @@ export default function Login() {
 
 	const handleRemember = (e) => {
 		const value = e.target.checked;
-		console.log('value:', value);
 		setRemember(value);
 	};
 

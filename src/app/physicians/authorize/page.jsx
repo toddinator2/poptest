@@ -78,7 +78,7 @@ export default function Authorize() {
 					license: user.license,
 					npi: user.npi,
 					specialty: user.specialty,
-					ofcs3xid: user.ofcs3xid,
+					s3xid: user.ofcs3xid,
 					locObjId: user.ofclocObjId,
 					ofcObjId: user.ofcObjId,
 				};

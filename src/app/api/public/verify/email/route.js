@@ -7,14 +7,12 @@ import Subscriber from '@/models/subscriber';
 import Subprereg from '@/models/subprereg';
 import Subsetup from '@/models/subsetup';
 import Subsumedhist from '@/models/subsumedhist';
-import Subpolicy from '@/models/subpolicy';
 /*** Sponsor ***/
 import Sponsor from '@/models/sponsor';
 import Spnprereg from '@/models/spnprereg';
 import Spnlocation from '@/models/spnlocation';
 import Spnuser from '@/models/spnuser';
 import Spnsetup from '@/models/spnsetup';
-import Spnpolicy from '@/models/spnpolicy';
 /*** Office ***/
 import Ofcprereg from '@/models/ofcprereg';
 import Office from '@/models/office';
@@ -22,7 +20,6 @@ import Ofclocation from '@/models/ofclocation';
 import Ofcsetup from '@/models/ofcsetup';
 import Ofcuser from '@/models/ofcuser';
 import Ofcowner from '@/models/ofcowner';
-import Ofcpolicy from '@/models/ofcpolicy';
 /*** S3X ***/
 import S3xuser from '@/models/s3xuser';
 
@@ -84,8 +81,6 @@ export const POST = async (req) => {
 						await new Subsetup({ subObjId: newPtId }).save();
 						//create setup medical history
 						await new Subsumedhist({ subObjId: newPtId }).save();
-						//create policies
-						await new Subpolicy({ subObjId: newPtId }).save();
 						//delete the pre-registration data
 						await Subprereg.findOneAndDelete({ verifycode: verifycode });
 						return NextResponse.json({ status: 200 });
@@ -163,7 +158,7 @@ export const POST = async (req) => {
 
 						//save to sponsor users
 						if (preSpn.type.toLowerCase() === 'private') {
-							newSpnUser = new Spnuser({
+							await new Spnuser({
 								fname: preSpn.fname,
 								lname: preSpn.lname,
 								email: preSpn.email.toLowerCase(),
@@ -179,19 +174,9 @@ export const POST = async (req) => {
 								spns3xid: spnId,
 								spnlocObjId: newLocId,
 								spnObjId: newSpnId,
-							});
-							const svdUser = await newSpnUser.save();
-							const newUserId = svdUser._id;
-
-							if (newUserId) {
-								//create policy accept table
-								await new Spnpolicy({
-									spnuserObjId: newUserId,
-									spnObjId: newSpnId,
-								}).save();
-							}
+							}).save();
 						} else {
-							newSpnUser = new Spnuser({
+							await new Spnuser({
 								fname: preSpn.fname,
 								lname: preSpn.lname,
 								email: preSpn.email.toLowerCase(),
@@ -208,18 +193,9 @@ export const POST = async (req) => {
 								spns3xid: spnId,
 								spnlocObjId: newLocId,
 								spnObjId: newSpnId,
-							});
-							const svdUser = await newSpnUser.save();
-							const newUserId = svdUser._id;
-
-							if (newUserId) {
-								//create policy accept table
-								await new Spnpolicy({
-									spnuserObjId: newUserId,
-									spnObjId: newSpnId,
-								}).save();
-							}
+							}).save();
 						}
+
 						await Spnprereg.findOneAndDelete({ verifycode: verifycode });
 						return NextResponse.json({ status: 200 });
 					} else {
@@ -313,12 +289,6 @@ export const POST = async (req) => {
 
 					//create new office setup
 					await new Ofcsetup({
-						ofcObjId: newOfcObjId,
-					}).save();
-
-					//create new office policy agreements
-					await new Ofcpolicy({
-						ofcuserObjId: newPhyId,
 						ofcObjId: newOfcObjId,
 					}).save();
 

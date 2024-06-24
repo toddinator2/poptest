@@ -22,7 +22,7 @@ export default function MapDisplay({ lat, lng }) {
 			};
 
 			//Marker
-			const { Marker } = await google.maps.importLibrary('marker');
+			const { AdvancedMarkerElement } = await google.maps.importLibrary('marker');
 
 			const options = {
 				center: locationInMap,
@@ -33,7 +33,7 @@ export default function MapDisplay({ lat, lng }) {
 			const map = new Map(mapRef.current, options);
 
 			//add marker in the map
-			new Marker({
+			new AdvancedMarkerElement({
 				map: map,
 				position: locationInMap,
 			});

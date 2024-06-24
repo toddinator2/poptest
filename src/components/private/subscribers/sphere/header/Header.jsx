@@ -6,7 +6,10 @@ import { MenuContext } from '@/utils/context/global/MenuContext';
 import { signOut } from 'next-auth/react';
 import Link from 'next/link';
 import Image from 'next/image';
-import SetOffice from '../components/SetOffice';
+import SetOffice from '../sidebar/header/setoffice/SetOffice';
+import PhyButton from '../sidebar/buttons/PhyButton';
+import VirtualButton from '../sidebar/buttons/VirtualButton';
+import MessageButton from '../sidebar/buttons/MessageButton';
 import inlLogo from '@/assets/images/logoSide.png';
 import ad from '@/assets/images/bnrAd.jpg';
 
@@ -33,16 +36,6 @@ export default function Header({ screenWidth }) {
 
 	const shwMobileMenu = () => {
 		setNav(!nav);
-	};
-
-	const handleMenu = (type) => {
-		if (type === 'physicians') {
-			setMenu({ type: 'phySearch', func: '', dets: '', vids: false, page: menu.page });
-		}
-		if (type === 'virtual') {
-			setMenu({ type: 'virtual', func: '', dets: '', vids: false, page: menu.page });
-		}
-		shwMobileMenu();
 	};
 
 	return (
@@ -122,11 +115,14 @@ export default function Header({ screenWidth }) {
 						<div className='mb-3'>
 							<SetOffice />
 						</div>
-						<div className='sbButton' onClick={() => handleMenu('physicians')}>
-							PHYSICIANS
+						<div className='mb-2'>
+							<PhyButton />
 						</div>
-						<div className='sbButton' onClick={() => handleMenu('virtual')}>
-							NOVA VIRTUAL
+						<div className='mb-2'>
+							<VirtualButton />
+						</div>
+						<div className='mb-2'>
+							<MessageButton />
 						</div>
 					</div>
 				</div>

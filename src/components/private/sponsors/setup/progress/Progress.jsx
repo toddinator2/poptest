@@ -4,7 +4,7 @@ import { AuthContext } from '@/utils/context/global/AuthContext';
 import toast from 'react-hot-toast';
 import Profile from '../profile/Profile';
 import Location from '../location/Location';
-import Agreement from '../agreement/Agreement';
+import Policy from '@/components/global/policies/Policy';
 import Bank from '../bank/Bank';
 
 import * as Realm from 'realm-web';
@@ -67,7 +67,7 @@ export default function Progress() {
 				return;
 			}
 			if (!agreement) {
-				setPage('agreement');
+				setPage('S3xSpnLicenseAgreement');
 				return;
 			}
 			if (!bank) {
@@ -102,7 +102,7 @@ export default function Progress() {
 			<div className='my-5 text-2xl text-center'>Sponsor Account Setup</div>
 			{page === 'profile' && <Profile type={type} />}
 			{page === 'location' && <Location type={type} />}
-			{page === 'agreement' && <Agreement type={type} />}
+			{page === 'S3xSpnLicenseAgreement' && <Policy pol={page} reqType='s3x' su='spn' suFld='agreement' suFin={false} />}
 			{page === 'bank' && <Bank type={type} />}
 		</>
 	);

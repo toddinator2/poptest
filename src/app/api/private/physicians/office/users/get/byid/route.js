@@ -10,22 +10,17 @@ export const GET = async (request) => {
 	let ofcName = '';
 
 	try {
-		const phy = await Ofcuser.findById(_id);
+		const phy = await Ofcuser.findById(_id).select(
+			'-username -password -resetcreds -resetcode -permission -role -verifycode -emailconfirmed -ofcs3xid -ofclocObjId'
+		);
 		if (phy) {
 			//get office name
 			const ofc = await Office.findById(phy.ofcObjId);
 			if (ofc) {
-				ofcName = ofc.name;
+				ofcName = ofc.dba;
 			}
 
-			const phyObj = {
-				photo: phy.photo,
-				title: phy.title,
-				specialty: phy.specialty,
-				ofcName: ofcName,
-			};
-
-			return NextResponse.json({ phy: phyObj, status: 200 });
+			return NextResponse.json({ user: phy, ofcName: ofcName, status: 200 });
 		} else {
 			return NextResponse.json({ msg: 'Physician Not Found', status: 400 });
 		}
