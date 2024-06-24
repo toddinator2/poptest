@@ -1,3 +1,4 @@
+'use client';
 import React, { useContext, useState } from 'react';
 import './Videos.css';
 import Image from 'next/image';
