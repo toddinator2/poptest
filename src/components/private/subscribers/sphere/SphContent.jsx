@@ -15,7 +15,7 @@ import AgoraRTC, { AgoraRTCProvider } from 'agora-rtc-react';
 import AddMessage from './content/messages/add/AddMessage';
 
 //need to dynmaically import videos to not get the 'window is not defined error'
-const VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
+//const VideoScreens = dynamic(() => import('./content/virtual/Videos'), { ssr: false });
 
 export default function SphContent() {
 	const [auth] = useContext(AuthContext);
@@ -49,11 +49,16 @@ export default function SphContent() {
 	return (
 		<>
 			{menu.vids && (
+				<>
+					<div>Videos Go Here</div>
+					{/*}
 				<AgoraRTCProvider client={AgoraRTC.createClient({ mode: 'rtc', codec: 'vp8' })}>
 					<div className='w-full py-5 xl:py-3 flex justify-center'>
 						<VideoScreens token={token} />
 					</div>
 				</AgoraRTCProvider>
+				{*/}
+				</>
 			)}
 			<div className='py-5 xl:py-3 xl:px-5 xl:flex xl:flex-row xl:justify-center xl:gap-3'>
 				<div className='w-full xl:w-1/3 mb-3 xl:mb-0 min-h-40 border-4 border-drkred rounded-3xl'>
